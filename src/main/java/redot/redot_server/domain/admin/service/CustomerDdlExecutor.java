@@ -53,15 +53,12 @@ public class CustomerDdlExecutor {
 
     /**
      * 식별자가 안전한 문자(a-z, 0-9, _)로만 구성되어 있는지 검증하고,
-     * SQL 인젝션 방지를 위해 큰따옴표로 감싸 반환합니다.
-     *
-     * @param identifier 원본 식별자
-     * @return 인용 부호로 감싸진 안전한 식별자
+     * 이상이 없다면 그대로 반환합니다.
      */
     private String validateAndQuoteIdentifier(String identifier) throws DataAccessException {
         if (identifier == null || !identifier.matches("[a-z0-9_]+")) {
             throw new IllegalArgumentException("Invalid schema/identifier: " + identifier);
         }
-        return '"' + identifier + '"';
+        return identifier;
     }
 }
