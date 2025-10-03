@@ -26,13 +26,13 @@ import redot.redot_server.domain.cms.entity.Customer;
 @EntityListeners(AuditingEntityListener.class)
 @Builder(access = lombok.AccessLevel.PRIVATE)
 @Table(name = "domains")
+@Getter
 public class Domain {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
-    @Getter
     private String domainName;
 
     @Setter
