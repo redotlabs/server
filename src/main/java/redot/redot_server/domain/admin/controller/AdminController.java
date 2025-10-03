@@ -11,7 +11,7 @@ import redot.redot_server.domain.admin.dto.AdminDTO;
 import redot.redot_server.domain.admin.service.AdminService;
 
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/v1/admin")
 @RequiredArgsConstructor
 public class AdminController {
     private final AdminService adminService;
