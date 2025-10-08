@@ -11,7 +11,7 @@ import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
 import redot.redot_server.domain.cms.dto.CustomerCreateResponse;
 
 @RestController
-@RequestMapping("/api/v1/customer")
+@RequestMapping("/api/v1/admin/customer")
 @RequiredArgsConstructor
 public class AdminCustomerController {
 

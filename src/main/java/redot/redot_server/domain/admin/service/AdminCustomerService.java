@@ -46,6 +46,8 @@ public class AdminCustomerService {
                 )
         );
 
+        customer.setOwner(owner);
+
         return new CustomerCreateResponse(
                 customer.getId(),
                 customer.getCompanyName(),

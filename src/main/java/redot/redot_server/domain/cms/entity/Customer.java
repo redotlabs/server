@@ -51,7 +51,11 @@ public class Customer {
                 .build();
     }
 
-    public boolean hasOwner() {
-        return this.owner != null;
+    public void setOwner(CMSMember owner) {
+        // todo: 예외처리 수정 필요
+        if(this.owner != null) {
+            throw new IllegalStateException("Owner is already set");
+        }
+        this.owner = owner;
     }
 }
