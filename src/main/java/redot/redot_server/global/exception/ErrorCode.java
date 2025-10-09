@@ -1,7 +1,7 @@
 package redot.redot_server.global.exception;
 
 public interface ErrorCode {
-    int getStatus();
-    String getError();
+    int getStatusCode();
+    int getExceptionCode();
     String getMessage();
 }
