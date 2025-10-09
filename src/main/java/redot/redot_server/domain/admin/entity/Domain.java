@@ -19,6 +19,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.cms.entity.Customer;
+import redot.redot_server.domain.admin.exception.DomainErrorCode;
+import redot.redot_server.domain.admin.exception.DomainException;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -62,14 +64,14 @@ public class Domain {
 
     @PrePersist
     @PreUpdate
-    private void validateIntegrity(){
+    private void validateIntegrity() {
         if (Boolean.TRUE.equals(reserved)) {
             if (this.customer != null || this.customDomain != null) {
-                throw new IllegalStateException("Reserved domain cannot have customer or custom domain");
+                throw new DomainException(DomainErrorCode.RESERVED_DOMAIN_WITH_CUSTOMER);
             }
         } else {
             if (this.customer == null) {
-                throw new IllegalStateException("Non-reserved domain must have a customer");
+                throw new DomainException(DomainErrorCode.NON_RESERVED_DOMAIN_MISSING_CUSTOMER);
             }
         }
     }

@@ -8,12 +8,13 @@ import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import redot.redot_server.domain.admin.entity.Domain;
 import redot.redot_server.domain.admin.repository.DomainRepository;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
 import redot.redot_server.global.customer.util.DomainParser;
@@ -37,8 +38,7 @@ public class CustomerFilter extends OncePerRequestFilter {
 
             Long customerId = resolveCustomerId(domainOptional.get());
             if (customerId == null) {
-                response.sendError(HttpStatus.NOT_FOUND.value(), "Customer domain not found");
-                return;
+                throw new AuthException(AuthErrorCode.CUSTOMER_DOMAIN_NOT_FOUND);
             }
 
             CustomerContextHolder.set(customerId);

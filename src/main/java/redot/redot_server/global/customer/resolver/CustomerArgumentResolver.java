@@ -2,13 +2,13 @@ package redot.redot_server.global.customer.resolver;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.MethodParameter;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
-import org.springframework.web.server.ResponseStatusException;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
 import redot.redot_server.global.customer.resolver.annotation.CurrentCustomer;
 
@@ -30,7 +30,7 @@ public class CustomerArgumentResolver implements HandlerMethodArgumentResolver {
                                   WebDataBinderFactory binderFactory) {
         Long customerId = CustomerContextHolder.get();
         if (customerId == null) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Customer context not initialized");
+            throw new AuthException(AuthErrorCode.CUSTOMER_CONTEXT_REQUIRED);
         }
 
         return customerId;

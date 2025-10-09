@@ -5,9 +5,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
-import redot.redot_server.global.jwt.exception.JwtValidationException;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 
 @Component
 public class CustomerJwtAuthenticationFilter extends AbstractJwtAuthenticationFilter {
@@ -23,11 +24,11 @@ public class CustomerJwtAuthenticationFilter extends AbstractJwtAuthenticationFi
         Long tokenCustomerId = extractCustomerId(claims.get("customer_id"));
 
         if (contextCustomerId == null || tokenCustomerId == null) {
-            throw new JwtValidationException("Customer context missing in token");
+            throw new AuthException(AuthErrorCode.CUSTOMER_CONTEXT_REQUIRED);
         }
 
         if (!contextCustomerId.equals(tokenCustomerId)) {
-            throw new JwtValidationException("Customer token mismatch");
+            throw new AuthException(AuthErrorCode.CUSTOMER_TOKEN_MISMATCH);
         }
     }
 }

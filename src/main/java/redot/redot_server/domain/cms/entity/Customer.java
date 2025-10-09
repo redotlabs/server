@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import redot.redot_server.domain.cms.exception.CustomerErrorCode;
+import redot.redot_server.domain.cms.exception.CustomerException;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -43,7 +45,6 @@ public class Customer {
     @CreatedDate
     private LocalDateTime createdAt;
 
-
     public static Customer create(String companyName) {
         return Customer.builder()
                 .companyName(companyName)
@@ -52,9 +53,8 @@ public class Customer {
     }
 
     public void setOwner(CMSMember owner) {
-        // todo: 예외처리 수정 필요
-        if(this.owner != null) {
-            throw new IllegalStateException("Owner is already set");
+        if (this.owner != null) {
+            throw new CustomerException(CustomerErrorCode.OWNER_ALREADY_ASSIGNED);
         }
         this.owner = owner;
     }

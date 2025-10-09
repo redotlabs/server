@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.entity.CMSMember;
 import redot.redot_server.domain.cms.repository.CMSMemberRepository;
 import redot.redot_server.global.jwt.token.TokenContext;
@@ -24,10 +26,10 @@ public class CMSAuthService {
 
     public AuthResult signIn(SignInRequest request, Long customerId) {
         CMSMember cmsMember = cmsMemberRepository.findByEmailAndCustomer_Id(request.email(), customerId)
-                .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
+                .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (!passwordEncoder.matches(request.password(), cmsMember.getPassword())) {
-            throw new IllegalArgumentException("Invalid email or password");
+            throw new AuthException(AuthErrorCode.INVALID_USER_INFO);
         }
 
         return authTokenService.issueTokens(

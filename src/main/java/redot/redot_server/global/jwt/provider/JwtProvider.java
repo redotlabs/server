@@ -17,7 +17,8 @@ import java.util.Date;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import redot.redot_server.global.jwt.exception.JwtValidationException;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 
 @Component
 public class JwtProvider {
@@ -67,13 +68,13 @@ public class JwtProvider {
                     .getBody();
 
         } catch (ExpiredJwtException e) {
-            throw new JwtValidationException("Access token expired", e);
+            throw new AuthException(AuthErrorCode.TOKEN_EXPIRED, e);
         } catch (UnsupportedJwtException | MalformedJwtException e) {
-            throw new JwtValidationException("Invalid JWT format", e);
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN, e);
         } catch (SignatureException e) {
-            throw new JwtValidationException("Invalid JWT signature", e);
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN, e);
         } catch (IllegalArgumentException e) {
-            throw new JwtValidationException("Empty JWT token", e);
+            throw new AuthException(AuthErrorCode.EMPTY_TOKEN, e);
         }
     }
 

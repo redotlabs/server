@@ -10,6 +10,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import redot.redot_server.global.exception.ErrorResponse;
+import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.security.exception.SecurityErrorCode;
 
 @Component
@@ -20,9 +21,16 @@ public class JsonAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
-        ErrorResponse errorResponse = ErrorResponse.from(SecurityErrorCode.UNAUTHORIZED);
+        Object attribute = request.getAttribute(AuthException.class.getName());
+        ErrorResponse errorResponse;
 
-        response.setStatus(errorResponse.getStatus());
+        if (attribute instanceof AuthException domainException) {
+            errorResponse = ErrorResponse.from(domainException.getErrorCode());
+        } else {
+            errorResponse = ErrorResponse.from(SecurityErrorCode.UNAUTHORIZED);
+        }
+
+        response.setStatus(errorResponse.statusCode());
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }
