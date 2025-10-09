@@ -22,9 +22,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import redot.redot_server.global.jwt.exception.JwtValidationException;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 
 @RequiredArgsConstructor
 abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
@@ -33,6 +34,8 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthenticationEntryPoint authenticationEntryPoint;
     private final TokenType requiredType;
 
+    private static final String AUTH_EXCEPTION_ATTR = AuthException.class.getName();
+
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -40,7 +43,7 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             String token = extractAccessToken(request);
             if (!StringUtils.hasText(token)) {
-                throw new JwtValidationException("Missing access token");
+                throw new AuthException(AuthErrorCode.MISSING_ACCESS_TOKEN);
             }
 
             Claims claims = jwtProvider.parseToken(token);
@@ -53,13 +56,10 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             filterChain.doFilter(request, response);
-        } catch (JwtValidationException | JwtException | IllegalArgumentException ex) {
-            SecurityContextHolder.clearContext();
-            authenticationEntryPoint.commence(
-                    request,
-                    response,
-                    new InsufficientAuthenticationException(ex.getMessage(), ex)
-            );
+        } catch (AuthException ex) {
+            commenceWithAuthException(request, response, ex);
+        } catch (JwtException | IllegalArgumentException ex) {
+            commenceWithAuthException(request, response, new AuthException(AuthErrorCode.INVALID_TOKEN, ex));
         }
     }
 
@@ -80,7 +80,7 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
     private void validateType(Claims claims) {
         String tokenType = claims.get("type", String.class);
         if (tokenType == null || !requiredType.getType().equalsIgnoreCase(tokenType)) {
-            throw new JwtValidationException("Invalid token type");
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_TYPE);
         }
     }
 
@@ -92,12 +92,12 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private Long parseSubject(String subject) {
         if (!StringUtils.hasText(subject)) {
-            throw new JwtValidationException("Token subject missing");
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
         }
         try {
             return Long.parseLong(subject);
         } catch (NumberFormatException ex) {
-            throw new JwtValidationException("Invalid token subject", ex);
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
         }
     }
 
@@ -112,7 +112,7 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 return Long.parseLong(stringValue);
             } catch (NumberFormatException ex) {
-                throw new JwtValidationException("Invalid customer id", ex);
+                throw new AuthException(AuthErrorCode.INVALID_USER_INFO);
             }
         }
         return null;
@@ -147,4 +147,16 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
     protected record JwtPrincipal(Long id, TokenType tokenType, Long customerId) {}
 
     protected record JwtAuthenticationDetails(String remoteAddress, String userAgent) {}
+
+    private void commenceWithAuthException(HttpServletRequest request,
+                                           HttpServletResponse response,
+                                           AuthException authException) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        request.setAttribute(AUTH_EXCEPTION_ATTR, authException);
+        authenticationEntryPoint.commence(
+                request,
+                response,
+                new InsufficientAuthenticationException(authException.getMessage(), authException)
+        );
+    }
 }

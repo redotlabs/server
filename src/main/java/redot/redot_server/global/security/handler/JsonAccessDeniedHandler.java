@@ -22,7 +22,7 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
                        AccessDeniedException accessDeniedException) throws IOException, ServletException {
         ErrorResponse errorResponse = ErrorResponse.from(SecurityErrorCode.FORBIDDEN);
 
-        response.setStatus(errorResponse.getStatus());
+        response.setStatus(errorResponse.statusCode());
         response.setContentType("application/json;charset=UTF-8");
         response.getWriter().write(objectMapper.writeValueAsString(errorResponse));
     }

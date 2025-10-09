@@ -1,4 +1,4 @@
-package redot.redot_server.global.security.exception;
+package redot.redot_server.domain.cms.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,9 +6,8 @@ import redot.redot_server.global.exception.ErrorCode;
 
 @Getter
 @AllArgsConstructor
-public enum SecurityErrorCode implements ErrorCode {
-    UNAUTHORIZED(401, 1000, "인증이 필요합니다."),
-    FORBIDDEN(403, 1001, "접근 권한이 없습니다.");
+public enum CustomerErrorCode implements ErrorCode {
+    OWNER_ALREADY_ASSIGNED(400, 3000, "이미 소유자가 지정된 고객입니다.");
 
     private final int statusCode;
     private final int exceptionCode;

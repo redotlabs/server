@@ -3,6 +3,8 @@ package redot.redot_server.global.jwt.token;
 import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,6 +24,6 @@ public enum TokenType {
                 return tokenType;
             }
         }
-        throw new IllegalArgumentException("Invalid token type: " + type);
+        throw new AuthException(AuthErrorCode.INVALID_TOKEN_TYPE);
     }
 }
