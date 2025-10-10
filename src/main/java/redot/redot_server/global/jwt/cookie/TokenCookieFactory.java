@@ -27,4 +27,12 @@ public class TokenCookieFactory {
                 jwtProvider.getRefreshTokenExpiration()
         );
     }
+
+    public ResponseCookie deleteAccessTokenCookie(String name) {
+        return cookieUtil.deleteCookie(name);
+    }
+
+    public ResponseCookie deleteRefreshTokenCookie(String name) {
+        return cookieUtil.deleteCookie(name);
+    }
 }

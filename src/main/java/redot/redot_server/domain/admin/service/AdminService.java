@@ -8,6 +8,7 @@ import redot.redot_server.domain.admin.dto.AdminCreateRequest;
 import redot.redot_server.domain.admin.dto.AdminDTO;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
+import redot.redot_server.domain.auth.service.AuthTokenService;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ import redot.redot_server.domain.admin.repository.AdminRepository;
 public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AuthTokenService authTokenService;
 
     @Transactional
     public AdminDTO createAdmin(AdminCreateRequest request) {
