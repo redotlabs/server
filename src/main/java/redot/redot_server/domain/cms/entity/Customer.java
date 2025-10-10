@@ -20,6 +20,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.cms.exception.CustomerErrorCode;
 import redot.redot_server.domain.cms.exception.CustomerException;
 
+@Getter
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -28,7 +29,6 @@ import redot.redot_server.domain.cms.exception.CustomerException;
 @Table(name = "customers")
 public class Customer {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -39,7 +39,6 @@ public class Customer {
     private CustomerStatus status;
 
     @Column(nullable = false)
-    @Getter
     private String companyName;
 
     @CreatedDate
