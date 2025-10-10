@@ -1,5 +1,6 @@
 package redot.redot_server.domain.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
 
 @Service
 @RequiredArgsConstructor
@@ -33,5 +36,25 @@ public class AdminAuthService {
         return authTokenService.issueTokens(
                 new TokenContext(admin.getId(), TokenType.ADMIN, null, null)
         );
+    }
+
+    public AuthResult reissueToken(HttpServletRequest request) {
+        RefreshTokenPayload payload = RefreshTokenPayloadHolder.get(request);
+
+        if (payload == null) {
+            throw new AuthException(AuthErrorCode.MISSING_REFRESH_TOKEN);
+        }
+
+        Long adminId = payload.subjectId();
+        if (adminId == null) {
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
+        }
+
+        return authTokenService.issueTokens(new TokenContext(
+                adminId,
+                payload.tokenType(),
+                payload.roles(),
+                null
+        ));
     }
 }

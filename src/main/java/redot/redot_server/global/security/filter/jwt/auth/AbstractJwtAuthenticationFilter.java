@@ -1,4 +1,4 @@
-package redot.redot_server.global.security.filter;
+package redot.redot_server.global.security.filter.jwt.auth;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

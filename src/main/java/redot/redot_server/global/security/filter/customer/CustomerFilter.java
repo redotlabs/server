@@ -1,4 +1,4 @@
-package redot.redot_server.global.customer.filter;
+package redot.redot_server.global.security.filter.customer;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -24,6 +27,9 @@ import redot.redot_server.global.customer.util.DomainParser;
 public class CustomerFilter extends OncePerRequestFilter {
 
     private final DomainRepository domainRepository;
+    private final AuthenticationEntryPoint authenticationEntryPoint;
+
+    private static final String AUTH_EXCEPTION_ATTR = AuthException.class.getName();
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -38,11 +44,14 @@ public class CustomerFilter extends OncePerRequestFilter {
 
             Long customerId = resolveCustomerId(domainOptional.get());
             if (customerId == null) {
-                throw new AuthException(AuthErrorCode.CUSTOMER_DOMAIN_NOT_FOUND);
+                commenceFailure(request, response, new AuthException(AuthErrorCode.CUSTOMER_DOMAIN_NOT_FOUND));
+                return;
             }
 
             CustomerContextHolder.set(customerId);
             filterChain.doFilter(request, response);
+        } catch (AuthException authException) {
+            commenceFailure(request, response, authException);
         } finally {
             CustomerContextHolder.clear();
         }
@@ -69,5 +78,17 @@ public class CustomerFilter extends OncePerRequestFilter {
         }
 
         return customer.getId();
+    }
+
+    private void commenceFailure(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 AuthException authException) throws IOException, ServletException {
+        SecurityContextHolder.clearContext();
+        request.setAttribute(AUTH_EXCEPTION_ATTR, authException);
+        authenticationEntryPoint.commence(
+                request,
+                response,
+                new InsufficientAuthenticationException(authException.getMessage(), authException)
+        );
     }
 }
