@@ -24,6 +24,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 
@@ -143,8 +144,6 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     protected void validateClaims(Claims claims, HttpServletRequest request) {}
-
-    protected record JwtPrincipal(Long id, TokenType tokenType, Long customerId) {}
 
     protected record JwtAuthenticationDetails(String remoteAddress, String userAgent) {}
 

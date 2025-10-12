@@ -87,7 +87,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(4)
+    @Order(5)
     public SecurityFilterChain adminAuthChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
         http.securityMatcher("/api/v1/auth/admin/**")
@@ -96,11 +96,11 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(5)
+    @Order(4)
     public SecurityFilterChain adminApiChain(HttpSecurity http,
                                              AdminJwtAuthenticationFilter adminJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/admin/**")
+        http.securityMatcher("/api/v1/admin/**", "/api/v1/auth/admin/impersonation/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .addFilterBefore(adminJwtAuthenticationFilter, LogoutFilter.class);
         return http.build();
