@@ -19,6 +19,7 @@ import redot.redot_server.domain.admin.repository.DomainRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.entity.Customer;
+import redot.redot_server.domain.cms.entity.CustomerStatus;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
 import redot.redot_server.global.customer.util.DomainParser;
 
@@ -75,6 +76,10 @@ public class CustomerFilter extends OncePerRequestFilter {
         Customer customer = resolvedDomain.getCustomer();
         if (customer == null || customer.getId() == null) {
             return null;
+        }
+
+        if (customer.getStatus() != CustomerStatus.ACTIVE) {
+            throw new AuthException(AuthErrorCode.CUSTOMER_INACTIVE);
         }
 
         return customer.getId();
