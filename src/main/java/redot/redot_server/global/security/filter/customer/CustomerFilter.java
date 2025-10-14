@@ -7,7 +7,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
@@ -21,7 +20,6 @@ import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.domain.cms.entity.CustomerStatus;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
-import redot.redot_server.global.customer.util.DomainParser;
 
 @Component
 @RequiredArgsConstructor
@@ -37,16 +35,14 @@ public class CustomerFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            Optional<String> domainOptional = DomainParser.extractDomain(request.getHeader(HttpHeaders.HOST));
-            if (domainOptional.isEmpty()) {
-                filterChain.doFilter(request, response);
-                return;
+            String subdomain = request.getHeader("X-Customer-Subdomain");
+            if (!StringUtils.hasText(subdomain)) {
+                throw new AuthException(AuthErrorCode.CUSTOMER_CONTEXT_REQUIRED);
             }
 
-            Long customerId = resolveCustomerId(domainOptional.get());
+            Long customerId = resolveCustomerId(subdomain);
             if (customerId == null) {
-                commenceFailure(request, response, new AuthException(AuthErrorCode.CUSTOMER_DOMAIN_NOT_FOUND));
-                return;
+                throw new AuthException(AuthErrorCode.CUSTOMER_DOMAIN_NOT_FOUND);
             }
 
             CustomerContextHolder.set(customerId);
@@ -58,17 +54,11 @@ public class CustomerFilter extends OncePerRequestFilter {
         }
     }
 
-    private Long resolveCustomerId(String domain) {
-        if (!StringUtils.hasText(domain)) {
-            return null;
-        }
+    private Long resolveCustomerId(String subDomain) {
 
-        Optional<Domain> domainLookup = domainRepository.findByDomainName(domain);
-        if (domainLookup.isEmpty()) {
-            domainLookup = domainRepository.findByCustomDomain(domain);
-        }
-
+        Optional<Domain> domainLookup = domainRepository.findBySubdomain(subDomain);
         Domain resolvedDomain = domainLookup.orElse(null);
+
         if (resolvedDomain == null || Boolean.TRUE.equals(resolvedDomain.getReserved())) {
             return null;
         }

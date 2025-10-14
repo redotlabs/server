@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.admin.entity.Domain;
 import redot.redot_server.domain.admin.repository.DomainRepository;
-import redot.redot_server.domain.admin.util.DomainNameGenerator;
+import redot.redot_server.domain.admin.util.SubDomainNameGenerator;
 import redot.redot_server.domain.cms.dto.CMSMemberDTO;
 import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
 import redot.redot_server.domain.cms.dto.CustomerCreateResponse;
@@ -31,7 +31,7 @@ public class AdminCustomerService {
     public CustomerCreateResponse createCustomer(CustomerCreateRequest request) {
         Customer customer = customerRepository.save(Customer.create(request.companyName()));
 
-        String domainName = DomainNameGenerator.generateSubdomain();
+        String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofCustomer(domainName, customer));
 
         SiteSetting siteSetting = siteSettingRepository.save(SiteSetting.createDefault(customer, request.theme()));
@@ -52,7 +52,7 @@ public class AdminCustomerService {
                 customer.getId(),
                 customer.getCompanyName(),
                 siteSetting.getTheme(),
-                domain.getDomainName(),
+                domain.getSubdomain(),
                 new CMSMemberDTO(
                         customer.getId(),
                         owner.getId(),
