@@ -37,8 +37,6 @@ out/
 .vscode/
 .DS_Store
 
-
-*.yml
 application-*.yml
 
 devtools/
