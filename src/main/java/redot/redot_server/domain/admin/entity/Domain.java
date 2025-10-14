@@ -35,7 +35,7 @@ public class Domain {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String domainName;
+    private String subdomain;
 
     @Setter
     private String customDomain;
@@ -47,16 +47,16 @@ public class Domain {
     @Column(nullable = false)
     private Boolean reserved;
 
-    public static Domain ofReserved(String domainName) {
+    public static Domain ofReserved(String subdomain) {
         return Domain.builder()
-                .domainName(domainName)
+                .subdomain(subdomain)
                 .reserved(true)
                 .build();
     }
 
-    public static Domain ofCustomer(String domainName, Customer customer) {
+    public static Domain ofCustomer(String subdomain, Customer customer) {
         return Domain.builder()
-                .domainName(domainName)
+                .subdomain(subdomain)
                 .customer(customer)
                 .reserved(false)
                 .build();
