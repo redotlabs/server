@@ -39,6 +39,15 @@ public class SecurityConfig {
     }
 
     @Bean
+    @Order(-1)
+    public SecurityFilterChain publicDomainChain(HttpSecurity http) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/domain/subdomain")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
     @Order(0)
     public SecurityFilterChain customerRefreshChain(HttpSecurity http,
                                                     CustomerFilter customerFilter,
