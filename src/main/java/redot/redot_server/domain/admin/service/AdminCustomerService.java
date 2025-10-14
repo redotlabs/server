@@ -52,7 +52,7 @@ public class AdminCustomerService {
                 customer.getId(),
                 customer.getCompanyName(),
                 siteSetting.getTheme(),
-                domain.getDomainName(),
+                domain.getSubdomain(),
                 new CMSMemberDTO(
                         customer.getId(),
                         owner.getId(),
