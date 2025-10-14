@@ -1,0 +1,75 @@
+name: Build and Deploy to Test Server
+
+on:
+  push:
+    branches:
+      - develop   # develop 브랜치 push 시 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. JDK 세팅 (Spring 빌드)
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      # 3. application-dev.yml 주입 (빌드 시점에만 포함, Docker 이미지 안에 들어감)
+      - name: Create application-dev.yml from Secret
+        run: |
+          mkdir -p src/main/resources
+          echo "${{ secrets.SPRING_APPLICATION_DEV_YML }}" > src/main/resources/application-dev.yml
+
+      # 4. Gradle 빌드
+      - name: Build with Gradle
+        run: ./gradlew clean build -x test
+
+      # 5. QEMU 설치 (multi-arch 지원)
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # 6. Buildx 설치
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # 7. Docker Hub 로그인
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.TEST_SERVER_DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.TEST_SERVER_DOCKER_HUB_ACCESS_TOKEN }}
+
+      # 8. 멀티 아키텍처 이미지 빌드 & 푸시
+      - name: Build and push Docker image (multi-arch)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            dhxxn502/redot_test_server:latest
+            dhxxn502/redot_test_server:${{ github.sha }}
+
+      # 9. GitOps repo 업데이트 (deployment.yaml 이미지 태그 갱신)
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: eraser502/gitops-repo   # GitOps repo 주소
+          token: ${{ secrets.GH_PAT }}        # Personal Access Token 필요
+
+      - name: Update image in deployment.yaml
+        run: |
+          sed -i "s|dhxxn502/redot_test_server:.*|dhxxn502/redot_test_server:${{ github.sha }}|" apps/redot-test/deployment.yaml
+          git config --global user.name "github-actions"
+          git config --global user.email "actions@github.com"
+          git add apps/redot-test/deployment.yaml
+          git commit -m "Update redot-test image to ${{ github.sha }}" || echo "No changes to commit"
+          git push
