@@ -1,4 +1,4 @@
-package redot.redot_server.domain.auth.controller;
+package redot.redot_server.domain.auth.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

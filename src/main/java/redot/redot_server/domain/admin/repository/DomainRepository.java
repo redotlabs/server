@@ -12,4 +12,8 @@ public interface DomainRepository extends JpaRepository<Domain, Long> {
 
     @EntityGraph(attributePaths = "customer")
     Optional<Domain> findByCustomDomain(String customDomain);
+
+    Optional<Domain> findByCustomerId(Long customerId);
+
+    boolean existsByCustomDomain(String customDomain);
 }
