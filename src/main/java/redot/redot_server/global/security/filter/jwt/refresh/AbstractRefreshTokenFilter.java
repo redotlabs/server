@@ -20,7 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.global.jwt.cookie.CookieUtil;
+import redot.redot_server.global.jwt.cookie.CookieProvider;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
 
@@ -30,7 +30,7 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
     private static final String AUTH_EXCEPTION_ATTR = AuthException.class.getName();
 
     private final JwtProvider jwtProvider;
-    private final CookieUtil cookieUtil;
+    private final CookieProvider cookieProvider;
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
     @Override
@@ -69,7 +69,7 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
     private void commenceFailure(HttpServletRequest request,
                                  HttpServletResponse response,
                                  AuthException authException) throws IOException, ServletException {
-        expireCookies(response);
+        expireCookies(request, response);
         SecurityContextHolder.clearContext();
         request.setAttribute(AUTH_EXCEPTION_ATTR, authException);
         authenticationEntryPoint.commence(
@@ -79,9 +79,9 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
         );
     }
 
-    private void expireCookies(HttpServletResponse response) {
-        ResponseCookie deleteAccess = cookieUtil.deleteCookie(requiredTokenType().getAccessCookieName());
-        ResponseCookie deleteRefresh = cookieUtil.deleteCookie(requiredTokenType().getRefreshCookieName());
+    private void expireCookies(HttpServletRequest request, HttpServletResponse response) {
+        ResponseCookie deleteAccess = cookieProvider.deleteCookie(request, requiredTokenType().getAccessCookieName());
+        ResponseCookie deleteRefresh = cookieProvider.deleteCookie(request, requiredTokenType().getRefreshCookieName());
         response.addHeader(HttpHeaders.SET_COOKIE, deleteAccess.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, deleteRefresh.toString());
     }

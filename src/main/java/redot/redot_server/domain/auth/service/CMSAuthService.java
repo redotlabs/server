@@ -27,15 +27,16 @@ public class CMSAuthService {
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthResult signIn(SignInRequest request, Long customerId) {
-        CMSMember cmsMember = cmsMemberRepository.findByEmailAndCustomer_Id(request.email(), customerId)
+    public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest, Long customerId) {
+        CMSMember cmsMember = cmsMemberRepository.findByEmailAndCustomer_Id(signInRequest.email(), customerId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
-        if (!passwordEncoder.matches(request.password(), cmsMember.getPassword())) {
+        if (!passwordEncoder.matches(signInRequest.password(), cmsMember.getPassword())) {
             throw new AuthException(AuthErrorCode.INVALID_USER_INFO);
         }
 
         return authTokenService.issueTokens(
+                request,
                 new TokenContext(cmsMember.getId(), TokenType.CMS, List.of(cmsMember.getRole().name()), customerId)
         );
     }
@@ -57,7 +58,7 @@ public class CMSAuthService {
             throw new AuthException(AuthErrorCode.CUSTOMER_TOKEN_MISMATCH);
         }
 
-        return authTokenService.issueTokens(new TokenContext(
+        return authTokenService.issueTokens(request, new TokenContext(
                 cmsMemberId,
                 payload.tokenType(),
                 payload.roles(),

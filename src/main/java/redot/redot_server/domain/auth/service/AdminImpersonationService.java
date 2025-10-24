@@ -1,5 +1,6 @@
 package redot.redot_server.domain.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +18,9 @@ public class AdminImpersonationService {
 
     private final AuthTokenService authTokenService;
 
-    public AuthResult impersonateAsCMSAdmin(CMSAdminImpersonationRequest request, Long adminId) {
-        return authTokenService.issueTokens(
-                new TokenContext(adminId, TokenType.CMS, List.of(CMSMemberRole.ADMIN.name()), request.customerId())
+    public AuthResult impersonateAsCMSAdmin(HttpServletRequest request, CMSAdminImpersonationRequest cmsAdminImpersonationRequest, Long adminId) {
+        return authTokenService.issueTokens(request,
+                new TokenContext(adminId, TokenType.CMS, List.of(CMSMemberRole.ADMIN.name()), cmsAdminImpersonationRequest.customerId())
         );
     }
 }

@@ -26,8 +26,8 @@ public class CMSAuthController {
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request, @CurrentCustomer Long customerId) {
-        AuthResult authResult = cmsAuthService.signIn(request, customerId);
+    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @RequestBody SignInRequest signInRequest, @CurrentCustomer Long customerId) {
+        AuthResult authResult = cmsAuthService.signIn(request, signInRequest, customerId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, authResult.refreshCookie().toString())
@@ -45,9 +45,9 @@ public class CMSAuthController {
     }
 
     @PostMapping("/sign-out")
-    public ResponseEntity<Void> signOut() {
-        ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(TokenType.CMS.getAccessCookieName());
-        ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(TokenType.CMS.getRefreshCookieName());
+    public ResponseEntity<Void> signOut(HttpServletRequest request) {
+        ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(request, TokenType.CMS.getAccessCookieName());
+        ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(request, TokenType.CMS.getRefreshCookieName());
 
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())
