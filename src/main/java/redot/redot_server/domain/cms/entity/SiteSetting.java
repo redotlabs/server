@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
@@ -31,7 +32,7 @@ public class SiteSetting {
     @JoinColumn(name = "customer_id", nullable = false, unique = true)
     private Customer customer;
 
-    private String imageUrl;
+    private String logoUrl;
 
     private String siteName;
 
@@ -46,5 +47,17 @@ public class SiteSetting {
                 .customer(customer)
                 .theme(theme)
                 .build();
+    }
+
+    public void updateLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
+    }
+
+    public void updateSiteName(String siteName) {
+        this.siteName = siteName;
+    }
+
+    public void updateGaInfo(String gaInfo) {
+        this.gaInfo = gaInfo;
     }
 }

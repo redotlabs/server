@@ -18,9 +18,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.domain.admin.exception.DomainErrorCode;
 import redot.redot_server.domain.admin.exception.DomainException;
+import redot.redot_server.domain.cms.entity.Customer;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -38,6 +38,7 @@ public class Domain {
     private String subdomain;
 
     @Setter
+    @Column(unique = true)
     private String customDomain;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -74,5 +75,9 @@ public class Domain {
                 throw new DomainException(DomainErrorCode.NON_RESERVED_DOMAIN_MISSING_CUSTOMER);
             }
         }
+    }
+
+    public void updateCustomDomain(String customDomain) {
+        this.customDomain = customDomain;
     }
 }
