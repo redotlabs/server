@@ -10,7 +10,7 @@ import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.domain.cms.entity.CustomerStatus;
 import redot.redot_server.domain.cms.repository.CustomerRepository;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
-import redot.redot_server.global.jwt.cookie.CookieUtil;
+import redot.redot_server.global.jwt.cookie.CookieProvider;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
 
@@ -19,10 +19,10 @@ public class CustomerRefreshTokenFilter extends AbstractRefreshTokenFilter {
     private final CustomerRepository customerRepository;
 
     public CustomerRefreshTokenFilter(JwtProvider jwtProvider,
-                                      CookieUtil cookieUtil,
+                                      CookieProvider cookieProvider,
                                       AuthenticationEntryPoint authenticationEntryPoint,
                                       CustomerRepository customerRepository) {
-        super(jwtProvider, cookieUtil, authenticationEntryPoint);
+        super(jwtProvider, cookieProvider, authenticationEntryPoint);
         this.customerRepository = customerRepository;
     }
 

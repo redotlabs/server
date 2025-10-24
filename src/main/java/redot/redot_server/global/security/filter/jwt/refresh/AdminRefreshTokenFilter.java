@@ -4,7 +4,7 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import redot.redot_server.global.jwt.cookie.CookieUtil;
+import redot.redot_server.global.jwt.cookie.CookieProvider;
 import redot.redot_server.global.jwt.provider.JwtProvider;
 import redot.redot_server.global.jwt.token.TokenType;
 
@@ -12,9 +12,9 @@ import redot.redot_server.global.jwt.token.TokenType;
 public class AdminRefreshTokenFilter extends AbstractRefreshTokenFilter {
 
     public AdminRefreshTokenFilter(JwtProvider jwtProvider,
-                                   CookieUtil cookieUtil,
+                                   CookieProvider cookieProvider,
                                    AuthenticationEntryPoint authenticationEntryPoint) {
-        super(jwtProvider, cookieUtil, authenticationEntryPoint);
+        super(jwtProvider, cookieProvider, authenticationEntryPoint);
     }
 
     @Override

@@ -29,8 +29,8 @@ public class AdminAuthController {
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(@RequestBody SignInRequest request) {
-        AuthResult authResult = adminAuthService.signIn(request);
+    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @RequestBody SignInRequest signInRequest) {
+        AuthResult authResult = adminAuthService.signIn(request, signInRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, authResult.refreshCookie().toString())
@@ -54,8 +54,8 @@ public class AdminAuthController {
 
     @PostMapping("/sign-out")
     public ResponseEntity<Void> signOut(HttpServletRequest request) {
-        ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(TokenType.ADMIN.getAccessCookieName());
-        ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(TokenType.ADMIN.getRefreshCookieName());
+        ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(request, TokenType.ADMIN.getAccessCookieName());
+        ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(request, TokenType.ADMIN.getRefreshCookieName());
 
         return ResponseEntity.noContent()
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())

@@ -1,5 +1,6 @@
 package redot.redot_server.domain.auth.service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
@@ -15,12 +16,12 @@ public class AuthTokenService {
     private final JwtTokenFactory jwtTokenFactory;
     private final TokenCookieFactory tokenCookieFactory;
 
-    public AuthResult issueTokens(TokenContext context) {
+    public AuthResult issueTokens(HttpServletRequest request, TokenContext context) {
         String accessToken = jwtTokenFactory.createAccessToken(context);
         String refreshToken = jwtTokenFactory.createRefreshToken(context);
 
-        ResponseCookie accessTokenCookie = tokenCookieFactory.createAccessTokenCookie(context, accessToken);
-        ResponseCookie refreshTokenCookie = tokenCookieFactory.createRefreshTokenCookie(context, refreshToken);
+        ResponseCookie accessTokenCookie = tokenCookieFactory.createAccessTokenCookie(request, context, accessToken);
+        ResponseCookie refreshTokenCookie = tokenCookieFactory.createRefreshTokenCookie(request, context, refreshToken);
 
         return new AuthResult(
                 accessTokenCookie,

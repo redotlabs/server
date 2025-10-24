@@ -25,15 +25,15 @@ public class AdminAuthService {
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthResult signIn(SignInRequest request) {
-        Admin admin = adminRepository.findByEmail(request.email())
+    public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest) {
+        Admin admin = adminRepository.findByEmail(signInRequest.email())
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
-        if (!passwordEncoder.matches(request.password(), admin.getPassword())) {
+        if (!passwordEncoder.matches(signInRequest.password(), admin.getPassword())) {
             throw new AuthException(AuthErrorCode.INVALID_USER_INFO);
         }
 
-        return authTokenService.issueTokens(
+        return authTokenService.issueTokens(request,
                 new TokenContext(admin.getId(), TokenType.ADMIN, null, null)
         );
     }
@@ -50,7 +50,8 @@ public class AdminAuthService {
             throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
         }
 
-        return authTokenService.issueTokens(new TokenContext(
+        return authTokenService.issueTokens(request,
+                new TokenContext(
                 adminId,
                 payload.tokenType(),
                 payload.roles(),
