@@ -71,6 +71,10 @@ public class SiteSettingService {
             return false;
         }
 
+        if (requestedCustomDomain == null) {
+            return false;
+        }
+
         return domainRepository.existsByCustomDomain(requestedCustomDomain);
     }
 
