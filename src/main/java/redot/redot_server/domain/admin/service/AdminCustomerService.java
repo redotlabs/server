@@ -60,7 +60,8 @@ public class AdminCustomerService {
                         owner.getName(),
                         owner.getEmail(),
                         owner.getProfileImageUrl(),
-                        owner.getRole()
+                        owner.getRole(),
+                        owner.getCreatedAt()
                 )
         );
     }

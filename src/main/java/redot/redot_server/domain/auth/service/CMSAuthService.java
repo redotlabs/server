@@ -77,7 +77,8 @@ public class CMSAuthService {
                 cmsMember.getName(),
                 cmsMember.getEmail(),
                 cmsMember.getProfileImageUrl(),
-                cmsMember.getRole()
+                cmsMember.getRole(),
+                cmsMember.getCreatedAt()
         );
     }
 }

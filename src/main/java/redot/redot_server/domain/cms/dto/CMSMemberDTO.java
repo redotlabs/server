@@ -1,5 +1,6 @@
 package redot.redot_server.domain.cms.dto;
 
+import java.time.LocalDateTime;
 import redot.redot_server.domain.cms.entity.CMSMemberRole;
 
 public record CMSMemberDTO(
@@ -8,6 +9,7 @@ public record CMSMemberDTO(
         String name,
         String email,
         String profileImageUrl,
-        CMSMemberRole role
+        CMSMemberRole role,
+        LocalDateTime createdAt
 ) {
 }
