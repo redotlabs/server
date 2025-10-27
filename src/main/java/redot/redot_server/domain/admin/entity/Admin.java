@@ -32,14 +32,21 @@ public class Admin {
     private String email;
 
     @Column(nullable = false)
+    private String name;
+
+    private String profileImageUrl;
+
+    @Column(nullable = false)
     private String password;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static Admin create(String email, String password) {
+    public static Admin create(String name, String email, String profileImageUrl, String password) {
         return Admin.builder()
+                .name(name)
                 .email(email)
+                .profileImageUrl(profileImageUrl)
                 .password(password)
                 .build();
     }
