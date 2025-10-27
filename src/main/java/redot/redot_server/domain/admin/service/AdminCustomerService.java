@@ -41,6 +41,7 @@ public class AdminCustomerService {
                         customer,
                         request.name(),
                         request.ownerEmail(),
+                        request.profileImageUrl(),
                         encodedPassword,
                         request.role()
                 )
@@ -58,7 +59,9 @@ public class AdminCustomerService {
                         owner.getId(),
                         owner.getName(),
                         owner.getEmail(),
-                        owner.getRole()
+                        owner.getProfileImageUrl(),
+                        owner.getRole(),
+                        owner.getCreatedAt()
                 )
         );
     }

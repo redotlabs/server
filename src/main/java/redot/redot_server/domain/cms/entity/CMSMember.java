@@ -50,6 +50,8 @@ public class CMSMember {
     @Column(nullable = false)
     private String email;
 
+    private String profileImageUrl;
+
     @Column(nullable = false)
     private String password;
 
@@ -64,11 +66,13 @@ public class CMSMember {
         return this.customer.equals(customer);
     }
 
-    public static CMSMember create(Customer customer, String name, String email, String password, CMSMemberRole role) {
+    public static CMSMember create(Customer customer, String name, String email, String profileImageUrl,
+                                   String password, CMSMemberRole role) {
         return CMSMember.builder()
                 .customer(customer)
                 .name(name)
                 .email(email)
+                .profileImageUrl(profileImageUrl)
                 .password(password)
                 .role(role)
                 .build();
