@@ -1,6 +1,7 @@
 package redot.redot_server.domain.cms.service;
 
 
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,8 +64,14 @@ public class SiteSettingService {
     }
 
     private boolean isCustomDomainExists(SiteSettingUpdateRequest request, Domain domain) {
-        return !domain.getCustomDomain().equals(request.customDomain()) && domainRepository.existsByCustomDomain(
-                request.customDomain());
+        String currentCustomDomain = domain.getCustomDomain();
+        String requestedCustomDomain = request.customDomain();
+
+        if (Objects.equals(currentCustomDomain, requestedCustomDomain)) {
+            return false;
+        }
+
+        return domainRepository.existsByCustomDomain(requestedCustomDomain);
     }
 
     private void deleteOldLogoIfChanged(SiteSetting siteSetting, String newLogoUrl) {

@@ -7,9 +7,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.global.s3.exception.S3ErrorCode;
+import redot.redot_server.global.s3.exception.S3StorageException;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.HeadObjectRequest;
+import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 @Slf4j
 @Component
@@ -39,10 +45,8 @@ public class S3Manager {
             log.info("✅ S3 업로드 성공: {}", targetPath);
             return "/" + targetPath;
 
-        } catch (IOException e) {
-            throw new IllegalStateException("S3 파일 업로드 중 입출력 오류가 발생했습니다.", e);
-        } catch (S3Exception e) {
-            throw new IllegalStateException("S3 파일 업로드에 실패했습니다: " + e.awsErrorDetails().errorMessage(), e);
+        } catch (IOException | S3Exception e) {
+            throw new S3StorageException(S3ErrorCode.FILE_UPLOAD_FAILED, e);
         }
     }
 
@@ -64,8 +68,10 @@ public class S3Manager {
             log.warn("⚠️ S3 파일이 이미 존재하지 않음: {}", key);
         } catch (S3Exception e) {
             log.error("❌ S3 파일 삭제 실패 ({}): {}", key, e.awsErrorDetails().errorMessage());
+            throw new S3StorageException(S3ErrorCode.FILE_DELETE_FAILED, e);
         } catch (Exception e) {
             log.error("❌ S3 파일 삭제 중 알 수 없는 오류: {}", key, e);
+            throw new S3StorageException(S3ErrorCode.FILE_DELETE_UNKNOWN_ERROR, e);
         }
     }
 
