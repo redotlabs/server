@@ -53,18 +53,18 @@ public class AdminAuthService {
 
         return authTokenService.issueTokens(request,
                 new TokenContext(
-                adminId,
-                payload.tokenType(),
-                payload.roles(),
-                null
-        ));
+                        adminId,
+                        payload.tokenType(),
+                        payload.roles(),
+                        null
+                ));
     }
 
     public AdminDTO getCurrentAdminInfo(Long id) {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
 
-        return new AdminDTO(admin.getId(), admin.getName(), admin.getEmail(), admin.getProfileImageUrl(),
+        return new AdminDTO(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
                 admin.getCreatedAt());
     }
 }

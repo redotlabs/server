@@ -19,8 +19,9 @@ public class AdminService {
     @Transactional
     public AdminDTO createAdmin(AdminCreateRequest request) {
         Admin admin = adminRepository.save(
-                Admin.create(request.name(), request.email(), request.profileImageUrl(), passwordEncoder.encode(request.password())));
-        return new AdminDTO(admin.getId(), admin.getName(), admin.getEmail(), admin.getProfileImageUrl(),
+                Admin.create(request.name(), request.email(), request.profileImageUrl(),
+                        passwordEncoder.encode(request.password())));
+        return new AdminDTO(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
                 admin.getCreatedAt());
     }
 }
