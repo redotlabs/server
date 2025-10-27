@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redot.redot_server.domain.admin.dto.AdminDTO;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.dto.AuthResult;
@@ -57,5 +58,13 @@ public class AdminAuthService {
                 payload.roles(),
                 null
         ));
+    }
+
+    public AdminDTO getCurrentAdminInfo(Long id) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+
+        return new AdminDTO(admin.getId(), admin.getName(), admin.getEmail(), admin.getProfileImageUrl(),
+                admin.getCreatedAt());
     }
 }

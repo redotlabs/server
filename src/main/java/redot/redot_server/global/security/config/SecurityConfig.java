@@ -74,6 +74,19 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
+    public SecurityFilterChain customerApiChain(HttpSecurity http,
+                                                CustomerFilter customerFilter,
+                                                CustomerJwtAuthenticationFilter customerJwtAuthenticationFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/customer/**", "/api/v1/auth/customer/cms/me")
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class)
+                .addFilterBefore(customerJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
     public SecurityFilterChain customerAuthChain(HttpSecurity http,
                                                  CustomerFilter customerFilter) throws Exception {
         applyCommonSecurity(http);
@@ -84,15 +97,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(3)
-    public SecurityFilterChain customerApiChain(HttpSecurity http,
-                                                CustomerFilter customerFilter,
-                                                CustomerJwtAuthenticationFilter customerJwtAuthenticationFilter) throws Exception {
+    @Order(4)
+    public SecurityFilterChain adminApiChain(HttpSecurity http,
+                                             AdminJwtAuthenticationFilter adminJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/customer/**")
+        http.securityMatcher("/api/v1/admin/**", "/api/v1/auth/admin/impersonation/**", "/api/v1/auth/admin/me")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class)
-                .addFilterBefore(customerJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(adminJwtAuthenticationFilter, LogoutFilter.class);
         return http.build();
     }
 
@@ -102,17 +113,6 @@ public class SecurityConfig {
         applyCommonSecurity(http);
         http.securityMatcher("/api/v1/auth/admin/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
-        return http.build();
-    }
-
-    @Bean
-    @Order(4)
-    public SecurityFilterChain adminApiChain(HttpSecurity http,
-                                             AdminJwtAuthenticationFilter adminJwtAuthenticationFilter) throws Exception {
-        applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/admin/**", "/api/v1/auth/admin/impersonation/**")
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .addFilterBefore(adminJwtAuthenticationFilter, LogoutFilter.class);
         return http.build();
     }
 

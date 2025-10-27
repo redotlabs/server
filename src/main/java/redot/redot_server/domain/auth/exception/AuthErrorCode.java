@@ -18,7 +18,9 @@ public enum AuthErrorCode implements ErrorCode {
     EMPTY_TOKEN(401, 1008, "토큰 값이 비어 있습니다."),
     CUSTOMER_DOMAIN_NOT_FOUND(404, 1009, "고객 도메인을 찾을 수 없습니다."),
     CUSTOMER_INACTIVE(401, 1010, "활성화되지 않은 고객입니다."),
-    MISSING_REFRESH_TOKEN(401, 1011, "리프레시 토큰이 필요합니다.")
+    MISSING_REFRESH_TOKEN(401, 1011, "리프레시 토큰이 필요합니다."),
+    ADMIN_NOT_FOUND(404, 1012, "관리자 계정을 찾을 수 없습니다."),
+    CMS_MEMBER_NOT_FOUND(404, 1013, "CMS 회원을 찾을 수 없습니다.")
     ;
 
     private final int statusCode;

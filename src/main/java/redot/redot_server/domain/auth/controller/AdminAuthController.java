@@ -5,6 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import redot.redot_server.domain.auth.dto.TokenResponse;
 import redot.redot_server.domain.auth.service.AdminAuthService;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,6 +53,12 @@ public class AdminAuthController {
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, authResult.refreshCookie().toString())
                 .body(authResult.tokenResponse());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<AdminDTO> getCurrentAdminInfo(@AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
+        AdminDTO adminDTO = adminAuthService.getCurrentAdminInfo(jwtPrincipal.id());
+        return ResponseEntity.ok(adminDTO);
     }
 
     @PostMapping("/sign-out")
