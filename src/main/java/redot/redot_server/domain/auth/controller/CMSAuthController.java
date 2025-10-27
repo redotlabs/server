@@ -1,6 +1,7 @@
 package redot.redot_server.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -30,7 +31,7 @@ public class CMSAuthController {
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @RequestBody SignInRequest signInRequest, @CurrentCustomer Long customerId) {
+    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @Valid @RequestBody SignInRequest signInRequest, @CurrentCustomer Long customerId) {
         AuthResult authResult = cmsAuthService.signIn(request, signInRequest, customerId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())

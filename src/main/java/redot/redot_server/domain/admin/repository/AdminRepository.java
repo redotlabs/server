@@ -6,4 +6,6 @@ import redot.redot_server.domain.admin.entity.Admin;
 
 public interface AdminRepository extends JpaRepository<Admin, Long> {
     Optional<Admin> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }

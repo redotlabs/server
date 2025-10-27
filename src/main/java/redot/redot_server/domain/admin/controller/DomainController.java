@@ -1,5 +1,6 @@
 package redot.redot_server.domain.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class DomainController {
     private final DomainService domainService;
 
     @PostMapping("/subdomain")
-    public ResponseEntity<SubdomainLookupResponse> getSubdomain(@RequestBody SubdomainLookupRequest request) {
+    public ResponseEntity<SubdomainLookupResponse> getSubdomain(@Valid @RequestBody SubdomainLookupRequest request) {
         return ResponseEntity.ok(domainService.getSubdomain(request));
 
     }

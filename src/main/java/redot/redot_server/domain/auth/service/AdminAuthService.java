@@ -16,6 +16,7 @@ import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +28,7 @@ public class AdminAuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest) {
-        Admin admin = adminRepository.findByEmail(signInRequest.email())
+        Admin admin = adminRepository.findByEmail(EmailUtils.normalize(signInRequest.email()))
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (!passwordEncoder.matches(signInRequest.password(), admin.getPassword())) {
@@ -67,4 +68,5 @@ public class AdminAuthService {
         return new AdminDTO(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
                 admin.getCreatedAt());
     }
+
 }

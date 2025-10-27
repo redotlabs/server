@@ -1,6 +1,7 @@
 package redot.redot_server.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -22,7 +23,7 @@ public class AdminImpersonationController {
     private final AdminImpersonationService adminImpersonationService;
 
     @PostMapping("/cms-admin")
-    public ResponseEntity<TokenResponse> impersonateAsCMSAdmin(HttpServletRequest request, @RequestBody CMSAdminImpersonationRequest cmsAdminImpersonationRequest, @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
+    public ResponseEntity<TokenResponse> impersonateAsCMSAdmin(HttpServletRequest request, @Valid @RequestBody CMSAdminImpersonationRequest cmsAdminImpersonationRequest, @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
         Long adminId = jwtPrincipal.id();
 
         AuthResult authResult = adminImpersonationService.impersonateAsCMSAdmin(request, cmsAdminImpersonationRequest, adminId);

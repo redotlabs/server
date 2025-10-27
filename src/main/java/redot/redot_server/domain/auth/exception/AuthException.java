@@ -8,7 +8,6 @@ public class AuthException extends BaseException {
     }
 
     public AuthException(AuthErrorCode errorCode, Throwable cause) {
-        super(errorCode);
-        initCause(cause);
+        super(errorCode, cause);
     }
 }
