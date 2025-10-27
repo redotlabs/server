@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
-import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @Slf4j
@@ -76,14 +75,9 @@ public class GlobalExceptionHandler {
         return buildResponse(GlobalErrorCode.MULTIPART_ERROR, exception.getMessage());
     }
 
-    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
-    public ResponseEntity<ErrorResponse> handleNoHandlerFound(Exception exception) {
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(Exception exception) {
         return buildResponse(GlobalErrorCode.RESOURCE_NOT_FOUND, exception.getMessage());
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException exception) {
-        return buildResponse(GlobalErrorCode.INVALID_INPUT_VALUE, exception.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
