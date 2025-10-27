@@ -11,6 +11,7 @@ public record CustomerCreateRequest(
         Theme theme,
         @NotBlank
         String ownerEmail,
+        String profileImageUrl,
         @NotBlank
         String password,
         @NotBlank

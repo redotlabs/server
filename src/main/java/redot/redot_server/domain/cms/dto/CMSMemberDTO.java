@@ -7,6 +7,7 @@ public record CMSMemberDTO(
         Long id,
         String name,
         String email,
+        String profileImageUrl,
         CMSMemberRole role
 ) {
 }
