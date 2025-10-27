@@ -1,6 +1,5 @@
 package redot.redot_server.domain.admin.service;
 
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,6 +11,7 @@ import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +22,7 @@ public class AdminService {
 
     @Transactional
     public AdminDTO createAdmin(AdminCreateRequest request) {
-        final String normalizedEmail = normalizeEmail(request.email());
+        final String normalizedEmail = EmailUtils.normalize(request.email());
 
         if (adminRepository.existsByEmail(normalizedEmail)) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
@@ -41,9 +41,5 @@ public class AdminService {
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
         }
-    }
-
-    private String normalizeEmail(String email) {
-        return email == null ? null : email.trim().toLowerCase(Locale.ROOT);
     }
 }

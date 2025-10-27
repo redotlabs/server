@@ -1,7 +1,6 @@
 package redot.redot_server.domain.auth.service;
 
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +28,7 @@ public class AdminAuthService {
     private final PasswordEncoder passwordEncoder;
 
     public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest) {
-        Admin admin = adminRepository.findByEmail(normalizeEmail(signInRequest.email()))
+        Admin admin = adminRepository.findByEmail(EmailUtils.normalize(signInRequest.email()))
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (!passwordEncoder.matches(signInRequest.password(), admin.getPassword())) {
@@ -69,7 +69,4 @@ public class AdminAuthService {
                 admin.getCreatedAt());
     }
 
-    private String normalizeEmail(String email) {
-        return email == null ? null : email.trim().toLowerCase(Locale.ROOT);
-    }
 }
