@@ -72,7 +72,7 @@ public class CMSAuthService {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
 
         return new CMSMemberDTO(
-                cmsMember.getCustomer().getId(),
+                customerId,
                 cmsMember.getId(),
                 cmsMember.getName(),
                 cmsMember.getEmail(),
