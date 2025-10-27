@@ -51,7 +51,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException exception) {
         Throwable cause = exception.getMostSpecificCause();
-        String message = cause != null ? cause.getMessage() : exception.getMessage();
+        log.warn("JSON 파싱 실패: {}", cause != null ? cause.getMessage() : exception.getMessage());
+        String message = null;
         return buildResponse(GlobalErrorCode.MALFORMED_JSON_REQUEST, message);
     }
 
