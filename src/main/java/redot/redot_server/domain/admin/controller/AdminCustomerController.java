@@ -1,5 +1,6 @@
 package redot.redot_server.domain.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,7 +19,7 @@ public class AdminCustomerController {
     private final AdminCustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerCreateResponse> createCustomer(@RequestBody CustomerCreateRequest request) {
+    public ResponseEntity<CustomerCreateResponse> createCustomer(@Valid @RequestBody CustomerCreateRequest request) {
         return ResponseEntity.ok(customerService.createCustomer(request));
     }
 }

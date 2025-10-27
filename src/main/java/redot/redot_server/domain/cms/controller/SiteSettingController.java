@@ -1,7 +1,9 @@
 package redot.redot_server.domain.cms.controller;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,6 +20,7 @@ import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping("/api/v1/customer/cms/site-setting")
 public class SiteSettingController {
 
@@ -35,7 +38,7 @@ public class SiteSettingController {
     @PostMapping("/upload-logo")
     public ResponseEntity<UploadedImageUrlResponse> uploadLogoImage(
             @CurrentCustomer Long customerId,
-            @RequestPart("logo") MultipartFile logoFile
+            @RequestPart("logo") @NotNull(message = "업로드할 로고 파일을 선택해주세요.") MultipartFile logoFile
     ) {
         return ResponseEntity.ok(siteSettingService.uploadLogoImage(customerId, logoFile));
     }

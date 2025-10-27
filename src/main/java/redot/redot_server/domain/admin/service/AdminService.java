@@ -8,6 +8,8 @@ import redot.redot_server.domain.admin.dto.AdminCreateRequest;
 import redot.redot_server.domain.admin.dto.AdminDTO;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +20,10 @@ public class AdminService {
 
     @Transactional
     public AdminDTO createAdmin(AdminCreateRequest request) {
+        if(adminRepository.existsByEmail(request.email())){
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
         Admin admin = adminRepository.save(
                 Admin.create(request.name(), request.email(), request.profileImageUrl(),
                         passwordEncoder.encode(request.password())));

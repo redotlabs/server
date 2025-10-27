@@ -1,6 +1,7 @@
 package redot.redot_server.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -32,7 +33,7 @@ public class AdminAuthController {
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @RequestBody SignInRequest signInRequest) {
+    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @Valid @RequestBody SignInRequest signInRequest) {
         AuthResult authResult = adminAuthService.signIn(request, signInRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
@@ -41,7 +42,7 @@ public class AdminAuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<AdminDTO> createAdmin(@RequestBody AdminCreateRequest request) {
+    public ResponseEntity<AdminDTO> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
         return ResponseEntity.ok(adminService.createAdmin(request));
     }
 

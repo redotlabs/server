@@ -12,4 +12,14 @@ public record ErrorResponse(
                 errorCode.getMessage()
         );
     }
+
+    public static ErrorResponse of(ErrorCode errorCode, String overrideMessage) {
+        return new ErrorResponse(
+                errorCode.getStatusCode(),
+                errorCode.getExceptionCode(),
+                overrideMessage == null || overrideMessage.isBlank()
+                        ? errorCode.getMessage()
+                        : overrideMessage
+        );
+    }
 }
