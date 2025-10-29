@@ -11,6 +11,7 @@ import redot.redot_server.domain.cms.dto.CMSMemberDTO;
 import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
 import redot.redot_server.domain.cms.dto.CustomerCreateResponse;
 import redot.redot_server.domain.cms.entity.CMSMember;
+import redot.redot_server.domain.cms.entity.CMSMemberRole;
 import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.domain.cms.entity.SiteSetting;
 import redot.redot_server.domain.cms.repository.CMSMemberRepository;
@@ -43,7 +44,7 @@ public class AdminCustomerService {
                         request.ownerEmail(),
                         request.profileImageUrl(),
                         encodedPassword,
-                        request.role()
+                        CMSMemberRole.ADMIN
                 )
         );
 
