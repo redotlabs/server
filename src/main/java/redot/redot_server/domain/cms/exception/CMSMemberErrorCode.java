@@ -6,9 +6,8 @@ import redot.redot_server.global.exception.ErrorCode;
 
 @Getter
 @AllArgsConstructor
-public enum CustomerErrorCode implements ErrorCode {
-    OWNER_ALREADY_ASSIGNED(400, 3000, "이미 소유자가 지정된 고객입니다."),
-    CUSTOMER_NOT_FOUND(404, 3001, "고객을 찾을 수 없습니다.")
+public enum CMSMemberErrorCode implements ErrorCode {
+    CMS_MEMBER_NOT_FOUND(404, 6000,"CMS 멤버를 찾을 수 없습니다.")
     ;
 
     private final int statusCode;
