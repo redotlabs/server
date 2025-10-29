@@ -1,9 +1,11 @@
 package redot.redot_server.domain.cms.service;
 
+import jakarta.persistence.PessimisticLockException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.entity.InquirySequence;
@@ -25,6 +27,7 @@ public class InquiryNumberGenerator {
         InquirySequence inquirySequence = inquirySequenceRepository.findByInquiryDateForUpdate(today)
                 .orElseGet(() -> createSequenceSafely(today));
         long nextSeq = inquirySequence.getLastSequenceNumber() + 1;
+
         if (nextSeq > 99_999) {
             throw new CustomerInquiryException(CustomerInquiryErrorCode.INQUIRY_NUMBER_EXHAUSTED);
         }
@@ -40,7 +43,7 @@ public class InquiryNumberGenerator {
     private InquirySequence createSequenceSafely(LocalDate inquiryDate) {
         try {
             return inquirySequenceRepository.save(InquirySequence.create(inquiryDate));
-        } catch (DataIntegrityViolationException ex) {
+        } catch (DataIntegrityViolationException | PessimisticLockingFailureException | PessimisticLockException ex) {
             return inquirySequenceRepository.findByInquiryDateForUpdate(inquiryDate)
                     .orElseThrow(() -> ex);
         }
