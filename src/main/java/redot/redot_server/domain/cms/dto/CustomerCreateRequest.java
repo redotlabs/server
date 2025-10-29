@@ -2,7 +2,6 @@ package redot.redot_server.domain.cms.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import redot.redot_server.domain.cms.entity.CMSMemberRole;
 import redot.redot_server.domain.cms.entity.Theme;
 
 public record CustomerCreateRequest(
@@ -16,8 +15,7 @@ public record CustomerCreateRequest(
         @NotBlank(message = "비밀번호를 입력해주세요.")
         String password,
         @NotBlank(message = "이름을 입력해주세요.")
-        String name,
-        CMSMemberRole role
+        String name
 ) {
     public CustomerCreateRequest{
         if (theme == null) {
