@@ -7,6 +7,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.entity.InquirySequence;
+import redot.redot_server.domain.cms.exception.CustomerInquiryErrorCode;
+import redot.redot_server.domain.cms.exception.CustomerInquiryException;
 import redot.redot_server.domain.cms.repository.InquirySequenceRepository;
 
 @Service
@@ -23,6 +25,9 @@ public class InquiryNumberGenerator {
         InquirySequence inquirySequence = inquirySequenceRepository.findByInquiryDateForUpdate(today)
                 .orElseGet(() -> createSequenceSafely(today));
         long nextSeq = inquirySequence.getLastSequenceNumber() + 1;
+        if (nextSeq > 99_999) {
+            throw new CustomerInquiryException(CustomerInquiryErrorCode.INQUIRY_NUMBER_EXHAUSTED);
+        }
 
         inquirySequence.updateLastSequenceNumber(nextSeq);
 
