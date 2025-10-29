@@ -24,6 +24,7 @@ public class InquirySequence {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private Long lastSequenceNumber;
 
     @Column(unique = true, nullable = false)
