@@ -89,11 +89,11 @@ public class CustomerInquiryService {
     }
 
     @Transactional
-    public void markInquiryAsCompleted(Long customerId, Long inquiryId, Long id) {
+    public void markInquiryAsCompleted(Long customerId, Long inquiryId, Long cmsMemberId) {
         CustomerInquiry inquiry = customerInquiryRepository.findByIdAndCustomer_Id(inquiryId, customerId)
                 .orElseThrow(() -> new CustomerInquiryException(CustomerInquiryErrorCode.CUSTOMER_INQUIRY_NOT_FOUND));
 
-        CMSMember assignee = cmsMemberRepository.findById(id)
+        CMSMember assignee = cmsMemberRepository.findById(cmsMemberId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
         inquiry.processInquiry(assignee);
     }
