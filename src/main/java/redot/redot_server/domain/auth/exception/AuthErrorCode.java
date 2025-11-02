@@ -21,7 +21,11 @@ public enum AuthErrorCode implements ErrorCode {
     MISSING_REFRESH_TOKEN(401, 1011, "리프레시 토큰이 필요합니다."),
     ADMIN_NOT_FOUND(404, 1012, "관리자 계정을 찾을 수 없습니다."),
     CMS_MEMBER_NOT_FOUND(404, 1013, "CMS 회원을 찾을 수 없습니다."),
-    EMAIL_ALREADY_EXISTS(400, 1014, "이미 존재하는 이메일입니다.");
+    EMAIL_ALREADY_EXISTS(400, 1014, "이미 존재하는 이메일입니다."),
+    CANNOT_DELETE_OWN_ADMIN_ACCOUNT(400, 1015, "자신의 관리자 계정은 삭제할 수 없습니다."),
+    DELETED_USER(401, 1016, "삭제된 사용자입니다.")
+    ;
+
 
     private final int statusCode;
     private final int exceptionCode;
