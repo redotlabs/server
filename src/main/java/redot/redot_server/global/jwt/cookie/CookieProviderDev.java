@@ -20,10 +20,6 @@ public class CookieProviderDev implements CookieProvider{
     }
 
     private String resolveDomain(HttpServletRequest request) {
-        System.out.println(request.getHeader("X-Forwarded-Host"));
-        System.out.println(request.getHeader("X-Client-Host"));
-        System.out.println(request.getHeader("Host"));
-        System.out.println(request.getHeader("Origin"));
         String host = request.getHeader("Origin");
         if (host.contains("localhost")) return "localhost";
         return ".redotlabs.vercel.app";
