@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.dto.AdminCreateRequest;
-import redot.redot_server.domain.admin.dto.AdminDTO;
+import redot.redot_server.domain.admin.dto.AdminResponse;
 import redot.redot_server.domain.admin.service.AdminService;
 import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
@@ -42,7 +42,7 @@ public class AdminAuthController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<AdminDTO> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
+    public ResponseEntity<AdminResponse> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
         return ResponseEntity.ok(adminService.createAdmin(request));
     }
 
@@ -57,9 +57,9 @@ public class AdminAuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<AdminDTO> getCurrentAdminInfo(@AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
-        AdminDTO adminDTO = adminAuthService.getCurrentAdminInfo(jwtPrincipal.id());
-        return ResponseEntity.ok(adminDTO);
+    public ResponseEntity<AdminResponse> getCurrentAdminInfo(@AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
+        AdminResponse adminResponse = adminAuthService.getCurrentAdminInfo(jwtPrincipal.id());
+        return ResponseEntity.ok(adminResponse);
     }
 
     @PostMapping("/sign-out")
