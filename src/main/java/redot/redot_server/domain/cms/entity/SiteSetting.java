@@ -1,6 +1,5 @@
 package redot.redot_server.domain.cms.entity;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
@@ -38,14 +37,9 @@ public class SiteSetting {
 
     private String gaInfo;
 
-    @Column(nullable = false)
-    @Getter
-    private Theme theme;
-
-    public static SiteSetting createDefault(Customer customer, Theme theme) {
+    public static SiteSetting createDefault(Customer customer) {
         return SiteSetting.builder()
                 .customer(customer)
-                .theme(theme)
                 .build();
     }
 
