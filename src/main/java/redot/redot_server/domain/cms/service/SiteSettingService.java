@@ -47,7 +47,7 @@ public class SiteSettingService {
 
         deleteOldLogoIfChanged(siteSetting, request.logoUrl());
 
-        return SiteSettingResponse.fromEntity(siteSetting, domain.getCustomDomain());
+        return SiteSettingResponse.fromEntity(siteSetting, domain);
     }
 
     public UploadedImageUrlResponse uploadLogoImage(Long customerId, MultipartFile logoFile) {
@@ -94,6 +94,6 @@ public class SiteSettingService {
         Domain domain = domainRepository.findByCustomerId(customerId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
-        return SiteSettingResponse.fromEntity(siteSetting, domain.getCustomDomain());
+        return SiteSettingResponse.fromEntity(siteSetting, domain);
     }
 }
