@@ -10,7 +10,7 @@ import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.domain.cms.dto.CMSMemberDTO;
+import redot.redot_server.domain.cms.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.entity.CMSMember;
 import redot.redot_server.domain.cms.repository.CMSMemberRepository;
 import redot.redot_server.global.jwt.token.TokenContext;
@@ -67,11 +67,11 @@ public class CMSAuthService {
         ));
     }
 
-    public CMSMemberDTO getCurrentCMSMemberInfo(Long customerId, Long id) {
+    public CMSMemberResponse getCurrentCMSMemberInfo(Long customerId, Long id) {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(id, customerId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        return new CMSMemberDTO(
+        return new CMSMemberResponse(
                 customerId,
                 cmsMember.getId(),
                 cmsMember.getName(),

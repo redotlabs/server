@@ -16,7 +16,7 @@ import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
 import redot.redot_server.domain.auth.dto.TokenResponse;
 import redot.redot_server.domain.auth.service.CMSAuthService;
-import redot.redot_server.domain.cms.dto.CMSMemberDTO;
+import redot.redot_server.domain.cms.dto.CMSMemberResponse;
 import redot.redot_server.global.customer.resolver.annotation.CurrentCustomer;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;
@@ -50,7 +50,7 @@ public class CMSAuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<CMSMemberDTO> getCurrentCMSMemberInfo(@CurrentCustomer Long customerId, @AuthenticationPrincipal
+    public ResponseEntity<CMSMemberResponse> getCurrentCMSMemberInfo(@CurrentCustomer Long customerId, @AuthenticationPrincipal
                                                  JwtPrincipal jwtPrincipal) {
         return ResponseEntity.ok(cmsAuthService.getCurrentCMSMemberInfo(customerId, jwtPrincipal.id()));
     }
