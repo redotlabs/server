@@ -12,11 +12,14 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.dto.AdminCreateRequest;
+import redot.redot_server.domain.admin.dto.AdminResetPasswordRequest;
 import redot.redot_server.domain.admin.dto.AdminResponse;
+import redot.redot_server.domain.admin.dto.AdminUpdateRequest;
 import redot.redot_server.domain.admin.service.AdminService;
 import redot.redot_server.global.common.dto.PageResponse;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
@@ -44,6 +47,17 @@ public class AdminController {
     @GetMapping
     public ResponseEntity<PageResponse<AdminResponse>> getAdminInfoList(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAdminInfoList(pageable));
+    }
+
+    @PutMapping("/{adminId}")
+    public ResponseEntity<AdminResponse> updateAdmin(@PathVariable("adminId") Long adminId, @Valid @RequestBody AdminUpdateRequest request) {
+        return ResponseEntity.ok(adminService.updateAdmin(adminId, request));
+    }
+
+    @PostMapping("/{adminId}/reset-password")
+    public ResponseEntity<Void> resetAdminPassword(@PathVariable("adminId") Long adminId, @Valid @RequestBody AdminResetPasswordRequest request) {
+        adminService.resetAdminPassword(adminId, request);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{adminId}")
