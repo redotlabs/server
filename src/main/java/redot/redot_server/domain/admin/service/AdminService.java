@@ -63,14 +63,15 @@ public class AdminService {
     public AdminResponse updateAdmin(Long adminId, AdminUpdateRequest request) {
         final String normalizedEmail = EmailUtils.normalize(request.email());
 
-        if (adminRepository.existsByEmail(normalizedEmail)) {
-            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
-        }
-
         try {
             Admin admin = adminRepository.findById(adminId)
                     .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+            if (adminRepository.existsByEmail(normalizedEmail) && !normalizedEmail.equals(admin.getEmail())) {
+                throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
+            }
+
             admin.update(request.name(), normalizedEmail, request.profileImageUrl());
+
             return AdminResponse.from(admin);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
