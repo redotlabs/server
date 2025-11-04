@@ -41,8 +41,7 @@ public class AdminService {
                             request.profileImageUrl(),
                             passwordEncoder.encode(request.password())
                     ));
-            return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                    admin.getCreatedAt());
+            return AdminResponse.from(admin);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
         }
@@ -52,8 +51,7 @@ public class AdminService {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
 
-        return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                admin.getCreatedAt());
+        return AdminResponse.from(admin);
     }
 
     public PageResponse<AdminResponse> getAdminInfoList(Pageable pageable) {
@@ -63,11 +61,20 @@ public class AdminService {
 
     @Transactional
     public AdminResponse updateAdmin(Long adminId, AdminUpdateRequest request) {
-        Admin admin = adminRepository.findById(adminId)
-                .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
-        admin.update(request.name(), request.email(), request.profileImageUrl());
-        return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                admin.getCreatedAt());
+        final String normalizedEmail = EmailUtils.normalize(request.email());
+
+        if (adminRepository.existsByEmail(normalizedEmail)) {
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
+        try {
+            Admin admin = adminRepository.findById(adminId)
+                    .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+            admin.update(request.name(), normalizedEmail, request.profileImageUrl());
+            return AdminResponse.from(admin);
+        } catch (DataIntegrityViolationException ex) {
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
+        }
     }
 
     @Transactional
