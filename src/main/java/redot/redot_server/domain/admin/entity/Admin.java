@@ -66,4 +66,14 @@ public class Admin {
         this.status = AdminStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void update(String name, String email, String profileImageUrl) {
+        this.name = name;
+        this.email = email;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void resetPassword(String password) {
+        this.password = password;
+    }
 }

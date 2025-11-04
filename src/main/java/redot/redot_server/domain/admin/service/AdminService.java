@@ -8,7 +8,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.admin.dto.AdminCreateRequest;
+import redot.redot_server.domain.admin.dto.AdminResetPasswordRequest;
 import redot.redot_server.domain.admin.dto.AdminResponse;
+import redot.redot_server.domain.admin.dto.AdminUpdateRequest;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
@@ -39,8 +41,7 @@ public class AdminService {
                             request.profileImageUrl(),
                             passwordEncoder.encode(request.password())
                     ));
-            return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                    admin.getCreatedAt());
+            return AdminResponse.from(admin);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
         }
@@ -50,13 +51,37 @@ public class AdminService {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
 
-        return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                admin.getCreatedAt());
+        return AdminResponse.from(admin);
     }
 
     public PageResponse<AdminResponse> getAdminInfoList(Pageable pageable) {
         Page<Admin> admins = adminRepository.findAll(pageable);
         return PageResponse.from(admins.map(AdminResponse::from));
+    }
+
+    @Transactional
+    public AdminResponse updateAdmin(Long adminId, AdminUpdateRequest request) {
+        final String normalizedEmail = EmailUtils.normalize(request.email());
+
+        if (adminRepository.existsByEmail(normalizedEmail)) {
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
+        }
+
+        try {
+            Admin admin = adminRepository.findById(adminId)
+                    .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+            admin.update(request.name(), normalizedEmail, request.profileImageUrl());
+            return AdminResponse.from(admin);
+        } catch (DataIntegrityViolationException ex) {
+            throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
+        }
+    }
+
+    @Transactional
+    public void resetAdminPassword(Long adminId, AdminResetPasswordRequest request) {
+        Admin admin = adminRepository.findById(adminId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+        admin.resetPassword(passwordEncoder.encode(request.password()));
     }
 
     @Transactional
