@@ -1,6 +1,6 @@
 package redot.redot_server.domain.cms.dto;
 
-public record CustomerCreateResponse(
+public record CustomerInfoResponse(
         CustomerResponse customer,
         SiteSettingResponse siteSetting,
         StyleInfoResponse styleInfo,

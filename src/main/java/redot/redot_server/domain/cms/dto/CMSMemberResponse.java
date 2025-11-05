@@ -23,6 +23,5 @@ public record CMSMemberResponse(
                 cmsMember.getRole(),
                 cmsMember.getCreatedAt()
         );
-
     }
 }

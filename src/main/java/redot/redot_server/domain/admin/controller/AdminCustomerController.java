@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.service.AdminCustomerService;
 import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
-import redot.redot_server.domain.cms.dto.CustomerCreateResponse;
+import redot.redot_server.domain.cms.dto.CustomerInfoResponse;
 
 @RestController
 @RequestMapping("/api/v1/admin/customer")
@@ -19,7 +19,7 @@ public class AdminCustomerController {
     private final AdminCustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<CustomerCreateResponse> createCustomer(@Valid @RequestBody CustomerCreateRequest request) {
+    public ResponseEntity<CustomerInfoResponse> createCustomer(@Valid @RequestBody CustomerCreateRequest request) {
         return ResponseEntity.ok(customerService.createCustomer(request));
     }
 }

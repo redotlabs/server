@@ -55,7 +55,6 @@ public class CustomerFilter extends OncePerRequestFilter {
     }
 
     private Long resolveCustomerId(String subDomain) {
-
         Optional<Domain> domainLookup = domainRepository.findBySubdomain(subDomain);
         Domain resolvedDomain = domainLookup.orElse(null);
 
