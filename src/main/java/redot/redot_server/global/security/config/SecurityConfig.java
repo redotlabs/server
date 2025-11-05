@@ -74,6 +74,16 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
+    public SecurityFilterChain customerPublicChain(HttpSecurity http,
+                                                CustomerFilter customerFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/customer")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class);
+        return http.build();
+    }
+    @Bean
+    @Order(3)
     public SecurityFilterChain customerApiChain(HttpSecurity http,
                                                 CustomerFilter customerFilter,
                                                 CustomerJwtAuthenticationFilter customerJwtAuthenticationFilter) throws Exception {
@@ -86,7 +96,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(3)
+    @Order(4)
     public SecurityFilterChain customerAuthChain(HttpSecurity http,
                                                  CustomerFilter customerFilter) throws Exception {
         applyCommonSecurity(http);
@@ -97,7 +107,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(4)
+    @Order(5)
     public SecurityFilterChain adminApiChain(HttpSecurity http,
                                              AdminJwtAuthenticationFilter adminJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
@@ -108,7 +118,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @Order(5)
+    @Order(6)
     public SecurityFilterChain adminAuthChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
         http.securityMatcher("/api/v1/auth/admin/**")

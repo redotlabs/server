@@ -10,7 +10,7 @@ import redot.redot_server.domain.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.admin.util.SubDomainNameGenerator;
 import redot.redot_server.domain.cms.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
-import redot.redot_server.domain.cms.dto.CustomerCreateResponse;
+import redot.redot_server.domain.cms.dto.CustomerInfoResponse;
 import redot.redot_server.domain.cms.dto.CustomerResponse;
 import redot.redot_server.domain.cms.dto.SiteSettingResponse;
 import redot.redot_server.domain.cms.dto.StyleInfoResponse;
@@ -35,7 +35,7 @@ public class AdminCustomerService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public CustomerCreateResponse createCustomer(CustomerCreateRequest request) {
+    public CustomerInfoResponse createCustomer(CustomerCreateRequest request) {
         Customer customer = customerRepository.save(Customer.create(request.companyName()));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
@@ -64,7 +64,7 @@ public class AdminCustomerService {
 
         customer.setOwner(owner);
 
-        return new CustomerCreateResponse(
+        return new CustomerInfoResponse(
                 CustomerResponse.fromEntity(customer),
                 SiteSettingResponse.fromEntity(siteSetting, domain),
                 StyleInfoResponse.fromEntity(styleInfo),
