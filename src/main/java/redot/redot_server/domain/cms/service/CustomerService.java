@@ -52,6 +52,10 @@ public class CustomerService {
 
         CMSMember owner = customer.getOwner();
 
+        if (owner == null) {
+            throw new CustomerException(CustomerErrorCode.CUSTOMER_OWNER_NOT_FOUND);
+        }
+
         return new CustomerInfoResponse(
                 CustomerResponse.fromEntity(customer),
                 SiteSettingResponse.fromEntity(siteSetting, domain),
