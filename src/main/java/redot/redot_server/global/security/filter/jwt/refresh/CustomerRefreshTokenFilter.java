@@ -6,8 +6,11 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.cms.entity.CMSMember;
+import redot.redot_server.domain.cms.entity.CMSMemberStatus;
 import redot.redot_server.domain.cms.entity.Customer;
 import redot.redot_server.domain.cms.entity.CustomerStatus;
+import redot.redot_server.domain.cms.repository.CMSMemberRepository;
 import redot.redot_server.domain.cms.repository.CustomerRepository;
 import redot.redot_server.global.customer.context.CustomerContextHolder;
 import redot.redot_server.global.jwt.cookie.CookieProvider;
@@ -17,13 +20,15 @@ import redot.redot_server.global.jwt.token.TokenType;
 @Component
 public class CustomerRefreshTokenFilter extends AbstractRefreshTokenFilter {
     private final CustomerRepository customerRepository;
-
+    private final CMSMemberRepository cmsMemberRepository;
     public CustomerRefreshTokenFilter(JwtProvider jwtProvider,
                                       CookieProvider cookieProvider,
                                       AuthenticationEntryPoint authenticationEntryPoint,
-                                      CustomerRepository customerRepository) {
+                                      CustomerRepository customerRepository,
+                                      CMSMemberRepository cmsMemberRepository) {
         super(jwtProvider, cookieProvider, authenticationEntryPoint);
         this.customerRepository = customerRepository;
+        this.cmsMemberRepository = cmsMemberRepository;
     }
 
     @Override
@@ -33,6 +38,8 @@ public class CustomerRefreshTokenFilter extends AbstractRefreshTokenFilter {
 
     @Override
     protected void validateClaims(Claims claims, HttpServletRequest request) {
+        Long cmsMemberId = extractSubjectId(claims);
+
         Long contextCustomerId = CustomerContextHolder.get();
         Long tokenCustomerId = extractCustomerId(claims.get("customer_id"));
 
@@ -48,6 +55,13 @@ public class CustomerRefreshTokenFilter extends AbstractRefreshTokenFilter {
 
         if (customer.getStatus() != CustomerStatus.ACTIVE) {
             throw new AuthException(AuthErrorCode.CUSTOMER_INACTIVE);
+        }
+
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(cmsMemberId, tokenCustomerId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
+
+        if (cmsMember.getStatus() == CMSMemberStatus.DELETED) {
+            throw new AuthException(AuthErrorCode.DELETED_USER);
         }
     }
 }

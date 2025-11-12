@@ -19,8 +19,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import redot.redot_server.domain.cms.exception.CMSMemberErrorCode;
+import redot.redot_server.domain.cms.exception.CMSMemberException;
 
 
 @Entity
@@ -29,6 +32,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Builder(access = AccessLevel.PRIVATE)
+@SQLRestriction("status = 'ACTIVE'")
 @Table(
         name = "cms_members",
         uniqueConstraints = {
@@ -59,6 +63,12 @@ public class CMSMember {
     @Enumerated(EnumType.STRING)
     private CMSMemberRole role;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private CMSMemberStatus status;
+
+    private LocalDateTime deletedAt;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -75,7 +85,40 @@ public class CMSMember {
                 .profileImageUrl(profileImageUrl)
                 .password(password)
                 .role(role)
+                .status(CMSMemberStatus.ACTIVE)
                 .build();
+    }
+
+    public static CMSMember join(Customer customer, String name, String email, String password,
+                                 CMSMemberRole role) {
+        return CMSMember.builder()
+                .customer(customer)
+                .name(name)
+                .email(email)
+                .password(password)
+                .role(role)
+                .status(CMSMemberStatus.ACTIVE)
+                .build();
+    }
+
+    public void changeRole(CMSMemberRole role) {
+        if (this.role.equals(role)) {
+            throw new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_ROLE_UNCHANGED);
+        }
+        this.role = role;
+    }
+
+    public void updateProfile(String name, String profileImageUrl) {
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
+
+    public void delete() {
+        if(this.status == CMSMemberStatus.DELETED) {
+            throw new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_ALREADY_DELETED);
+        }
+        this.status = CMSMemberStatus.DELETED;
+        this.deletedAt = LocalDateTime.now();
     }
 }
 

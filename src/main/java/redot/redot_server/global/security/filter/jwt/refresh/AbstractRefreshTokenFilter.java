@@ -16,8 +16,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.util.StringUtils;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.jwt.cookie.CookieProvider;
@@ -60,7 +60,7 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
     }
 
     private RefreshTokenPayload buildPayload(String rawToken, Claims claims) {
-        Long subjectId = Long.valueOf(claims.getSubject());
+        Long subjectId = extractSubjectId(claims);
         Long customerId = extractCustomerId(claims.get("customer_id"));
         List<String> roles = extractRoles(claims.get("roles"));
         return new RefreshTokenPayload(rawToken, requiredTokenType(), subjectId, customerId, roles);
@@ -114,6 +114,19 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
             return number.longValue();
         }
         return Long.valueOf(raw.toString());
+    }
+
+    protected Long extractSubjectId(Claims claims) {
+        String subject = claims.getSubject();
+        if (!StringUtils.hasText(subject)) {
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
+        }
+
+        try {
+            return Long.valueOf(subject);
+        } catch (NumberFormatException ex) {
+            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT, ex);
+        }
     }
 
     protected List<String> extractRoles(Object raw) {
