@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.entity.AdminStatus;
 import redot.redot_server.domain.admin.repository.AdminRepository;
@@ -33,17 +32,7 @@ public class AdminRefreshTokenFilter extends AbstractRefreshTokenFilter {
 
     @Override
     protected void validateClaims(Claims claims, HttpServletRequest request) {
-        String subject = claims.getSubject();
-        if (!StringUtils.hasText(subject)) {
-            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
-        }
-
-        Long adminId;
-        try {
-            adminId = Long.valueOf(subject);
-        } catch (NumberFormatException ex) {
-            throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT, ex);
-        }
+        Long adminId = extractSubjectId(claims);
 
         Admin admin = adminRepository.findByIdIncludingDeleted(adminId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
