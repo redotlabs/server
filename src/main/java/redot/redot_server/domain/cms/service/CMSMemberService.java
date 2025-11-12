@@ -76,8 +76,15 @@ public class CMSMemberService {
 
     @Transactional
     public void deleteCMSMember(Long customerId, Long memberId) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
+
         CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
+
+        if(customer.getOwner() == cmsMember) {
+            throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_OWNER);
+        }
 
         cmsMember.delete();
     }

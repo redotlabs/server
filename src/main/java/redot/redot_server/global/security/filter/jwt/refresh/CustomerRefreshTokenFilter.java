@@ -57,7 +57,7 @@ public class CustomerRefreshTokenFilter extends AbstractRefreshTokenFilter {
             throw new AuthException(AuthErrorCode.CUSTOMER_INACTIVE);
         }
 
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(cmsMemberId, tokenCustomerId)
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_IdIncludingDeleted(cmsMemberId, tokenCustomerId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (cmsMember.getStatus() == CMSMemberStatus.DELETED) {

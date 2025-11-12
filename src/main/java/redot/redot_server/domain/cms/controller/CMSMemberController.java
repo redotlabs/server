@@ -21,6 +21,8 @@ import redot.redot_server.domain.cms.dto.CMSMemberCreateRequest;
 import redot.redot_server.domain.cms.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.dto.CMSMemberRoleRequest;
 import redot.redot_server.domain.cms.dto.CMSMemberUpdateRequest;
+import redot.redot_server.domain.cms.exception.CMSMemberErrorCode;
+import redot.redot_server.domain.cms.exception.CMSMemberException;
 import redot.redot_server.domain.cms.service.CMSMemberService;
 import redot.redot_server.global.customer.resolver.annotation.CurrentCustomer;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
@@ -68,7 +70,12 @@ public class CMSMemberController {
 
     @DeleteMapping("/{memberId}")
     public ResponseEntity<Void> deleteCMSMember(@CurrentCustomer Long customerId,
+                                                @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                 @PathVariable(name = "memberId") Long memberId) {
+        if(jwtPrincipal.id().equals(memberId)) {
+            throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_SELF);
+        }
+
         cmsMemberService.deleteCMSMember(customerId, memberId);
         return ResponseEntity.noContent().build();
     }
