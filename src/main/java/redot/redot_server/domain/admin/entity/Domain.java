@@ -20,7 +20,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.admin.exception.DomainErrorCode;
 import redot.redot_server.domain.admin.exception.DomainException;
-import redot.redot_server.domain.cms.entity.Customer;
+import redot.redot_server.domain.cms.customer.entity.Customer;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)

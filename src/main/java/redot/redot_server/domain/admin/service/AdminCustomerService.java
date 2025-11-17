@@ -8,20 +8,20 @@ import redot.redot_server.domain.admin.entity.Domain;
 import redot.redot_server.domain.admin.repository.DomainRepository;
 import redot.redot_server.domain.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.admin.util.SubDomainNameGenerator;
-import redot.redot_server.domain.cms.dto.CMSMemberResponse;
-import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
-import redot.redot_server.domain.cms.dto.CustomerInfoResponse;
-import redot.redot_server.domain.cms.dto.CustomerResponse;
-import redot.redot_server.domain.cms.dto.SiteSettingResponse;
-import redot.redot_server.domain.cms.dto.StyleInfoResponse;
-import redot.redot_server.domain.cms.entity.CMSMember;
-import redot.redot_server.domain.cms.entity.CMSMemberRole;
-import redot.redot_server.domain.cms.entity.Customer;
-import redot.redot_server.domain.cms.entity.SiteSetting;
-import redot.redot_server.domain.cms.entity.StyleInfo;
-import redot.redot_server.domain.cms.repository.CMSMemberRepository;
-import redot.redot_server.domain.cms.repository.CustomerRepository;
-import redot.redot_server.domain.cms.repository.SiteSettingRepository;
+import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
+import redot.redot_server.domain.cms.customer.dto.CustomerCreateRequest;
+import redot.redot_server.domain.cms.customer.dto.CustomerInfoResponse;
+import redot.redot_server.domain.cms.customer.dto.CustomerResponse;
+import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
+import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
+import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
+import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.site.entity.SiteSetting;
+import redot.redot_server.domain.cms.style.entity.StyleInfo;
+import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.domain.cms.customer.repository.CustomerRepository;
+import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 
 @Service
 @RequiredArgsConstructor

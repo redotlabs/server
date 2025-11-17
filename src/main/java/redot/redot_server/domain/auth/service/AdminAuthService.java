@@ -12,11 +12,11 @@ import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.global.jwt.token.TokenContext;
-import redot.redot_server.global.jwt.token.TokenType;
-import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
-import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
-import redot.redot_server.global.util.EmailUtils;
+import redot.redot_server.support.jwt.token.TokenContext;
+import redot.redot_server.support.jwt.token.TokenType;
+import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.support.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor
