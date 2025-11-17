@@ -15,7 +15,7 @@ public class CookieProviderProd implements CookieProvider{
     private final String domain;
     private final String sameSite;
 
-    public CookieProviderProd(@Value("${jwt.cookie.secure:true}") boolean secure, @Value("${jwt.cookie.domain:.redot.me}") String domain, @Value("$jwt.cookie.same-site}") String sameSite) {
+    public CookieProviderProd(@Value("${jwt.cookie.secure:true}") boolean secure, @Value("${jwt.cookie.domain:.redot.me}") String domain, @Value("${jwt.cookie.same-site}") String sameSite) {
         this.secure = secure;
         this.domain = domain;
         this.sameSite = sameSite;
