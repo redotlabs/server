@@ -15,8 +15,8 @@ import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.global.common.dto.PageResponse;
-import redot.redot_server.global.util.EmailUtils;
+import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

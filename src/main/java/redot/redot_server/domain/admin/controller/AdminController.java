@@ -21,10 +21,10 @@ import redot.redot_server.domain.admin.dto.AdminResetPasswordRequest;
 import redot.redot_server.domain.admin.dto.AdminResponse;
 import redot.redot_server.domain.admin.dto.AdminUpdateRequest;
 import redot.redot_server.domain.admin.service.AdminService;
-import redot.redot_server.global.common.dto.PageResponse;
-import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.global.jwt.token.TokenType;
-import redot.redot_server.global.security.principal.JwtPrincipal;
+import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.support.jwt.token.TokenType;
+import redot.redot_server.support.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor

@@ -6,9 +6,9 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Service;
 import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.TokenResponse;
-import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.global.jwt.token.JwtTokenFactory;
-import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.support.jwt.token.JwtTokenFactory;
+import redot.redot_server.support.jwt.token.TokenContext;
 
 @Service
 @RequiredArgsConstructor

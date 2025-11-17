@@ -16,11 +16,11 @@ import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.SignInRequest;
 import redot.redot_server.domain.auth.dto.TokenResponse;
 import redot.redot_server.domain.auth.service.CMSAuthService;
-import redot.redot_server.domain.cms.dto.CMSMemberResponse;
-import redot.redot_server.global.customer.resolver.annotation.CurrentCustomer;
-import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.global.jwt.token.TokenType;
-import redot.redot_server.global.security.principal.JwtPrincipal;
+import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
+import redot.redot_server.support.customer.resolver.annotation.CurrentCustomer;
+import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.support.jwt.token.TokenType;
+import redot.redot_server.support.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor

@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.service.AdminCustomerService;
-import redot.redot_server.domain.cms.dto.CustomerCreateRequest;
-import redot.redot_server.domain.cms.dto.CustomerInfoResponse;
+import redot.redot_server.domain.cms.customer.dto.CustomerCreateRequest;
+import redot.redot_server.domain.cms.customer.dto.CustomerInfoResponse;
 
 @RestController
 @RequestMapping("/api/v1/admin/customer")
