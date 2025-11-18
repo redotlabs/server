@@ -4,7 +4,6 @@ import static redot.redot_server.domain.cms.inquiry.entity.QCustomerInquiry.cust
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,35 +26,28 @@ public class CustomerInquiryRepositoryImpl implements CustomInquiryRepositoryCus
     public Page<CustomerInquiry> findAllBySearchCondition(Long customerId,
                                                           CustomerInquirySearchCondition condition,
                                                           Pageable pageable) {
-        JPAQuery<CustomerInquiry> contentQuery = queryFactory
+        BooleanExpression[] predicates = {
+                customerEq(customerId),
+                statusEq(condition.status()),
+                inquiryNumberContains(condition.inquiryNumber()),
+                titleContains(condition.title()),
+                inquirerNameContains(condition.inquirerName()),
+                createdAtGoe(condition.startDate()),
+                createdAtLoe(condition.endDate())
+        };
+
+        List<CustomerInquiry> content = queryFactory
                 .selectFrom(customerInquiry)
-                .where(
-                        customerEq(customerId),
-                        statusEq(condition.status()),
-                        inquiryNumberContains(condition.inquiryNumber()),
-                        titleContains(condition.title()),
-                        inquirerNameContains(condition.inquirerName()),
-                        createdAtGoe(condition.startDate()),
-                        createdAtLoe(condition.endDate())
-                )
+                .where(predicates)
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(sortOrder(pageable));
-
-        List<CustomerInquiry> content = contentQuery.fetch();
+                .orderBy(sortOrder(pageable))
+                .fetch();
 
         Long totalCount = queryFactory
                 .select(customerInquiry.count())
                 .from(customerInquiry)
-                .where(
-                        customerEq(customerId),
-                        statusEq(condition.status()),
-                        inquiryNumberContains(condition.inquiryNumber()),
-                        titleContains(condition.title()),
-                        inquirerNameContains(condition.inquirerName()),
-                        createdAtGoe(condition.startDate()),
-                        createdAtLoe(condition.endDate())
-                )
+                .where(predicates)
                 .fetchOne();
 
         long total = totalCount == null ? 0L : totalCount;
