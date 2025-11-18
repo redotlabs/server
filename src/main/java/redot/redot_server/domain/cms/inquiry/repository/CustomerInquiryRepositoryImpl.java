@@ -56,7 +56,7 @@ public class CustomerInquiryRepositoryImpl implements CustomInquiryRepositoryCus
     }
 
     private BooleanExpression customerEq(Long customerId) {
-        return customerInquiry.customer.id.eq(customerId);
+        return customerId == null ? null : customerInquiry.customer.id.eq(customerId);
     }
 
     private BooleanExpression statusEq(CustomerInquiryStatus status) {
