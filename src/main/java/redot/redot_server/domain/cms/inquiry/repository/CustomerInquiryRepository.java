@@ -5,8 +5,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import redot.redot_server.domain.cms.inquiry.entity.CustomerInquiry;
 
-public interface CustomerInquiryRepository extends JpaRepository<CustomerInquiry, Long> {
+public interface CustomerInquiryRepository extends JpaRepository<CustomerInquiry, Long>,
+        CustomInquiryRepositoryCustom {
     Optional<CustomerInquiry> findByIdAndCustomer_Id(Long inquiryId, Long customerId);
-
-    List<CustomerInquiry> findAllByCustomerId(Long customerId);
 }

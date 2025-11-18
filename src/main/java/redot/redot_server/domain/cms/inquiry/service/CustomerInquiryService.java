@@ -1,23 +1,26 @@
 package redot.redot_server.domain.cms.inquiry.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.cms.inquiry.dto.CustomerInquiryCreateRequest;
-import redot.redot_server.domain.cms.inquiry.dto.CustomerInquiryDTO;
-import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.customer.entity.Customer;
-import redot.redot_server.domain.cms.inquiry.entity.CustomerInquiry;
-import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
-import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.customer.exception.CustomerErrorCode;
 import redot.redot_server.domain.cms.customer.exception.CustomerException;
+import redot.redot_server.domain.cms.customer.repository.CustomerRepository;
+import redot.redot_server.domain.cms.inquiry.dto.CustomerInquiryCreateRequest;
+import redot.redot_server.domain.cms.inquiry.dto.CustomerInquiryDTO;
+import redot.redot_server.domain.cms.inquiry.dto.CustomerInquirySearchCondition;
+import redot.redot_server.domain.cms.inquiry.entity.CustomerInquiry;
 import redot.redot_server.domain.cms.inquiry.exception.CustomerInquiryErrorCode;
 import redot.redot_server.domain.cms.inquiry.exception.CustomerInquiryException;
-import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
 import redot.redot_server.domain.cms.inquiry.repository.CustomerInquiryRepository;
-import redot.redot_server.domain.cms.customer.repository.CustomerRepository;
+import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
+import redot.redot_server.domain.cms.member.exception.CMSMemberException;
+import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.support.common.dto.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -72,22 +75,6 @@ public class CustomerInquiryService {
         );
     }
 
-    public List<CustomerInquiryDTO> getAllInquiries(Long customerId) {
-        List<CustomerInquiry> inquiries = customerInquiryRepository.findAllByCustomerId(customerId);
-        return inquiries.stream()
-                .map(inquiry -> new CustomerInquiryDTO(
-                        inquiry.getId(),
-                        customerId,
-                        inquiry.getInquiryNumber(),
-                        inquiry.getInquirerName(),
-                        inquiry.getTitle(),
-                        inquiry.getContent(),
-                        inquiry.getStatus(),
-                        inquiry.getCreatedAt()
-                ))
-                .toList();
-    }
-
     @Transactional
     public void markInquiryAsCompleted(Long customerId, Long inquiryId, Long cmsMemberId) {
         CustomerInquiry inquiry = customerInquiryRepository.findByIdAndCustomer_Id(inquiryId, customerId)
@@ -104,5 +91,23 @@ public class CustomerInquiryService {
                 .orElseThrow(() -> new CustomerInquiryException(CustomerInquiryErrorCode.CUSTOMER_INQUIRY_NOT_FOUND));
 
         inquiry.reopenInquiry();
+    }
+
+    public PageResponse<CustomerInquiryDTO> getAllInquiriesBySearchCondition(Long customerId,
+                                                                             CustomerInquirySearchCondition searchCondition,
+                                                                             Pageable pageable) {
+        Page<CustomerInquiryDTO> page = customerInquiryRepository
+                .findAllBySearchCondition(customerId, searchCondition, pageable)
+                .map(inquiry -> new CustomerInquiryDTO(
+                        inquiry.getId(),
+                        customerId,
+                        inquiry.getInquiryNumber(),
+                        inquiry.getInquirerName(),
+                        inquiry.getTitle(),
+                        inquiry.getContent(),
+                        inquiry.getStatus(),
+                        inquiry.getCreatedAt()
+                ));
+        return PageResponse.from(page);
     }
 }
