@@ -2,8 +2,10 @@ package redot.redot_server.domain.cms.member.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -20,10 +22,12 @@ import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.cms.member.dto.CMSMemberCreateRequest;
 import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.dto.CMSMemberRoleRequest;
+import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.dto.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.service.CMSMemberService;
+import redot.redot_server.support.common.dto.PageResponse;
 import redot.redot_server.support.customer.resolver.annotation.CurrentCustomer;
 import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.support.jwt.token.TokenType;
@@ -50,8 +54,11 @@ public class CMSMemberController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CMSMemberResponse>> getCMSMemberList(@CurrentCustomer Long customerId) {
-        return ResponseEntity.ok(cmsMemberService.getCMSMemberList(customerId));
+    public ResponseEntity<PageResponse<CMSMemberResponse>> getCMSMemberList(@CurrentCustomer Long customerId,
+                                                                            CMSMemberSearchCondition searchCondition,
+                                                                            @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(
+                cmsMemberService.getCMSMemberListBySearchCondition(customerId, searchCondition, pageable));
     }
 
     @PatchMapping("/role/{memberId}")
@@ -72,7 +79,7 @@ public class CMSMemberController {
     public ResponseEntity<Void> deleteCMSMember(@CurrentCustomer Long customerId,
                                                 @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                 @PathVariable(name = "memberId") Long memberId) {
-        if(jwtPrincipal.id().equals(memberId)) {
+        if (jwtPrincipal.id().equals(memberId)) {
             throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_SELF);
         }
 
