@@ -50,14 +50,6 @@ public class CMSMemberService {
         return CMSMemberResponse.fromEntity(customerId, cmsMember);
     }
 
-    public List<CMSMemberResponse> getCMSMemberList(Long customerId) {
-        List<CMSMember> cmsMembers = cmsMemberRepository.findAllByCustomer_Id(customerId);
-
-        return cmsMembers.stream()
-                .map(cmsMember -> CMSMemberResponse.fromEntity(customerId, cmsMember))
-                .toList();
-    }
-
     @Transactional
     public CMSMemberResponse changeCMSMemberRole(Long customerId, Long memberId, CMSMemberRoleRequest request) {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
