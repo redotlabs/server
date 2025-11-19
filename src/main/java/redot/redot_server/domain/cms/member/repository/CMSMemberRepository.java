@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 
-public interface CMSMemberRepository extends JpaRepository<CMSMember, Long> {
+public interface CMSMemberRepository extends JpaRepository<CMSMember, Long>, CMSMemberRepositoryCustom {
     Optional<CMSMember> findByEmailAndCustomer_Id(String email, Long customerId);
 
     Optional<CMSMember> findByIdAndCustomer_Id(Long id, Long customerId);
