@@ -30,10 +30,10 @@ public class SiteSettingService {
     private final S3Manager s3Manager;
 
     @Transactional
-    public SiteSettingResponse updateSiteSetting(Long customerId, SiteSettingUpdateRequest request) {
-        SiteSetting siteSetting = siteSettingRepository.findByCustomerId(customerId)
+    public SiteSettingResponse updateSiteSetting(Long redotAppId, SiteSettingUpdateRequest request) {
+        SiteSetting siteSetting = siteSettingRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new SiteSettingException(SiteSettingErrorCode.SITE_SETTING_NOT_FOUND));
-        Domain domain = domainRepository.findByCustomerId(customerId)
+        Domain domain = domainRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
         if(isCustomDomainExists(request, domain)) {
@@ -50,14 +50,14 @@ public class SiteSettingService {
         return SiteSettingResponse.fromEntity(siteSetting, domain);
     }
 
-    public UploadedImageUrlResponse uploadLogoImage(Long customerId, MultipartFile logoFile) {
+    public UploadedImageUrlResponse uploadLogoImage(Long redotAppId, MultipartFile logoFile) {
         if (logoFile == null || logoFile.isEmpty()) {
             throw new SiteSettingException(SiteSettingErrorCode.LOGO_FILE_REQUIRED);
         }
 
         String logoUrl = s3Manager.uploadFile(
                 logoFile,
-                LogoPathGenerator.generateLogoPath(customerId, logoFile.getOriginalFilename())
+                LogoPathGenerator.generateLogoPath(redotAppId, logoFile.getOriginalFilename())
         );
 
         return new UploadedImageUrlResponse(logoUrl);
@@ -88,10 +88,10 @@ public class SiteSettingService {
         }
     }
 
-    public SiteSettingResponse getSiteSetting(Long customerId) {
-        SiteSetting siteSetting = siteSettingRepository.findByCustomerId(customerId)
+    public SiteSettingResponse getSiteSetting(Long redotAppId) {
+        SiteSetting siteSetting = siteSettingRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new SiteSettingException(SiteSettingErrorCode.SITE_SETTING_NOT_FOUND));
-        Domain domain = domainRepository.findByCustomerId(customerId)
+        Domain domain = domainRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
         return SiteSettingResponse.fromEntity(siteSetting, domain);

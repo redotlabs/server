@@ -17,7 +17,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.site.entity.Theme;
 
 @Entity
@@ -32,8 +32,8 @@ public class StyleInfo {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "customer_id", nullable = false, unique = true)
-    private Customer customer;
+    @JoinColumn(name = "redot_app_id", nullable = false, unique = true)
+    private RedotApp redotApp;
 
     @Column(nullable = false)
     private String font;
@@ -44,12 +44,12 @@ public class StyleInfo {
     @Enumerated(EnumType.STRING)
     private Theme theme;
 
-    public static StyleInfo create(String font, String color, Theme theme, Customer customer) {
+    public static StyleInfo create(String font, String color, Theme theme, RedotApp redotApp) {
         return StyleInfo.builder()
                 .font(font)
                 .color(color)
                 .theme(theme)
-                .customer(customer)
+                .redotApp(redotApp)
                 .build();
     }
 

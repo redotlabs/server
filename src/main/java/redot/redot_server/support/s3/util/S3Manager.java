@@ -30,7 +30,7 @@ public class S3Manager {
     /**
      * 지정된 경로로 파일 업로드
      * @param file 업로드할 파일
-     * @param targetPath 최종 저장될 S3 key (ex: customer/1/logo/image.png)
+     * @param targetPath 최종 저장될 S3 key (ex: app/1/logo/image.png)
      * @return 업로드된 파일의 전체 경로 ("/" 포함)
      */
     public String uploadFile(MultipartFile file, String targetPath) {
@@ -52,7 +52,7 @@ public class S3Manager {
 
     /**
      * 지정된 경로의 파일 삭제
-     * @param filePath 삭제할 파일 경로 (ex: /customer/1/logo/image.png)
+     * @param filePath 삭제할 파일 경로 (ex: /app/1/logo/image.png)
      */
     public void deleteFile(String filePath) {
         if (filePath == null || filePath.isBlank()) return;
@@ -77,7 +77,7 @@ public class S3Manager {
 
     /**
      * S3에 동일 경로의 파일이 이미 존재하는지 확인
-     * @param key 확인할 S3 key (ex: customer/1/logo/image.png)
+     * @param key 확인할 S3 key (ex: app/1/logo/image.png)
      * @return 존재하면 true, 존재하지 않으면 false
      */
     public boolean exists(String key) {

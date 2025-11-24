@@ -6,7 +6,7 @@ public record TokenContext(
         Long id,
         TokenType tokenType,
         List<String> roles,
-        Long customerId
+        Long redotAppId
 ) {
     public List<String> resolvedRoles() {
         if (roles == null || roles.isEmpty()) {

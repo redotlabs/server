@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 
@@ -37,7 +37,7 @@ import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 @Table(
         name = "cms_members",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"customer_id", "email"})
+                @UniqueConstraint(columnNames = {"redot_app_id", "email"})
         }
 )
 public class CMSMember {
@@ -46,8 +46,8 @@ public class CMSMember {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "redot_app_id", nullable = false)
+    private RedotApp redotApp;
 
     @Column(nullable = false)
     private String name;
@@ -73,14 +73,14 @@ public class CMSMember {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public boolean belongsTo(Customer customer) {
-        return this.customer.equals(customer);
+    public boolean belongsTo(RedotApp redotApp) {
+        return this.redotApp.equals(redotApp);
     }
 
-    public static CMSMember create(Customer customer, String name, String email, String profileImageUrl,
+    public static CMSMember create(RedotApp redotApp, String name, String email, String profileImageUrl,
                                    String password, CMSMemberRole role) {
         return CMSMember.builder()
-                .customer(customer)
+                .redotApp(redotApp)
                 .name(name)
                 .email(email)
                 .profileImageUrl(profileImageUrl)
@@ -90,10 +90,10 @@ public class CMSMember {
                 .build();
     }
 
-    public static CMSMember join(Customer customer, String name, String email, String password,
+    public static CMSMember join(RedotApp redotApp, String name, String email, String password,
                                  CMSMemberRole role) {
         return CMSMember.builder()
-                .customer(customer)
+                .redotApp(redotApp)
                 .name(name)
                 .email(email)
                 .password(password)

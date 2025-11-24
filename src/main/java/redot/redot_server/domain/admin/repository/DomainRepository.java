@@ -7,13 +7,13 @@ import redot.redot_server.domain.admin.entity.Domain;
 
 public interface DomainRepository extends JpaRepository<Domain, Long> {
 
-    @EntityGraph(attributePaths = "customer")
+    @EntityGraph(attributePaths = "redotApp")
     Optional<Domain> findBySubdomain(String subdomain);
 
-    @EntityGraph(attributePaths = "customer")
+    @EntityGraph(attributePaths = "redotApp")
     Optional<Domain> findByCustomDomain(String customDomain);
 
-    Optional<Domain> findByCustomerId(Long customerId);
+    Optional<Domain> findByRedotAppId(Long redotAppId);
 
     boolean existsByCustomDomain(String customDomain);
 }

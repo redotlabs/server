@@ -14,13 +14,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
-import redot.redot_server.support.security.filter.customer.CustomerFilter;
+import redot.redot_server.support.security.filter.redotapp.RedotAppFilter;
 import redot.redot_server.support.security.handler.JsonAccessDeniedHandler;
 import redot.redot_server.support.security.handler.JsonAuthenticationEntryPoint;
 import redot.redot_server.support.security.filter.jwt.auth.AdminJwtAuthenticationFilter;
-import redot.redot_server.support.security.filter.jwt.auth.CustomerJwtAuthenticationFilter;
+import redot.redot_server.support.security.filter.jwt.auth.RedotAppJwtAuthenticationFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.AdminRefreshTokenFilter;
-import redot.redot_server.support.security.filter.jwt.refresh.CustomerRefreshTokenFilter;
+import redot.redot_server.support.security.filter.jwt.refresh.RedotAppRefreshTokenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -50,14 +50,14 @@ public class SecurityConfig {
 
     @Bean
     @Order(0)
-    public SecurityFilterChain customerRefreshChain(HttpSecurity http,
-                                                    CustomerFilter customerFilter,
-                                                    CustomerRefreshTokenFilter customerRefreshTokenFilter) throws Exception {
+    public SecurityFilterChain redotAppRefreshChain(HttpSecurity http,
+                                                    RedotAppFilter redotAppFilter,
+                                                    RedotAppRefreshTokenFilter redotAppRefreshTokenFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/auth/customer/cms/reissue")
+        http.securityMatcher("/api/v1/auth/app/cms/reissue")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class)
-                .addFilterAfter(customerRefreshTokenFilter, CustomerFilter.class);
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class)
+                .addFilterAfter(redotAppRefreshTokenFilter, RedotAppFilter.class);
         return http.build();
     }
 
@@ -74,35 +74,35 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
-    public SecurityFilterChain customerPublicChain(HttpSecurity http,
-                                                CustomerFilter customerFilter) throws Exception {
+    public SecurityFilterChain redotAppPublicChain(HttpSecurity http,
+                                                  RedotAppFilter redotAppFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/customer")
+        http.securityMatcher("/api/v1/app")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class);
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class);
         return http.build();
     }
     @Bean
     @Order(3)
-    public SecurityFilterChain customerApiChain(HttpSecurity http,
-                                                CustomerFilter customerFilter,
-                                                CustomerJwtAuthenticationFilter customerJwtAuthenticationFilter) throws Exception {
+    public SecurityFilterChain redotAppApiChain(HttpSecurity http,
+                                                RedotAppFilter redotAppFilter,
+                                                RedotAppJwtAuthenticationFilter redotAppJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/customer/**", "/api/v1/auth/customer/cms/me")
+        http.securityMatcher("/api/v1/app/**", "/api/v1/auth/app/cms/me")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
-                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class)
-                .addFilterBefore(customerJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class)
+                .addFilterBefore(redotAppJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
     @Bean
     @Order(4)
-    public SecurityFilterChain customerAuthChain(HttpSecurity http,
-                                                 CustomerFilter customerFilter) throws Exception {
+    public SecurityFilterChain redotAppAuthChain(HttpSecurity http,
+                                                 RedotAppFilter redotAppFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/auth/customer/**")
+        http.securityMatcher("/api/v1/auth/app/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(customerFilter, SecurityContextHolderFilter.class);
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class);
         return http.build();
     }
 

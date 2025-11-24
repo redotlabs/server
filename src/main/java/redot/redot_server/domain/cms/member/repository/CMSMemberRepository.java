@@ -8,15 +8,15 @@ import org.springframework.data.repository.query.Param;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 
 public interface CMSMemberRepository extends JpaRepository<CMSMember, Long>, CMSMemberRepositoryCustom {
-    Optional<CMSMember> findByEmailAndCustomer_Id(String email, Long customerId);
+    Optional<CMSMember> findByEmailAndRedotApp_Id(String email, Long redotAppId);
 
-    Optional<CMSMember> findByIdAndCustomer_Id(Long id, Long customerId);
+    Optional<CMSMember> findByIdAndRedotApp_Id(Long id, Long redotAppId);
 
-    List<CMSMember> findAllByCustomer_Id(Long customerId);
+    List<CMSMember> findAllByRedotApp_Id(Long redotAppId);
 
-    @Query(value = " SELECT * FROM cms_members WHERE id = :id AND customer_id = :customerId", nativeQuery = true)
-    Optional<CMSMember> findByIdAndCustomer_IdIncludingDeleted(
+    @Query(value = " SELECT * FROM cms_members WHERE id = :id AND redot_app_id = :redotAppId", nativeQuery = true)
+    Optional<CMSMember> findByIdAndRedotApp_IdIncludingDeleted(
             @Param("id") Long id,
-            @Param("customerId") Long customerId);
+            @Param("redotAppId") Long redotAppId);
 
 }

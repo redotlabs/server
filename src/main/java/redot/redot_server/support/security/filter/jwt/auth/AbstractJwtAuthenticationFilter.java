@@ -87,8 +87,8 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private JwtPrincipal createPrincipal(Claims claims) {
         Long subjectId = parseSubject(claims.getSubject());
-        Long customerId = extractCustomerId(claims.get("customer_id"));
-        return new JwtPrincipal(subjectId, requiredType, customerId);
+        Long redotAppId = extractRedotAppId(claims.get("redot_app_id"));
+        return new JwtPrincipal(subjectId, requiredType, redotAppId);
     }
 
     private Long parseSubject(String subject) {
@@ -102,7 +102,7 @@ abstract class AbstractJwtAuthenticationFilter extends OncePerRequestFilter {
         }
     }
 
-    protected Long extractCustomerId(Object raw) {
+    protected Long extractRedotAppId(Object raw) {
         if (raw == null) {
             return null;
         }

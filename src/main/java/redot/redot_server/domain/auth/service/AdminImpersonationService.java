@@ -20,7 +20,7 @@ public class AdminImpersonationService {
 
     public AuthResult impersonateAsCMSAdmin(HttpServletRequest request, CMSAdminImpersonationRequest cmsAdminImpersonationRequest, Long adminId) {
         return authTokenService.issueTokens(request,
-                new TokenContext(adminId, TokenType.CMS, List.of(CMSMemberRole.ADMIN.name()), cmsAdminImpersonationRequest.customerId())
+                new TokenContext(adminId, TokenType.CMS, List.of(CMSMemberRole.ADMIN.name()), cmsAdminImpersonationRequest.redotAppId())
         );
     }
 }

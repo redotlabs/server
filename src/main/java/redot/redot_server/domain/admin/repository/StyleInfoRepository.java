@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import redot.redot_server.domain.cms.style.entity.StyleInfo;
 
 public interface StyleInfoRepository extends JpaRepository<StyleInfo, Long> {
-    Optional<StyleInfo> findByCustomer_Id(Long customerId);
+    Optional<StyleInfo> findByRedotApp_Id(Long redotAppId);
 }

@@ -20,7 +20,7 @@ import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.admin.exception.DomainErrorCode;
 import redot.redot_server.domain.admin.exception.DomainException;
-import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
@@ -42,8 +42,8 @@ public class Domain {
     private String customDomain;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", unique = true)
-    private Customer customer;
+    @JoinColumn(name = "redot_app_id", unique = true)
+    private RedotApp redotApp;
 
     @Column(nullable = false)
     private Boolean reserved;
@@ -55,10 +55,10 @@ public class Domain {
                 .build();
     }
 
-    public static Domain ofCustomer(String subdomain, Customer customer) {
+    public static Domain ofRedotApp(String subdomain, RedotApp redotApp) {
         return Domain.builder()
                 .subdomain(subdomain)
-                .customer(customer)
+                .redotApp(redotApp)
                 .reserved(false)
                 .build();
     }
@@ -67,12 +67,12 @@ public class Domain {
     @PreUpdate
     private void validateIntegrity() {
         if (Boolean.TRUE.equals(reserved)) {
-            if (this.customer != null || this.customDomain != null) {
-                throw new DomainException(DomainErrorCode.RESERVED_DOMAIN_WITH_CUSTOMER);
+            if (this.redotApp != null || this.customDomain != null) {
+                throw new DomainException(DomainErrorCode.RESERVED_DOMAIN_WITH_REDOT_APP);
             }
         } else {
-            if (this.customer == null) {
-                throw new DomainException(DomainErrorCode.NON_RESERVED_DOMAIN_MISSING_CUSTOMER);
+            if (this.redotApp == null) {
+                throw new DomainException(DomainErrorCode.NON_RESERVED_DOMAIN_MISSING_REDOT_APP);
             }
         }
     }

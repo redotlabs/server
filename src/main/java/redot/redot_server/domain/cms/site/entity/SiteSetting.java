@@ -14,7 +14,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 
 @Entity
 @Getter
@@ -29,8 +29,8 @@ public class SiteSetting {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false, unique = true)
-    private Customer customer;
+    @JoinColumn(name = "redot_app_id", nullable = false, unique = true)
+    private RedotApp redotApp;
 
     private String logoUrl;
 
@@ -38,9 +38,9 @@ public class SiteSetting {
 
     private String gaInfo;
 
-    public static SiteSetting createDefault(Customer customer) {
+    public static SiteSetting createDefault(RedotApp redotApp) {
         return SiteSetting.builder()
-                .customer(customer)
+                .redotApp(redotApp)
                 .build();
     }
 
