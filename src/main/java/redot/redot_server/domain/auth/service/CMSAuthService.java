@@ -28,8 +28,8 @@ public class CMSAuthService {
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest, Long customerId) {
-        CMSMember cmsMember = cmsMemberRepository.findByEmailAndCustomer_Id(signInRequest.email(), customerId)
+    public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest, Long redotAppId) {
+        CMSMember cmsMember = cmsMemberRepository.findByEmailAndRedotApp_Id(signInRequest.email(), redotAppId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (!passwordEncoder.matches(signInRequest.password(), cmsMember.getPassword())) {
@@ -38,11 +38,11 @@ public class CMSAuthService {
 
         return authTokenService.issueTokens(
                 request,
-                new TokenContext(cmsMember.getId(), TokenType.CMS, List.of(cmsMember.getRole().name()), customerId)
+                new TokenContext(cmsMember.getId(), TokenType.CMS, List.of(cmsMember.getRole().name()), redotAppId)
         );
     }
 
-    public AuthResult reissueToken(Long customerId, HttpServletRequest request) {
+    public AuthResult reissueToken(Long redotAppId, HttpServletRequest request) {
         RefreshTokenPayload payload = RefreshTokenPayloadHolder.get(request);
 
         if (payload == null) {
@@ -54,25 +54,25 @@ public class CMSAuthService {
             throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
         }
 
-        Long tokenCustomerId = payload.customerId();
-        if (tokenCustomerId == null || !tokenCustomerId.equals(customerId)) {
-            throw new AuthException(AuthErrorCode.CUSTOMER_TOKEN_MISMATCH);
+        Long tokenRedotAppId = payload.redotAppId();
+        if (tokenRedotAppId == null || !tokenRedotAppId.equals(redotAppId)) {
+            throw new AuthException(AuthErrorCode.REDOT_APP_TOKEN_MISMATCH);
         }
 
         return authTokenService.issueTokens(request, new TokenContext(
                 cmsMemberId,
                 payload.tokenType(),
                 payload.roles(),
-                tokenCustomerId
+                tokenRedotAppId
         ));
     }
 
-    public CMSMemberResponse getCurrentCMSMemberInfo(Long customerId, Long id) {
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(id, customerId)
+    public CMSMemberResponse getCurrentCMSMemberInfo(Long redotAppId, Long id) {
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(id, redotAppId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
 
         return new CMSMemberResponse(
-                customerId,
+                redotAppId,
                 cmsMember.getId(),
                 cmsMember.getName(),
                 cmsMember.getEmail(),

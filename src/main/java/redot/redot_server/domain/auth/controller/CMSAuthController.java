@@ -17,22 +17,22 @@ import redot.redot_server.domain.auth.dto.SignInRequest;
 import redot.redot_server.domain.auth.dto.TokenResponse;
 import redot.redot_server.domain.auth.service.CMSAuthService;
 import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
-import redot.redot_server.support.customer.resolver.annotation.CurrentCustomer;
+import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.support.jwt.token.TokenType;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth/customer/cms")
+@RequestMapping("/api/v1/auth/app/cms")
 public class CMSAuthController {
 
     private final CMSAuthService cmsAuthService;
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-in")
-    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @Valid @RequestBody SignInRequest signInRequest, @CurrentCustomer Long customerId) {
-        AuthResult authResult = cmsAuthService.signIn(request, signInRequest, customerId);
+    public ResponseEntity<TokenResponse> signIn(HttpServletRequest request, @Valid @RequestBody SignInRequest signInRequest, @CurrentRedotApp Long redotAppId) {
+        AuthResult authResult = cmsAuthService.signIn(request, signInRequest, redotAppId);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, authResult.refreshCookie().toString())
@@ -40,8 +40,8 @@ public class CMSAuthController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenResponse> reissueToken(@CurrentCustomer Long customerId, HttpServletRequest request) {
-        AuthResult authResult = cmsAuthService.reissueToken(customerId, request);
+    public ResponseEntity<TokenResponse> reissueToken(@CurrentRedotApp Long redotAppId, HttpServletRequest request) {
+        AuthResult authResult = cmsAuthService.reissueToken(redotAppId, request);
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
@@ -50,9 +50,9 @@ public class CMSAuthController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<CMSMemberResponse> getCurrentCMSMemberInfo(@CurrentCustomer Long customerId, @AuthenticationPrincipal
-                                                 JwtPrincipal jwtPrincipal) {
-        return ResponseEntity.ok(cmsAuthService.getCurrentCMSMemberInfo(customerId, jwtPrincipal.id()));
+    public ResponseEntity<CMSMemberResponse> getCurrentCMSMemberInfo(@CurrentRedotApp Long redotAppId,
+                                                                     @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
+        return ResponseEntity.ok(cmsAuthService.getCurrentCMSMemberInfo(redotAppId, jwtPrincipal.id()));
     }
 
     @PostMapping("/sign-out")

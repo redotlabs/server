@@ -61,9 +61,9 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
 
     private RefreshTokenPayload buildPayload(String rawToken, Claims claims) {
         Long subjectId = extractSubjectId(claims);
-        Long customerId = extractCustomerId(claims.get("customer_id"));
+        Long redotAppId = extractRedotAppId(claims.get("redot_app_id"));
         List<String> roles = extractRoles(claims.get("roles"));
-        return new RefreshTokenPayload(rawToken, requiredTokenType(), subjectId, customerId, roles);
+        return new RefreshTokenPayload(rawToken, requiredTokenType(), subjectId, redotAppId, roles);
     }
 
     private void commenceFailure(HttpServletRequest request,
@@ -106,7 +106,7 @@ abstract class AbstractRefreshTokenFilter extends OncePerRequestFilter {
         }
     }
 
-    protected Long extractCustomerId(Object raw) {
+    protected Long extractRedotAppId(Object raw) {
         if (raw == null) {
             return null;
         }

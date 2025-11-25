@@ -6,7 +6,7 @@ import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 
 public interface CMSMemberRepositoryCustom {
-    Page<CMSMember> findAllBySearchCondition(Long customerId,
+    Page<CMSMember> findAllBySearchCondition(Long redotAppId,
                                              CMSMemberSearchCondition searchCondition,
                                              Pageable pageable);
 }

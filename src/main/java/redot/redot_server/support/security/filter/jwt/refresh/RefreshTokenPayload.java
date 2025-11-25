@@ -7,6 +7,6 @@ public record RefreshTokenPayload(
         String refreshToken,
         TokenType tokenType,
         Long subjectId,
-        Long customerId,
+        Long redotAppId,
         List<String> roles
 ) {}

@@ -31,15 +31,15 @@ public class JwtProvider {
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
-    public String createAccessToken(Long id, String type, List<String> roles, Long customerId) {
-        return buildToken(id, type, roles, customerId, ACCESS_TOKEN_EXPIRATION);
+    public String createAccessToken(Long id, String type, List<String> roles, Long redotAppId) {
+        return buildToken(id, type, roles, redotAppId, ACCESS_TOKEN_EXPIRATION);
     }
 
-    public String createRefreshToken(Long id, String type, List<String> roles, Long customerId) {
-        return buildToken(id, type, roles, customerId, REFRESH_TOKEN_EXPIRATION);
+    public String createRefreshToken(Long id, String type, List<String> roles, Long redotAppId) {
+        return buildToken(id, type, roles, redotAppId, REFRESH_TOKEN_EXPIRATION);
     }
 
-    private String buildToken(Long id, String type, List<String> roles, Long customerId, Duration validity) {
+    private String buildToken(Long id, String type, List<String> roles, Long redotAppId, Duration validity) {
         Instant now = Instant.now();
         JwtBuilder builder = Jwts.builder()
                 .setSubject(String.valueOf(id))
@@ -52,8 +52,8 @@ public class JwtProvider {
             builder.claim("roles", roles);
         }
 
-        if (customerId != null) {
-            builder.claim("customer_id", customerId);
+        if (redotAppId != null) {
+            builder.claim("redot_app_id", redotAppId);
         }
 
         return builder.compact();

@@ -14,7 +14,7 @@ public class JwtTokenFactory {
                 context.id(),
                 context.tokenType().getType(),
                 context.resolvedRoles(),
-                context.customerId()
+                context.redotAppId()
         );
     }
 
@@ -23,7 +23,7 @@ public class JwtTokenFactory {
                 context.id(),
                 context.tokenType().getType(),
                 context.resolvedRoles(),
-                context.customerId()
+                context.redotAppId()
         );
     }
 }

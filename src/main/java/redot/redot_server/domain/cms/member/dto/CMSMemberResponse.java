@@ -5,7 +5,7 @@ import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
 
 public record CMSMemberResponse(
-        Long customerId,
+        Long redotAppId,
         Long id,
         String name,
         String email,
@@ -13,9 +13,9 @@ public record CMSMemberResponse(
         CMSMemberRole role,
         LocalDateTime createdAt
 ) {
-    public static CMSMemberResponse fromEntity(Long customerId, CMSMember cmsMember) {
+    public static CMSMemberResponse fromEntity(Long redotAppId, CMSMember cmsMember) {
         return new CMSMemberResponse(
-                customerId,
+                redotAppId,
                 cmsMember.getId(),
                 cmsMember.getName(),
                 cmsMember.getEmail(),

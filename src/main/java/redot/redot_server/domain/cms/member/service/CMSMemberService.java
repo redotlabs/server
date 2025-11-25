@@ -13,13 +13,13 @@ import redot.redot_server.domain.cms.member.dto.CMSMemberRoleRequest;
 import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.dto.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
-import redot.redot_server.domain.cms.customer.entity.Customer;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
-import redot.redot_server.domain.cms.customer.exception.CustomerErrorCode;
-import redot.redot_server.domain.cms.customer.exception.CustomerException;
+import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
+import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.domain.cms.customer.repository.CustomerRepository;
+import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
 import redot.redot_server.support.common.dto.PageResponse;
 
 @Service
@@ -28,69 +28,69 @@ import redot.redot_server.support.common.dto.PageResponse;
 public class CMSMemberService {
 
     private final CMSMemberRepository cmsMemberRepository;
-    private final CustomerRepository customerRepository;
+    private final RedotAppRepository redotAppRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public CMSMemberResponse createCMSMember(Long customerId, CMSMemberCreateRequest request) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
+    public CMSMemberResponse createCMSMember(Long redotAppId, CMSMemberCreateRequest request) {
+        RedotApp redotApp = redotAppRepository.findById(redotAppId)
+                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
 
         CMSMember cmsMember = cmsMemberRepository.save(
-                CMSMember.join(customer, request.name(), request.email(),
+                CMSMember.join(redotApp, request.name(), request.email(),
                         passwordEncoder.encode(request.password()),
                         request.role()));
-        return CMSMemberResponse.fromEntity(customerId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
     }
 
-    public CMSMemberResponse getCMSMemberInfo(Long customerId, Long memberId) {
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
+    public CMSMemberResponse getCMSMemberInfo(Long redotAppId, Long memberId) {
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        return CMSMemberResponse.fromEntity(customerId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
     }
 
     @Transactional
-    public CMSMemberResponse changeCMSMemberRole(Long customerId, Long memberId, CMSMemberRoleRequest request) {
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
+    public CMSMemberResponse changeCMSMemberRole(Long redotAppId, Long memberId, CMSMemberRoleRequest request) {
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
         cmsMember.changeRole(request.role());
 
-        return CMSMemberResponse.fromEntity(customerId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
     }
 
     @Transactional
-    public CMSMemberResponse updateCMSMember(Long customerId, Long memberId, CMSMemberUpdateRequest request) {
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
+    public CMSMemberResponse updateCMSMember(Long redotAppId, Long memberId, CMSMemberUpdateRequest request) {
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
         cmsMember.updateProfile(request.name(), request.profileImageUrl());
 
-        return CMSMemberResponse.fromEntity(customerId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
     }
 
     @Transactional
-    public void deleteCMSMember(Long customerId, Long memberId) {
-        Customer customer = customerRepository.findById(customerId)
-                .orElseThrow(() -> new CustomerException(CustomerErrorCode.CUSTOMER_NOT_FOUND));
+    public void deleteCMSMember(Long redotAppId, Long memberId) {
+        RedotApp redotApp = redotAppRepository.findById(redotAppId)
+                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
 
-        CMSMember cmsMember = cmsMemberRepository.findByIdAndCustomer_Id(memberId, customerId)
+        CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        if(customer.getOwner() == cmsMember) {
+        if(redotApp.getOwner() == cmsMember) {
             throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_OWNER);
         }
 
         cmsMember.delete();
     }
 
-    public PageResponse<CMSMemberResponse> getCMSMemberListBySearchCondition(Long customerId,
+    public PageResponse<CMSMemberResponse> getCMSMemberListBySearchCondition(Long redotAppId,
                                                                              CMSMemberSearchCondition searchCondition,
                                                                              Pageable pageable) {
         Page<CMSMemberResponse> page = cmsMemberRepository
-                .findAllBySearchCondition(customerId, searchCondition, pageable)
-                .map(cmsMember -> CMSMemberResponse.fromEntity(customerId, cmsMember));
+                .findAllBySearchCondition(redotAppId, searchCondition, pageable)
+                .map(cmsMember -> CMSMemberResponse.fromEntity(redotAppId, cmsMember));
 
         return PageResponse.from(page);
     }

@@ -9,8 +9,8 @@ import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.inquiry.entity.InquirySequence;
-import redot.redot_server.domain.cms.inquiry.exception.CustomerInquiryErrorCode;
-import redot.redot_server.domain.cms.inquiry.exception.CustomerInquiryException;
+import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryErrorCode;
+import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryException;
 import redot.redot_server.domain.cms.inquiry.repository.InquirySequenceRepository;
 
 @Service
@@ -29,7 +29,7 @@ public class InquiryNumberGenerator {
         long nextSeq = inquirySequence.getLastSequenceNumber() + 1;
 
         if (nextSeq > 99_999) {
-            throw new CustomerInquiryException(CustomerInquiryErrorCode.INQUIRY_NUMBER_EXHAUSTED);
+            throw new RedotAppInquiryException(RedotAppInquiryErrorCode.INQUIRY_NUMBER_EXHAUSTED);
         }
 
         inquirySequence.updateLastSequenceNumber(nextSeq);

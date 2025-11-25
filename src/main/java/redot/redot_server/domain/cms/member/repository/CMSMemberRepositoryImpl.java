@@ -21,11 +21,11 @@ public class CMSMemberRepositoryImpl implements CMSMemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Page<CMSMember> findAllBySearchCondition(Long customerId, CMSMemberSearchCondition searchCondition,
+    public Page<CMSMember> findAllBySearchCondition(Long redotAppId, CMSMemberSearchCondition searchCondition,
                                                     Pageable pageable) {
 
         BooleanExpression[] predicates = {
-                customerEq(customerId),
+                redotAppEq(redotAppId),
                 nameContains(searchCondition.name()),
                 emailContains(searchCondition.email()),
                 roleEq(searchCondition.role())
@@ -59,8 +59,8 @@ public class CMSMemberRepositoryImpl implements CMSMemberRepositoryCustom {
         return order.isAscending() ? cMSMember.createdAt.asc() : cMSMember.createdAt.desc();
     }
 
-    private BooleanExpression customerEq(Long customerId) {
-        return customerId == null ? null : cMSMember.customer.id.eq(customerId);
+    private BooleanExpression redotAppEq(Long redotAppId) {
+        return redotAppId == null ? null : cMSMember.redotApp.id.eq(redotAppId);
     }
 
     private BooleanExpression nameContains(String name) {

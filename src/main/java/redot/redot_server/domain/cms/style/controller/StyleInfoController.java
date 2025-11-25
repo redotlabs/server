@@ -10,22 +10,22 @@ import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
 import redot.redot_server.domain.cms.style.dto.StyleInfoUpdateRequest;
 import redot.redot_server.domain.cms.style.service.StyleInfoService;
-import redot.redot_server.support.customer.resolver.annotation.CurrentCustomer;
+import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 
 @RestController
-@RequestMapping("/api/v1/customer/cms/style-info")
+@RequestMapping("/api/v1/app/cms/style-info")
 @RequiredArgsConstructor
 public class StyleInfoController {
     private final StyleInfoService styleInfoService;
 
     @GetMapping
-    public ResponseEntity<StyleInfoResponse> getStyleInfo(@CurrentCustomer Long customerId) {
-        StyleInfoResponse styleInfoResponse = styleInfoService.getStyleInfo(customerId);
+    public ResponseEntity<StyleInfoResponse> getStyleInfo(@CurrentRedotApp Long redotAppId) {
+        StyleInfoResponse styleInfoResponse = styleInfoService.getStyleInfo(redotAppId);
         return ResponseEntity.ok(styleInfoResponse);
     }
 
     @PatchMapping
-    public ResponseEntity<StyleInfoResponse> updateStyleInfo(@CurrentCustomer Long customerId, @RequestBody StyleInfoUpdateRequest request) {
-        return ResponseEntity.ok().body(styleInfoService.updateStyleInfo(customerId, request));
+    public ResponseEntity<StyleInfoResponse> updateStyleInfo(@CurrentRedotApp Long redotAppId, @RequestBody StyleInfoUpdateRequest request) {
+        return ResponseEntity.ok().body(styleInfoService.updateStyleInfo(redotAppId, request));
     }
 }

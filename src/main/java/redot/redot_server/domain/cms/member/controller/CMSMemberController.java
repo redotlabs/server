@@ -28,70 +28,70 @@ import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.service.CMSMemberService;
 import redot.redot_server.support.common.dto.PageResponse;
-import redot.redot_server.support.customer.resolver.annotation.CurrentCustomer;
+import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.support.jwt.token.TokenType;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/customer/cms/members")
+@RequestMapping("/api/v1/app/cms/members")
 public class CMSMemberController {
 
     private final CMSMemberService cmsMemberService;
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping
-    public ResponseEntity<CMSMemberResponse> createCMSMember(@CurrentCustomer Long customerId,
+    public ResponseEntity<CMSMemberResponse> createCMSMember(@CurrentRedotApp Long redotAppId,
                                                              @RequestBody @Valid CMSMemberCreateRequest request) {
-        return ResponseEntity.ok(cmsMemberService.createCMSMember(customerId, request));
+        return ResponseEntity.ok(cmsMemberService.createCMSMember(redotAppId, request));
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<CMSMemberResponse> getCMSMemberInfo(@CurrentCustomer Long customerId,
+    public ResponseEntity<CMSMemberResponse> getCMSMemberInfo(@CurrentRedotApp Long redotAppId,
                                                               @PathVariable(name = "memberId") Long memberId) {
-        return ResponseEntity.ok(cmsMemberService.getCMSMemberInfo(customerId, memberId));
+        return ResponseEntity.ok(cmsMemberService.getCMSMemberInfo(redotAppId, memberId));
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<CMSMemberResponse>> getCMSMemberList(@CurrentCustomer Long customerId,
+    public ResponseEntity<PageResponse<CMSMemberResponse>> getCMSMemberList(@CurrentRedotApp Long redotAppId,
                                                                             CMSMemberSearchCondition searchCondition,
                                                                             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(
-                cmsMemberService.getCMSMemberListBySearchCondition(customerId, searchCondition, pageable));
+                cmsMemberService.getCMSMemberListBySearchCondition(redotAppId, searchCondition, pageable));
     }
 
     @PatchMapping("/role/{memberId}")
-    public ResponseEntity<CMSMemberResponse> changeCMSMemberRole(@CurrentCustomer Long customerId,
+    public ResponseEntity<CMSMemberResponse> changeCMSMemberRole(@CurrentRedotApp Long redotAppId,
                                                                  @PathVariable(name = "memberId") Long memberId,
                                                                  @RequestBody @Valid CMSMemberRoleRequest request) {
-        return ResponseEntity.ok(cmsMemberService.changeCMSMemberRole(customerId, memberId, request));
+        return ResponseEntity.ok(cmsMemberService.changeCMSMemberRole(redotAppId, memberId, request));
     }
 
     @PutMapping
-    public ResponseEntity<CMSMemberResponse> updateCMSMember(@CurrentCustomer Long customerId,
+    public ResponseEntity<CMSMemberResponse> updateCMSMember(@CurrentRedotApp Long redotAppId,
                                                              @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                              @RequestBody @Valid CMSMemberUpdateRequest request) {
-        return ResponseEntity.ok(cmsMemberService.updateCMSMember(customerId, jwtPrincipal.id(), request));
+        return ResponseEntity.ok(cmsMemberService.updateCMSMember(redotAppId, jwtPrincipal.id(), request));
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<Void> deleteCMSMember(@CurrentCustomer Long customerId,
+    public ResponseEntity<Void> deleteCMSMember(@CurrentRedotApp Long redotAppId,
                                                 @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                 @PathVariable(name = "memberId") Long memberId) {
         if (jwtPrincipal.id().equals(memberId)) {
             throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_SELF);
         }
 
-        cmsMemberService.deleteCMSMember(customerId, memberId);
+        cmsMemberService.deleteCMSMember(redotAppId, memberId);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteCurrentCMSMember(HttpServletRequest request,
-                                                       @CurrentCustomer Long customerId,
+                                                       @CurrentRedotApp Long redotAppId,
                                                        @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
-        cmsMemberService.deleteCMSMember(customerId, jwtPrincipal.id());
+        cmsMemberService.deleteCMSMember(redotAppId, jwtPrincipal.id());
         ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(request,
                 TokenType.CMS.getAccessCookieName());
         ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(request,

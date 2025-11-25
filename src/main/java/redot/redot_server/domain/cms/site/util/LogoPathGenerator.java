@@ -6,11 +6,11 @@ import redot.redot_server.domain.cms.site.exception.SiteSettingException;
 
 public class LogoPathGenerator {
 
-    public static String generateLogoPath(Long customerId, String originalFilename) {
+    public static String generateLogoPath(Long redotAppId, String originalFilename) {
         String uuid = UUID.randomUUID().toString();
         String extension = extractExtension(originalFilename);
 
-        return String.format("customer/%d/logo/%s%s", customerId, uuid, extension);
+        return String.format("app/%d/logo/%s%s", redotAppId, uuid, extension);
     }
 
     private static String extractExtension(String fileName) {
