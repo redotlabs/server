@@ -11,6 +11,7 @@ import redot.redot_server.domain.auth.exception.AuthException;
 public enum TokenType {
     ADMIN("admin", "redot_admin_access_token", "redot_admin_refresh_token", List.of("MASTER")),
     CMS("cms", "redot_cms_access_token", "redot_cms_refresh_token", List.of()),
+    REDOT_MEMBER("redot_member", "redot_member_access_token", "redot_member_refresh_token", List.of()),
     ;
 
     private final String type;

@@ -19,8 +19,10 @@ import redot.redot_server.support.security.handler.JsonAccessDeniedHandler;
 import redot.redot_server.support.security.handler.JsonAuthenticationEntryPoint;
 import redot.redot_server.support.security.filter.jwt.auth.AdminJwtAuthenticationFilter;
 import redot.redot_server.support.security.filter.jwt.auth.RedotAppJwtAuthenticationFilter;
+import redot.redot_server.support.security.filter.jwt.auth.RedotMemberJwtAuthenticationFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.AdminRefreshTokenFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.RedotAppRefreshTokenFilter;
+import redot.redot_server.support.security.filter.jwt.refresh.RedotMemberRefreshTokenFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -122,6 +124,37 @@ public class SecurityConfig {
     public SecurityFilterChain adminAuthChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
         http.securityMatcher("/api/v1/auth/admin/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        return http.build();
+    }
+
+    @Bean
+    @Order(7)
+    public SecurityFilterChain redotMemberRefreshChain(HttpSecurity http,
+                                                       RedotMemberRefreshTokenFilter redotMemberRefreshTokenFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/auth/redot/member/reissue")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(redotMemberRefreshTokenFilter, LogoutFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    @Order(8)
+    public SecurityFilterChain redotMemberApiChain(HttpSecurity http,
+                                                   RedotMemberJwtAuthenticationFilter redotMemberJwtAuthenticationFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/auth/redot/member/me")
+                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+                .addFilterBefore(redotMemberJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    @Order(9)
+    public SecurityFilterChain redotMemberAuthChain(HttpSecurity http) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/auth/redot/member/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
