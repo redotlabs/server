@@ -20,10 +20,6 @@ public record RedotMemberResponse(
         );
     }
 
-    public static RedotMemberResponse fromEntity(RedotMember member) {
-        return from(member);
-    }
-
     public static RedotMemberResponse fromNullable(RedotMember member) {
         return member == null ? null : from(member);
     }
