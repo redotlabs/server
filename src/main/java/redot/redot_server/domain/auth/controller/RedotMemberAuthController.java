@@ -1,6 +1,7 @@
 package redot.redot_server.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -32,13 +33,13 @@ public class RedotMemberAuthController {
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<RedotMemberResponse> signUp(@RequestBody RedotMemberCreateRequest request) {
+    public ResponseEntity<RedotMemberResponse> signUp(@RequestBody @Valid RedotMemberCreateRequest request) {
         return ResponseEntity.ok(redotMemberAuthService.signUp(request));
     }
 
     @PostMapping("/sign-in")
     public ResponseEntity<TokenResponse> signIn(HttpServletRequest request,
-                                                @RequestBody RedotMemberSignInRequest signInRequest) {
+                                                @RequestBody @Valid RedotMemberSignInRequest signInRequest) {
         AuthResult authResult = redotMemberAuthService.signIn(request, signInRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
