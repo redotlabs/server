@@ -33,7 +33,7 @@ public class RedotApp {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "redot_member_id", nullable = false)
+    @JoinColumn(name = "redot_member_id")
     private RedotMember owner;
 
     @Column(nullable = false)
@@ -49,6 +49,13 @@ public class RedotApp {
         return RedotApp.builder()
                 .companyName(companyName)
                 .owner(owner)
+                .status(RedotAppStatus.ACTIVE)
+                .build();
+    }
+
+    public static RedotApp createWithoutOwner(String companyName) {
+        return RedotApp.builder()
+                .companyName(companyName)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }

@@ -52,15 +52,11 @@ public class RedotAppService {
 
         RedotMember owner = redotApp.getOwner();
 
-        if (owner == null) {
-            throw new RedotAppException(RedotAppErrorCode.REDOT_APP_OWNER_NOT_FOUND);
-        }
-
         return new RedotAppInfoResponse(
                 RedotAppResponse.fromEntity(redotApp),
                 SiteSettingResponse.fromEntity(siteSetting, domain),
                 StyleInfoResponse.fromEntity(styleInfo),
-                RedotMemberResponse.fromEntity(owner)
+                RedotMemberResponse.fromNullable(owner)
         );
     }
 
