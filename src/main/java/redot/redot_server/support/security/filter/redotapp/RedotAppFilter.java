@@ -35,7 +35,7 @@ public class RedotAppFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
         try {
-            String subdomain = request.getHeader("X-RedotApp-Subdomain");
+            String subdomain = request.getHeader("X-App-Subdomain");
             if (!StringUtils.hasText(subdomain)) {
                 throw new AuthException(AuthErrorCode.REDOT_APP_CONTEXT_REQUIRED);
             }
