@@ -1,9 +1,9 @@
-package redot.redot_server.domain.admin.repository;
+package redot.redot_server.domain.redot.admin.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
-import redot.redot_server.domain.admin.entity.Domain;
+import redot.redot_server.domain.redot.admin.entity.Domain;
 
 public interface DomainRepository extends JpaRepository<Domain, Long> {
 

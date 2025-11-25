@@ -1,4 +1,4 @@
-package redot.redot_server.domain.admin.entity;
+package redot.redot_server.domain.redot.admin.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,8 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.admin.exception.DomainErrorCode;
-import redot.redot_server.domain.admin.exception.DomainException;
+import redot.redot_server.domain.redot.admin.exception.DomainErrorCode;
+import redot.redot_server.domain.redot.admin.exception.DomainException;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 
 @Entity

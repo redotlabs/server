@@ -3,7 +3,7 @@ package redot.redot_server.domain.cms.style.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.admin.repository.StyleInfoRepository;
+import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
 import redot.redot_server.domain.cms.style.dto.StyleInfoUpdateRequest;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;

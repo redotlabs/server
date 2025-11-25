@@ -1,15 +1,15 @@
-package redot.redot_server.domain.admin.service;
+package redot.redot_server.domain.redot.admin.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.admin.dto.SubdomainLookupRequest;
-import redot.redot_server.domain.admin.dto.SubdomainLookupResponse;
-import redot.redot_server.domain.admin.entity.Domain;
-import redot.redot_server.domain.admin.exception.DomainErrorCode;
-import redot.redot_server.domain.admin.exception.DomainException;
-import redot.redot_server.domain.admin.repository.DomainRepository;
+import redot.redot_server.domain.redot.admin.dto.SubdomainLookupRequest;
+import redot.redot_server.domain.redot.admin.dto.SubdomainLookupResponse;
+import redot.redot_server.domain.redot.admin.entity.Domain;
+import redot.redot_server.domain.redot.admin.exception.DomainErrorCode;
+import redot.redot_server.domain.redot.admin.exception.DomainException;
+import redot.redot_server.domain.redot.admin.repository.DomainRepository;
 
 @RequiredArgsConstructor
 @Service

@@ -1,4 +1,4 @@
-package redot.redot_server.domain.admin.util;
+package redot.redot_server.domain.redot.admin.util;
 
 import java.security.SecureRandom;
 

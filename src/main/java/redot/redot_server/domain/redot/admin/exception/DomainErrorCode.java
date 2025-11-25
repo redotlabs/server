@@ -1,4 +1,4 @@
-package redot.redot_server.domain.admin.exception;
+package redot.redot_server.domain.redot.admin.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

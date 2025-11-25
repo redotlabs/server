@@ -1,13 +1,13 @@
-package redot.redot_server.domain.admin.service;
+package redot.redot_server.domain.redot.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.admin.entity.Domain;
-import redot.redot_server.domain.admin.repository.DomainRepository;
-import redot.redot_server.domain.admin.repository.StyleInfoRepository;
-import redot.redot_server.domain.admin.util.SubDomainNameGenerator;
+import redot.redot_server.domain.redot.admin.entity.Domain;
+import redot.redot_server.domain.redot.admin.repository.DomainRepository;
+import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
+import redot.redot_server.domain.redot.admin.util.SubDomainNameGenerator;
 import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;

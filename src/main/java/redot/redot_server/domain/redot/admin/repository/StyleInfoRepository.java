@@ -1,4 +1,4 @@
-package redot.redot_server.domain.admin.repository;
+package redot.redot_server.domain.redot.admin.repository;
 
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;

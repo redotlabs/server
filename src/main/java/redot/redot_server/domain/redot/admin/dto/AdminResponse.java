@@ -1,7 +1,7 @@
-package redot.redot_server.domain.admin.dto;
+package redot.redot_server.domain.redot.admin.dto;
 
 import java.time.LocalDateTime;
-import redot.redot_server.domain.admin.entity.Admin;
+import redot.redot_server.domain.redot.admin.entity.Admin;
 
 public record AdminResponse(
         Long id,

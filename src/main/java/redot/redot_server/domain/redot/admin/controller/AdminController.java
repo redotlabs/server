@@ -1,4 +1,4 @@
-package redot.redot_server.domain.admin.controller;
+package redot.redot_server.domain.redot.admin.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -16,11 +16,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.admin.dto.AdminCreateRequest;
-import redot.redot_server.domain.admin.dto.AdminResetPasswordRequest;
-import redot.redot_server.domain.admin.dto.AdminResponse;
-import redot.redot_server.domain.admin.dto.AdminUpdateRequest;
-import redot.redot_server.domain.admin.service.AdminService;
+import redot.redot_server.domain.redot.admin.dto.AdminCreateRequest;
+import redot.redot_server.domain.redot.admin.dto.AdminResetPasswordRequest;
+import redot.redot_server.domain.redot.admin.dto.AdminResponse;
+import redot.redot_server.domain.redot.admin.dto.AdminUpdateRequest;
+import redot.redot_server.domain.redot.admin.service.AdminService;
 import redot.redot_server.support.common.dto.PageResponse;
 import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.support.jwt.token.TokenType;
