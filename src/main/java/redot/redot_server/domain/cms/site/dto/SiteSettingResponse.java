@@ -1,6 +1,6 @@
 package redot.redot_server.domain.cms.site.dto;
 
-import redot.redot_server.domain.admin.entity.Domain;
+import redot.redot_server.domain.redot.admin.entity.Domain;
 import redot.redot_server.domain.cms.site.entity.SiteSetting;
 
 public record SiteSettingResponse(

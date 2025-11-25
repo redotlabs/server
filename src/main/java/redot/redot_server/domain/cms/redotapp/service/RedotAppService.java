@@ -3,17 +3,17 @@ package redot.redot_server.domain.cms.redotapp.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.admin.entity.Domain;
-import redot.redot_server.domain.admin.exception.DomainErrorCode;
-import redot.redot_server.domain.admin.exception.DomainException;
-import redot.redot_server.domain.admin.repository.DomainRepository;
-import redot.redot_server.domain.admin.repository.StyleInfoRepository;
-import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
+import redot.redot_server.domain.redot.admin.entity.Domain;
+import redot.redot_server.domain.redot.admin.exception.DomainErrorCode;
+import redot.redot_server.domain.redot.admin.exception.DomainException;
+import redot.redot_server.domain.redot.admin.repository.DomainRepository;
+import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
+import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
+import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
 import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
 import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
-import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.site.entity.SiteSetting;
 import redot.redot_server.domain.cms.style.entity.StyleInfo;
@@ -50,17 +50,13 @@ public class RedotAppService {
         SiteSetting siteSetting = siteSettingRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new SiteSettingException(SiteSettingErrorCode.SITE_SETTING_NOT_FOUND));
 
-        CMSMember owner = redotApp.getOwner();
-
-        if (owner == null) {
-            throw new RedotAppException(RedotAppErrorCode.REDOT_APP_OWNER_NOT_FOUND);
-        }
+        RedotMember owner = redotApp.getOwner();
 
         return new RedotAppInfoResponse(
                 RedotAppResponse.fromEntity(redotApp),
                 SiteSettingResponse.fromEntity(siteSetting, domain),
                 StyleInfoResponse.fromEntity(styleInfo),
-                CMSMemberResponse.fromEntity(redotApp.getId(), owner)
+                RedotMemberResponse.fromNullable(owner)
         );
     }
 

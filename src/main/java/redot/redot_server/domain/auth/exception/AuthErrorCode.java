@@ -23,7 +23,8 @@ public enum AuthErrorCode implements ErrorCode {
     CMS_MEMBER_NOT_FOUND(404, 1013, "CMS 회원을 찾을 수 없습니다."),
     EMAIL_ALREADY_EXISTS(400, 1014, "이미 존재하는 이메일입니다."),
     CANNOT_DELETE_OWN_ADMIN_ACCOUNT(400, 1015, "자신의 관리자 계정은 삭제할 수 없습니다."),
-    DELETED_USER(401, 1016, "삭제된 사용자입니다.")
+    DELETED_USER(401, 1016, "삭제된 사용자입니다."),
+    REDOT_MEMBER_NOT_FOUND(404, 1017, "Redot 회원을 찾을 수 없습니다.")
     ;
 
 
