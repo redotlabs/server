@@ -17,8 +17,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 
 @Getter
@@ -60,10 +58,4 @@ public class RedotApp {
                 .build();
     }
 
-    public void changeOwner(RedotMember owner) {
-        if (this.owner != null && !this.owner.equals(owner)) {
-            throw new RedotAppException(RedotAppErrorCode.OWNER_ALREADY_ASSIGNED);
-        }
-        this.owner = owner;
-    }
 }
