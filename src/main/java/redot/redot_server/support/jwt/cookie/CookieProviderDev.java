@@ -22,6 +22,8 @@ public class CookieProviderDev implements CookieProvider{
     private String resolveDomain(HttpServletRequest request) {
         String host = request.getHeader("Origin");
         if (host.contains("localhost")) return "localhost";
+        if (host.contains("lvh.me")) return ".lvh.me";
+        if (host.contains("redotlabs.me")) return ".redotlabs.me";
         return ".redotlabs.vercel.app";
     }
 
