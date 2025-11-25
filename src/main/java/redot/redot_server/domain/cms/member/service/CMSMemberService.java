@@ -72,15 +72,8 @@ public class CMSMemberService {
 
     @Transactional
     public void deleteCMSMember(Long redotAppId, Long memberId) {
-        RedotApp redotApp = redotAppRepository.findById(redotAppId)
-                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
-
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
-
-        if(redotApp.getOwner() == cmsMember) {
-            throw new CMSMemberException(CMSMemberErrorCode.CANNOT_DELETE_OWNER);
-        }
 
         cmsMember.delete();
     }

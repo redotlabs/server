@@ -8,7 +8,6 @@ import redot.redot_server.domain.redot.admin.entity.Domain;
 import redot.redot_server.domain.redot.admin.repository.DomainRepository;
 import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.redot.admin.util.SubDomainNameGenerator;
-import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
@@ -22,6 +21,9 @@ import redot.redot_server.domain.cms.style.entity.StyleInfo;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
 import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
 import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
+import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
+import redot.redot_server.domain.redot.member.entity.RedotMember;
+import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +31,7 @@ import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 public class AdminRedotAppService {
     private final RedotAppRepository redotAppRepository;
     private final CMSMemberRepository cmsMemberRepository;
+    private final RedotMemberRepository redotMemberRepository;
     private final DomainRepository domainRepository;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
@@ -36,7 +39,16 @@ public class AdminRedotAppService {
 
     @Transactional
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request) {
-        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.companyName()));
+        String encodedPassword = passwordEncoder.encode(request.ownerPassword());
+
+        RedotMember redotMemberOwner = redotMemberRepository.save(RedotMember.create(
+                request.ownerName(),
+                request.ownerEmail(),
+                encodedPassword,
+                request.ownerProfileImageUrl()
+        ));
+
+        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.companyName(), redotMemberOwner));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
@@ -52,23 +64,21 @@ public class AdminRedotAppService {
                 )
         );
 
-        CMSMember owner = cmsMemberRepository.save(CMSMember.create(
+        cmsMemberRepository.save(CMSMember.create(
                         redotApp,
                         request.ownerName(),
                         request.ownerEmail(),
                         request.ownerProfileImageUrl(),
-                        passwordEncoder.encode(request.ownerPassword()),
+                        encodedPassword,
                         CMSMemberRole.ADMIN
                 )
         );
-
-        redotApp.setOwner(owner);
 
         return new RedotAppInfoResponse(
                 RedotAppResponse.fromEntity(redotApp),
                 SiteSettingResponse.fromEntity(siteSetting, domain),
                 StyleInfoResponse.fromEntity(styleInfo),
-                CMSMemberResponse.fromEntity(redotApp.getId(), owner)
+                RedotMemberResponse.fromEntity(redotMemberOwner)
         );
     }
 }

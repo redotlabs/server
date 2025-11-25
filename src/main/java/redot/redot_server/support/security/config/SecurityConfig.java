@@ -43,7 +43,7 @@ public class SecurityConfig {
     @Order(-1)
     public SecurityFilterChain publicDomainChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/domain/subdomain")
+        http.securityMatcher("/api/v1/domain/subdomain", "/api/v1/redot/*")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }
