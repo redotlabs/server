@@ -9,6 +9,7 @@ import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.RedotMemberSignInRequest;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
 import redot.redot_server.domain.redot.member.dto.RedotMemberCreateRequest;
 import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
@@ -27,6 +28,7 @@ public class RedotMemberAuthService {
     private final RedotMemberRepository redotMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
+    private final EmailVerificationService emailVerificationService;
 
     @Transactional
     public RedotMemberResponse signUp(RedotMemberCreateRequest request) {
@@ -35,6 +37,12 @@ public class RedotMemberAuthService {
         if (redotMemberRepository.existsByEmail(normalizedEmail)) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
         }
+
+        emailVerificationService.consumeVerifiedToken(
+                EmailVerificationPurpose.REDOT_MEMBER_SIGN_UP,
+                normalizedEmail,
+                request.verificationToken()
+        );
 
         RedotMember redotMember = RedotMember.create(
                 request.name(),

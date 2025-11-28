@@ -28,7 +28,13 @@ public enum AuthErrorCode implements ErrorCode {
     UNSUPPORTED_SOCIAL_LOGIN_FLOW(400, 1018, "지원하지 않는 소셜 로그인 흐름입니다."),
     UNSUPPORTED_SOCIAL_LOGIN_PROVIDER(400, 1019, "지원하지 않는 소셜 로그인 제공자입니다."),
     INVALID_SOCIAL_LOGIN_REGISTRATION(400, 1020, "잘못된 소셜 로그인 registrationId 입니다."),
-    INVALID_SOCIAL_PROFILE(400, 1021, "소셜 프로필 정보가 올바르지 않습니다.")
+    INVALID_SOCIAL_PROFILE(400, 1021, "소셜 프로필 정보가 올바르지 않습니다."),
+    EMAIL_SEND_FAILED(500, 1022, "이메일 발송에 실패했습니다."),
+    EMAIL_VERIFICATION_COOLDOWN(429, 1023, "잠시 후에 다시 이메일 인증을 시도해주세요."),
+    INVALID_EMAIL_VERIFICATION_CODE(400, 1024, "이메일 인증 코드가 올바르지 않습니다."),
+    INVALID_EMAIL_VERIFICATION_TOKEN(400, 1025, "이메일 인증 토큰이 유효하지 않습니다."),
+    UNSUPPORTED_EMAIL_VERIFICATION_PURPOSE(400, 1026, "지원하지 않는 이메일 인증 용도입니다."),
+    EMAIL_NOT_VERIFIED(400, 1027, "이메일 인증이 필요합니다.")
     ;
 
 
