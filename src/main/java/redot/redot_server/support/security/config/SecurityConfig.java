@@ -183,7 +183,7 @@ public class SecurityConfig {
     @Order(9)
     public SecurityFilterChain redotMemberAuthChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/auth/redot/member/**")
+        http.securityMatcher("/api/v1/auth/redot/member/**", "/api/v1/auth/email-verification/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }

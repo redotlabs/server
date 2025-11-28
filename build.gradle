@@ -36,6 +36,12 @@ dependencies {
     // OAuth2 의존성
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
+    // Redis 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    // Mail 의존성
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
     // DB 의존성
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     runtimeOnly 'org.postgresql:postgresql'

@@ -10,6 +10,8 @@ public record RedotMemberCreateRequest(
         @NotBlank(message = "비밀번호를 입력해주세요.")
         String password,
         @NotBlank(message = "이름을 입력해주세요.")
-        String name
+        String name,
+        @NotBlank(message = "이메일 인증 토큰을 입력해주세요.")
+        String verificationToken
 ) {
 }
