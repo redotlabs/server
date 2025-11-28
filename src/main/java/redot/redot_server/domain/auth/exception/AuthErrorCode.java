@@ -24,7 +24,11 @@ public enum AuthErrorCode implements ErrorCode {
     EMAIL_ALREADY_EXISTS(400, 1014, "이미 존재하는 이메일입니다."),
     CANNOT_DELETE_OWN_ADMIN_ACCOUNT(400, 1015, "자신의 관리자 계정은 삭제할 수 없습니다."),
     DELETED_USER(401, 1016, "삭제된 사용자입니다."),
-    REDOT_MEMBER_NOT_FOUND(404, 1017, "Redot 회원을 찾을 수 없습니다.")
+    REDOT_MEMBER_NOT_FOUND(404, 1017, "Redot 회원을 찾을 수 없습니다."),
+    UNSUPPORTED_SOCIAL_LOGIN_FLOW(400, 1018, "지원하지 않는 소셜 로그인 흐름입니다."),
+    UNSUPPORTED_SOCIAL_LOGIN_PROVIDER(400, 1019, "지원하지 않는 소셜 로그인 제공자입니다."),
+    INVALID_SOCIAL_LOGIN_REGISTRATION(400, 1020, "잘못된 소셜 로그인 registrationId 입니다."),
+    INVALID_SOCIAL_PROFILE(400, 1021, "소셜 프로필 정보가 올바르지 않습니다.")
     ;
 
 

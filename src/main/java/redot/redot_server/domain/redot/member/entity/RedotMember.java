@@ -108,4 +108,18 @@ public class RedotMember {
         this.status = RedotMemberStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void linkSocialAccount(SocialProvider socialProvider,
+                                  String socialProviderId,
+                                  String name,
+                                  String profileImageUrl) {
+        this.socialProvider = socialProvider;
+        this.socialProviderId = socialProviderId;
+        if (name != null) {
+            this.name = name;
+        }
+        if (profileImageUrl != null) {
+            this.profileImageUrl = profileImageUrl;
+        }
+    }
 }

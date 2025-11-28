@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 @Component
 @Profile("dev")
@@ -21,6 +22,9 @@ public class CookieProviderDev implements CookieProvider{
 
     private String resolveDomain(HttpServletRequest request) {
         String host = request.getHeader("Origin");
+        if (!StringUtils.hasText(host)) {
+            return "localhost";
+        }
         if (host.contains("localhost")) return "localhost";
         if (host.contains("lvh.me")) return ".lvh.me";
         if (host.contains("redotlabs.me")) return ".redotlabs.me";

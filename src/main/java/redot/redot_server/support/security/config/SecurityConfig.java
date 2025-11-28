@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
@@ -23,6 +24,11 @@ import redot.redot_server.support.security.filter.jwt.auth.RedotMemberJwtAuthent
 import redot.redot_server.support.security.filter.jwt.refresh.AdminRefreshTokenFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.RedotAppRefreshTokenFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.RedotMemberRefreshTokenFilter;
+import redot.redot_server.support.security.social.filter.OAuth2RedirectCaptureFilter;
+import redot.redot_server.support.security.social.handler.RedotOAuth2FailureHandler;
+import redot.redot_server.support.security.social.handler.RedotOAuth2SuccessHandler;
+import redot.redot_server.support.security.social.service.RedotOAuth2UserService;
+import redot.redot_server.support.security.social.service.RedotOidcUserService;
 
 @Configuration
 @EnableWebSecurity
@@ -39,6 +45,29 @@ public class SecurityConfig {
                         .authenticationEntryPoint(jsonAuthenticationEntryPoint)
                         .accessDeniedHandler(jsonAccessDeniedHandler)
                 );
+    }
+
+    @Bean
+    @Order(-2)
+    public SecurityFilterChain socialLoginChain(HttpSecurity http,
+                                                OAuth2RedirectCaptureFilter redirectCaptureFilter,
+                                                RedotOAuth2UserService redotOAuth2UserService,
+                                                RedotOidcUserService redotOidcUserService,
+                                                RedotOAuth2SuccessHandler redotOAuth2SuccessHandler,
+                                                RedotOAuth2FailureHandler redotOAuth2FailureHandler) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/oauth2/**", "/login/oauth2/**", "/sign-in/*/social/callback/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(redirectCaptureFilter, OAuth2AuthorizationRequestRedirectFilter.class)
+                .oauth2Login(oauth -> oauth
+                        .redirectionEndpoint(redirection -> redirection.baseUri("/sign-in/*/social/callback/*"))
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(redotOAuth2UserService)
+                                .oidcUserService(redotOidcUserService))
+                        .successHandler(redotOAuth2SuccessHandler)
+                        .failureHandler(redotOAuth2FailureHandler)
+                );
+        return http.build();
     }
 
     @Bean
@@ -163,4 +192,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
