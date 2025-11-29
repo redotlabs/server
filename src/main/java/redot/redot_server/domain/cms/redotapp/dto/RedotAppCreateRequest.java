@@ -23,7 +23,7 @@ public record RedotAppCreateRequest(
         ) {
     public RedotAppCreateRequest{
         if (theme == null) {
-            theme = Theme.CLASSIC;
+            theme = Theme.DEFAULT;
         }
     }
 }
