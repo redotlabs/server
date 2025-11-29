@@ -38,22 +38,27 @@ public class RedotApp {
     private RedotAppStatus status;
 
     @Column(nullable = false)
-    private String companyName;
+    private String appName;
+
+    // 초기 관리자 계정 생성 여부(default=false)
+    @Column(nullable = false)
+    @Builder.Default
+    private boolean isCreatedManager = false;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static RedotApp create(String companyName, RedotMember owner) {
+    public static RedotApp create(String appName, RedotMember owner) {
         return RedotApp.builder()
-                .companyName(companyName)
+                .appName(appName)
                 .owner(owner)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }
 
-    public static RedotApp createWithoutOwner(String companyName) {
+    public static RedotApp createWithoutOwner(String appName) {
         return RedotApp.builder()
-                .companyName(companyName)
+                .appName(appName)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }

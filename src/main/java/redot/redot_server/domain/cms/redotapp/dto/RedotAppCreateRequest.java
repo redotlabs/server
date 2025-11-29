@@ -5,8 +5,8 @@ import jakarta.validation.constraints.NotBlank;
 import redot.redot_server.domain.cms.site.entity.Theme;
 
 public record RedotAppCreateRequest(
-        @NotBlank(message = "회사 이름을 입력해주세요.")
-        String companyName,
+        @NotBlank(message = "앱 이름을 입력해주세요.")
+        String appName,
         String ownerProfileImageUrl,
         Theme theme,
         @NotBlank(message = "색상을 입력해주세요.")
