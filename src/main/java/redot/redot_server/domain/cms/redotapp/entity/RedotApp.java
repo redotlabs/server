@@ -40,11 +40,6 @@ public class RedotApp {
     @Column(nullable = false)
     private String appName;
 
-    // 초기 관리자 계정 생성 여부(default=false)
-    @Column(nullable = false)
-    @Builder.Default
-    private boolean isCreatedManager = false;
-
     @CreatedDate
     private LocalDateTime createdAt;
 
