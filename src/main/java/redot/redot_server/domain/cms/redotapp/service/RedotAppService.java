@@ -3,6 +3,7 @@ package redot.redot_server.domain.cms.redotapp.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.redot.admin.entity.Domain;
@@ -15,6 +16,10 @@ import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
+import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
@@ -44,6 +49,8 @@ public class RedotAppService {
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
     private final RedotMemberRepository redotMemberRepository;
+    private final CMSMemberRepository cmsMemberRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId).orElseThrow(
@@ -120,5 +127,35 @@ public class RedotAppService {
                 StyleInfoResponse.fromEntity(styleInfo),
                 RedotMemberResponse.fromNullable(redotApp.getOwner())
         );
+    }
+
+    @Transactional
+    public void createManager(Long redotAppId, RedotAppCreateManagerRequest request, Long currentUserId) {
+        RedotApp redotApp = redotAppRepository.findById(redotAppId)
+                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
+
+        // 소유자 확인
+        if (!redotApp.isOwner(currentUserId)) {
+            throw new RedotAppException(RedotAppErrorCode.NOT_REDOT_APP_OWNER);
+        }
+
+        // 이미 초기 관리자가 생성되었는지 확인
+        if (redotApp.isCreatedManager()) {
+            throw new RedotAppException(RedotAppErrorCode.MANAGER_ALREADY_CREATED);
+        }
+
+        // CMS 관리자 계정 생성 (ADMIN 권한)
+        CMSMember manager = CMSMember.create(
+                redotApp,
+                request.name(),
+                request.email(),
+                null, // profileImageUrl
+                passwordEncoder.encode(request.password()),
+                CMSMemberRole.ADMIN
+        );
+        cmsMemberRepository.save(manager);
+
+        // 초기 관리자 생성 완료 표시
+        redotApp.markManagerCreated();
     }
 }

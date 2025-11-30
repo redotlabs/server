@@ -108,9 +108,12 @@ public class SecurityConfig {
     public SecurityFilterChain redotMemberAppChain(HttpSecurity http,
                                                    RedotMemberJwtAuthenticationFilter redotMemberJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher(request -> 
-                request.getRequestURI().equals("/api/v1/app") && 
-                (request.getMethod().equals("POST") || request.getMethod().equals("GET")))
+        http.securityMatcher(request -> {
+                    String uri = request.getRequestURI();
+                    String method = request.getMethod();
+                    return (uri.equals("/api/v1/app") && (method.equals("POST") || method.equals("GET")))
+                            || (uri.matches("/api/v1/app/\\d+/create-manager") && method.equals("POST"));
+                })
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .addFilterBefore(redotMemberJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
