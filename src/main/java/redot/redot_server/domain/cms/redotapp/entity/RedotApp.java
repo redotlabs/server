@@ -63,10 +63,11 @@ public class RedotApp {
                 .build();
     }
 
-    public static RedotApp createWithoutOwner(String name) {
+    public static RedotApp createWithoutOwner(String name, Plan plan) {
         return RedotApp.builder()
                 .name(name)
                 .status(RedotAppStatus.ACTIVE)
+                .plan(plan)
                 .build();
     }
 

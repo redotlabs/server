@@ -3,6 +3,10 @@ package redot.redot_server.domain.redot.admin.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import redot.redot_server.domain.cms.plan.entity.Plan;
+import redot.redot_server.domain.cms.plan.exception.PlanErrorCode;
+import redot.redot_server.domain.cms.plan.exception.PlanException;
+import redot.redot_server.domain.cms.plan.repository.PlanRepository;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
@@ -27,10 +31,13 @@ public class AdminRedotAppService {
     private final DomainRepository domainRepository;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
+    private final PlanRepository planRepository;
 
     @Transactional
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request) {
-        RedotApp redotApp = redotAppRepository.save(RedotApp.createWithoutOwner(request.name()));
+        Plan plan = planRepository.findById(request.planId())
+                .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.createWithoutOwner(request.name(), plan));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
