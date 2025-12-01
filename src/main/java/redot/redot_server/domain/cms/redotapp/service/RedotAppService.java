@@ -105,7 +105,7 @@ public class RedotAppService {
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request, Long currentUserId) {
         RedotMember owner = redotMemberRepository.findById(currentUserId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
-        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.appName(), owner));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.name(), owner));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
@@ -151,7 +151,7 @@ public class RedotAppService {
                 request.email(),
                 null, // profileImageUrl
                 passwordEncoder.encode(request.password()),
-                CMSMemberRole.ADMIN
+                CMSMemberRole.OWNER
         );
         cmsMemberRepository.save(manager);
 
