@@ -19,6 +19,10 @@ import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.domain.cms.plan.entity.Plan;
+import redot.redot_server.domain.cms.plan.exception.PlanErrorCode;
+import redot.redot_server.domain.cms.plan.exception.PlanException;
+import redot.redot_server.domain.cms.plan.repository.PlanRepository;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
@@ -51,7 +55,8 @@ public class RedotAppService {
     private final RedotMemberRepository redotMemberRepository;
     private final CMSMemberRepository cmsMemberRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final PlanRepository planRepository;
+    
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId).orElseThrow(
                 () -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND)
@@ -105,7 +110,9 @@ public class RedotAppService {
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request, Long currentUserId) {
         RedotMember owner = redotMemberRepository.findById(currentUserId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
-        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.appName(), owner));
+        Plan plan = planRepository.findById(request.planId())
+                .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.appName(), owner, plan));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));

@@ -11,7 +11,9 @@ public record RedotAppCreateRequest(
         @NotBlank(message = "색상을 입력해주세요.")
         String color,
         @NotBlank(message = "폰트를 입력해주세요.")
-        String font
+        String font,
+        @NotBlank(message = "플랜을 선택해주세요.")
+        Long planId
         ) {
     public RedotAppCreateRequest{
         if (theme == null) {

@@ -17,6 +17,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import redot.redot_server.domain.cms.plan.entity.Plan;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 
 @Getter
@@ -45,14 +47,19 @@ public class RedotApp {
     @Builder.Default
     private boolean isCreatedManager = false;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id", nullable = false)
+    private Plan plan;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static RedotApp create(String appName, RedotMember owner) {
+    public static RedotApp create(String appName, RedotMember owner, Plan plan) {
         return RedotApp.builder()
                 .appName(appName)
                 .owner(owner)
                 .status(RedotAppStatus.ACTIVE)
+                .plan(plan)
                 .build();
     }
 
@@ -71,4 +78,7 @@ public class RedotApp {
         return this.owner != null && this.owner.getId().equals(redotMemberId);
     }
 
+    public void updatePlan(Plan plan) {
+        this.plan = plan;
+    }
 }
