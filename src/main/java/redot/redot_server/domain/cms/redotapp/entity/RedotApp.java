@@ -40,7 +40,7 @@ public class RedotApp {
     private RedotAppStatus status;
 
     @Column(nullable = false)
-    private String appName;
+    private String name;
 
     // 초기 관리자 계정 생성 여부(default=false)
     @Column(nullable = false)
@@ -54,18 +54,18 @@ public class RedotApp {
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static RedotApp create(String appName, RedotMember owner, Plan plan) {
+    public static RedotApp create(String name, RedotMember owner, Plan plan) {
         return RedotApp.builder()
-                .appName(appName)
+                .name(name)
                 .owner(owner)
                 .status(RedotAppStatus.ACTIVE)
                 .plan(plan)
                 .build();
     }
 
-    public static RedotApp createWithoutOwner(String appName) {
+    public static RedotApp createWithoutOwner(String name) {
         return RedotApp.builder()
-                .appName(appName)
+                .name(name)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }

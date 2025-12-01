@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum CMSMemberRole {
+    OWNER,
     ADMIN,
     MANAGER
 }

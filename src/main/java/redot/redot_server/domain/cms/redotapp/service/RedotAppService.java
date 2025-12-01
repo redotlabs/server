@@ -1,6 +1,7 @@
 package redot.redot_server.domain.cms.redotapp.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,12 +35,12 @@ import redot.redot_server.domain.cms.site.entity.SiteSetting;
 import redot.redot_server.domain.cms.style.entity.StyleInfo;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
+import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
 import redot.redot_server.domain.cms.site.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.cms.site.exception.SiteSettingException;
+import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.cms.style.exception.StyleInfoErrorCode;
 import redot.redot_server.domain.cms.style.exception.StyleInfoException;
-import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 import redot.redot_server.support.common.dto.PageResponse;
 
@@ -112,7 +113,7 @@ public class RedotAppService {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
         Plan plan = planRepository.findById(request.planId())
                 .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
-        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.appName(), owner, plan));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.name(), owner, plan));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
@@ -151,16 +152,21 @@ public class RedotAppService {
             throw new RedotAppException(RedotAppErrorCode.MANAGER_ALREADY_CREATED);
         }
 
-        // CMS 관리자 계정 생성 (ADMIN 권한)
+        // CMS 관리자 계정 생성 (OWNER 권한)
         CMSMember manager = CMSMember.create(
                 redotApp,
                 request.name(),
                 request.email(),
                 null, // profileImageUrl
                 passwordEncoder.encode(request.password()),
-                CMSMemberRole.ADMIN
+                CMSMemberRole.OWNER
         );
-        cmsMemberRepository.save(manager);
+
+        try {
+            cmsMemberRepository.save(manager);
+        } catch (DataIntegrityViolationException e) {
+            throw new RedotAppException(RedotAppErrorCode.MANAGER_ALREADY_CREATED);
+        }
 
         // 초기 관리자 생성 완료 표시
         redotApp.markManagerCreated();
