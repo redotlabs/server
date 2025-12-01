@@ -5,7 +5,7 @@ import redot.redot_server.domain.cms.site.entity.Theme;
 
 public record RedotAppCreateRequest(
         @NotBlank(message = "앱 이름을 입력해주세요.")
-        String appName,
+        String name,
         String ownerProfileImageUrl,
         Theme theme,
         @NotBlank(message = "색상을 입력해주세요.")
