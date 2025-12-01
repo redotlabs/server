@@ -7,28 +7,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.exception.AuthErrorCode;
-import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.domain.cms.member.entity.CMSMember;
-import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
-import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
-import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
-import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
-import redot.redot_server.domain.cms.site.entity.SiteSetting;
-import redot.redot_server.domain.cms.site.exception.SiteSettingErrorCode;
-import redot.redot_server.domain.cms.site.exception.SiteSettingException;
-import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
-import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
-import redot.redot_server.domain.cms.style.entity.StyleInfo;
-import redot.redot_server.domain.cms.style.exception.StyleInfoErrorCode;
-import redot.redot_server.domain.cms.style.exception.StyleInfoException;
 import redot.redot_server.domain.redot.admin.entity.Domain;
 import redot.redot_server.domain.redot.admin.exception.DomainErrorCode;
 import redot.redot_server.domain.redot.admin.exception.DomainException;
@@ -37,6 +15,32 @@ import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.redot.admin.util.SubDomainNameGenerator;
 import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
+import redot.redot_server.domain.auth.exception.AuthErrorCode;
+import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
+import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.domain.cms.plan.entity.Plan;
+import redot.redot_server.domain.cms.plan.exception.PlanErrorCode;
+import redot.redot_server.domain.cms.plan.exception.PlanException;
+import redot.redot_server.domain.cms.plan.repository.PlanRepository;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
+import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
+import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
+import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
+import redot.redot_server.domain.cms.site.entity.SiteSetting;
+import redot.redot_server.domain.cms.style.entity.StyleInfo;
+import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
+import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
+import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
+import redot.redot_server.domain.cms.site.exception.SiteSettingErrorCode;
+import redot.redot_server.domain.cms.site.exception.SiteSettingException;
+import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
+import redot.redot_server.domain.cms.style.exception.StyleInfoErrorCode;
+import redot.redot_server.domain.cms.style.exception.StyleInfoException;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 import redot.redot_server.support.common.dto.PageResponse;
 
@@ -52,7 +56,8 @@ public class RedotAppService {
     private final RedotMemberRepository redotMemberRepository;
     private final CMSMemberRepository cmsMemberRepository;
     private final PasswordEncoder passwordEncoder;
-
+    private final PlanRepository planRepository;
+    
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId).orElseThrow(
                 () -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND)
@@ -106,7 +111,9 @@ public class RedotAppService {
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request, Long currentUserId) {
         RedotMember owner = redotMemberRepository.findById(currentUserId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
-        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.name(), owner));
+        Plan plan = planRepository.findById(request.planId())
+                .orElseThrow(() -> new PlanException(PlanErrorCode.PLAN_NOT_FOUND));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.create(request.name(), owner, plan));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
