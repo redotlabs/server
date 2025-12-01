@@ -14,8 +14,7 @@ public record PlanResponse(
         Long maxPageViews,
         Integer maxPages,
         Integer maxManagers,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
+        LocalDateTime createdAt
 ) {
     public static PlanResponse fromEntity(Plan plan) {
         return new PlanResponse(
@@ -27,8 +26,7 @@ public record PlanResponse(
                 plan.getMaxPageViews(),
                 plan.getMaxPages(),
                 plan.getMaxManagers(),
-                plan.getCreatedAt(),
-                plan.getUpdatedAt()
+                plan.getCreatedAt()
         );
     }
 }

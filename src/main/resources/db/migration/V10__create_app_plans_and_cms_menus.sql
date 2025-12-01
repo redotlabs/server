@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS app_plans (
     max_page_views    BIGINT         NOT NULL,
     max_pages         INTEGER        NOT NULL,
     max_managers      INTEGER        NOT NULL,
-    created_at        TIMESTAMP      DEFAULT CURRENT_TIMESTAMP,
+    created_at        TIMESTAMP      DEFAULT CURRENT_TIMESTAMP
 );
 
 -- CMS 메뉴 테이블
