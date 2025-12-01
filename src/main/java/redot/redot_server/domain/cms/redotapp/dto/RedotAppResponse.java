@@ -8,6 +8,7 @@ public record RedotAppResponse(
         Long id,
         String name,
         RedotAppStatus status,
+        boolean isCreatedManager,
         LocalDateTime createdAt
 ) {
     public static RedotAppResponse fromEntity(RedotApp redotApp) {
@@ -15,6 +16,7 @@ public record RedotAppResponse(
                 redotApp.getId(),
                 redotApp.getName(),
                 redotApp.getStatus(),
+                redotApp.isCreatedManager(),
                 redotApp.getCreatedAt()
         );
     }
