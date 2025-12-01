@@ -63,4 +63,12 @@ public class RedotApp {
                 .build();
     }
 
+    public void markManagerCreated() {
+        this.isCreatedManager = true;
+    }
+
+    public boolean isOwner(Long redotMemberId) {
+        return this.owner != null && this.owner.getId().equals(redotMemberId);
+    }
+
 }

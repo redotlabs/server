@@ -7,12 +7,14 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
+import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.service.RedotAppService;
@@ -44,5 +46,13 @@ public class RedotAppController {
     public ResponseEntity<RedotAppInfoResponse> createRedotApp(@Valid @RequestBody RedotAppCreateRequest request,
                                                                @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
         return ResponseEntity.ok(redotAppService.createRedotApp(request, jwtPrincipal.id()));
+    }
+
+    @PostMapping("/{redotAppId}/create-manager")
+    public ResponseEntity<Void> createManager(@PathVariable("redotAppId") Long redotAppId,
+                                              @Valid @RequestBody RedotAppCreateManagerRequest request,
+                                              @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
+        redotAppService.createManager(redotAppId, request, jwtPrincipal.id());
+        return ResponseEntity.ok().build();
     }
 }
