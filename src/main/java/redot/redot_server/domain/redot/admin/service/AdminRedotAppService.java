@@ -30,7 +30,7 @@ public class AdminRedotAppService {
 
     @Transactional
     public RedotAppInfoResponse createRedotApp(RedotAppCreateRequest request) {
-        RedotApp redotApp = redotAppRepository.save(RedotApp.createWithoutOwner(request.companyName()));
+        RedotApp redotApp = redotAppRepository.save(RedotApp.createWithoutOwner(request.name()));
 
         String domainName = SubDomainNameGenerator.generateSubdomain();
         Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));

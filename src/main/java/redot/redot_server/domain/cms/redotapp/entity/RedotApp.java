@@ -38,22 +38,22 @@ public class RedotApp {
     private RedotAppStatus status;
 
     @Column(nullable = false)
-    private String companyName;
+    private String name;
 
     @CreatedDate
     private LocalDateTime createdAt;
 
-    public static RedotApp create(String companyName, RedotMember owner) {
+    public static RedotApp create(String name, RedotMember owner) {
         return RedotApp.builder()
-                .companyName(companyName)
+                .name(name)
                 .owner(owner)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }
 
-    public static RedotApp createWithoutOwner(String companyName) {
+    public static RedotApp createWithoutOwner(String name) {
         return RedotApp.builder()
-                .companyName(companyName)
+                .name(name)
                 .status(RedotAppStatus.ACTIVE)
                 .build();
     }

@@ -6,14 +6,14 @@ import redot.redot_server.domain.cms.redotapp.entity.RedotAppStatus;
 
 public record RedotAppResponse(
         Long id,
-        String companyName,
+        String name,
         RedotAppStatus status,
         LocalDateTime createdAt
 ) {
     public static RedotAppResponse fromEntity(RedotApp redotApp) {
         return new RedotAppResponse(
                 redotApp.getId(),
-                redotApp.getCompanyName(),
+                redotApp.getName(),
                 redotApp.getStatus(),
                 redotApp.getCreatedAt()
         );
