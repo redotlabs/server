@@ -35,6 +35,9 @@ public class CookieProviderDev implements CookieProvider {
         if (host.contains("redotlabs.me")) {
             return ".redotlabs.me";
         }
+        if(host.contains("redot.me")) {
+            return ".redot.me";
+        }
         return ".redotlabs.vercel.app";
     }
 
