@@ -10,12 +10,13 @@ import org.springframework.util.StringUtils;
 
 @Component
 @Profile("dev")
-public class CookieProviderDev implements CookieProvider{
+public class CookieProviderDev implements CookieProvider {
 
     private final boolean secure;
     private final String sameSite;
 
-    public CookieProviderDev(@Value("${jwt.cookie.secure}") boolean secure, @Value("${jwt.cookie.same-site}")  String sameSite) {
+    public CookieProviderDev(@Value("${jwt.cookie.secure}") boolean secure,
+                             @Value("${jwt.cookie.same-site}") String sameSite) {
         this.secure = secure;
         this.sameSite = sameSite;
     }
@@ -25,9 +26,15 @@ public class CookieProviderDev implements CookieProvider{
         if (!StringUtils.hasText(host)) {
             return "localhost";
         }
-        if (host.contains("localhost")) return "localhost";
-        if (host.contains("lvh.me")) return ".lvh.me";
-        if (host.contains("redotlabs.me")) return ".redotlabs.me";
+        if (host.contains("localhost")) {
+            return "localhost";
+        }
+        if (host.contains("lvh.me")) {
+            return ".lvh.me";
+        }
+        if (host.contains("redotlabs.me")) {
+            return ".redotlabs.me";
+        }
         return ".redotlabs.vercel.app";
     }
 
