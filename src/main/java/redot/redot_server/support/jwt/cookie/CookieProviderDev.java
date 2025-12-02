@@ -55,11 +55,9 @@ public class CookieProviderDev implements CookieProvider {
 
     private String extractHost(HttpServletRequest request) {
         String origin = request.getHeader("Origin");
-        String clientHost = request.getHeader("X-Client-Host");
-        String forwardedHost = request.getHeader("X-Forwarded-Host");
         String referer = request.getHeader("Referer");
 
-        String hostCandidate = firstNonEmpty(origin, clientHost, forwardedHost, referer);
+        String hostCandidate = firstNonEmpty(origin, referer);
         if (!StringUtils.hasText(hostCandidate)) {
             return request.getServerName();
         }
