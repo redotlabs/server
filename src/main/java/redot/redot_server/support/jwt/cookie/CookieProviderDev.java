@@ -22,23 +22,55 @@ public class CookieProviderDev implements CookieProvider {
     }
 
     private String resolveDomain(HttpServletRequest request) {
-        String host = request.getHeader("Origin");
+        String host = extractHost(request);
         if (!StringUtils.hasText(host)) {
             return "localhost";
         }
-        if (host.contains("localhost")) {
+
+        String normalized = host.toLowerCase();
+        if (normalized.contains("localhost")) {
             return "localhost";
         }
-        if (host.contains("lvh.me")) {
+        if (normalized.contains("lvh.me")) {
             return ".lvh.me";
         }
-        if (host.contains("redotlabs.me")) {
+        if (normalized.contains("redotlabs.me")) {
             return ".redotlabs.me";
         }
-        if(host.contains("redot.me")) {
+        if (normalized.contains("redot.me")) {
             return ".redot.me";
         }
         return ".redotlabs.vercel.app";
+    }
+
+    private String extractHost(HttpServletRequest request) {
+        String origin = request.getHeader("Origin");
+        String clientHost = request.getHeader("X-Client-Host");
+        String forwardedHost = request.getHeader("X-Forwarded-Host");
+
+        String hostCandidate = firstNonEmpty(origin, clientHost, forwardedHost);
+        if (!StringUtils.hasText(hostCandidate)) {
+            return request.getServerName();
+        }
+        return stripScheme(hostCandidate);
+    }
+
+    private String stripScheme(String value) {
+        String trimmed = value.trim();
+        int schemeEnd = trimmed.indexOf("//");
+        if (schemeEnd >= 0) {
+            return trimmed.substring(schemeEnd + 2);
+        }
+        return trimmed;
+    }
+
+    private String firstNonEmpty(String... candidates) {
+        for (String candidate : candidates) {
+            if (StringUtils.hasText(candidate)) {
+                return candidate;
+            }
+        }
+        return null;
     }
 
     public ResponseCookie createCookie(HttpServletRequest request, String name, String value, Duration maxAge) {
