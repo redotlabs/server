@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import java.net.URI;
 import java.util.List;
 import java.util.Objects;
+import java.util.Locale;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,11 +25,25 @@ public record FlowRedirect(
                 return false;
             }
             return allowedRedirectHosts.stream()
-                    .filter(Objects::nonNull)
-                    .map(String::toLowerCase)
-                    .anyMatch(allowed -> allowed.equals(host.toLowerCase()));
+                    .filter(StringUtils::hasText)
+                    .anyMatch(allowed -> matchesHost(allowed, host));
         } catch (IllegalArgumentException ex) {
             return false;
         }
+    }
+
+    private boolean matchesHost(String allowed, String host) {
+        String normalizedAllowed = allowed.toLowerCase(Locale.ROOT).trim();
+        String normalizedHost = host.toLowerCase(Locale.ROOT);
+
+        if (normalizedAllowed.startsWith("*.")) {
+            String suffix = normalizedAllowed.substring(2);
+            if (!StringUtils.hasText(suffix)) {
+                return false;
+            }
+            return normalizedHost.equals(suffix) || normalizedHost.endsWith("." + suffix);
+        }
+
+        return normalizedAllowed.equals(normalizedHost);
     }
 }

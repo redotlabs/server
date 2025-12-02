@@ -2,12 +2,12 @@ package redot.redot_server.domain.auth.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 import redot.redot_server.domain.auth.dto.AuthResult;
 import redot.redot_server.domain.auth.dto.RedotMemberSignInRequest;
 import redot.redot_server.domain.auth.dto.SocialLoginUrlResponse;
@@ -30,12 +30,20 @@ import redot.redot_server.support.jwt.token.TokenType;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/auth/redot/member")
 public class RedotMemberAuthController {
 
     private final RedotMemberAuthService redotMemberAuthService;
     private final TokenCookieFactory tokenCookieFactory;
+    private final String oauth2BaseUrl;
+
+    public RedotMemberAuthController(RedotMemberAuthService redotMemberAuthService,
+                                     TokenCookieFactory tokenCookieFactory,
+                                     @Value("${spring.security.oauth2.base-url}") String oauth2BaseUrl) {
+        this.redotMemberAuthService = redotMemberAuthService;
+        this.tokenCookieFactory = tokenCookieFactory;
+        this.oauth2BaseUrl = oauth2BaseUrl;
+    }
 
     @PostMapping("/sign-up")
     public ResponseEntity<RedotMemberResponse> signUp(@RequestBody @Valid RedotMemberCreateRequest request) {
@@ -89,7 +97,7 @@ public class RedotMemberAuthController {
         String normalizedProvider = provider.toLowerCase();
         String registrationId = "redot-member-" + normalizedProvider;
 
-        var builder = ServletUriComponentsBuilder.fromCurrentContextPath()
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oauth2BaseUrl)
                 .path("/oauth2/authorization/")
                 .path(registrationId);
 
