@@ -2,6 +2,8 @@ package redot.redot_server.support.jwt.cookie;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
+import java.util.Enumeration;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseCookie;
@@ -10,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 @Component
 @Profile("dev")
+@Slf4j
 public class CookieProviderDev implements CookieProvider {
 
     private final boolean secure;
@@ -22,6 +25,13 @@ public class CookieProviderDev implements CookieProvider {
     }
 
     private String resolveDomain(HttpServletRequest request) {
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String name = headerNames.nextElement();
+            String value = request.getHeader(name);
+            log.info("header {} = {}", name, value);
+        }
+
         String host = extractHost(request);
         if (!StringUtils.hasText(host)) {
             return "localhost";
@@ -40,15 +50,16 @@ public class CookieProviderDev implements CookieProvider {
         if (normalized.contains("redot.me")) {
             return ".redot.me";
         }
-        return ".redotlabs.vercel.app";
+        return ".redotlabs.me";
     }
 
     private String extractHost(HttpServletRequest request) {
         String origin = request.getHeader("Origin");
         String clientHost = request.getHeader("X-Client-Host");
         String forwardedHost = request.getHeader("X-Forwarded-Host");
+        String referer = request.getHeader("Referer");
 
-        String hostCandidate = firstNonEmpty(origin, clientHost, forwardedHost);
+        String hostCandidate = firstNonEmpty(origin, clientHost, forwardedHost, referer);
         if (!StringUtils.hasText(hostCandidate)) {
             return request.getServerName();
         }
