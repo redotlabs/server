@@ -1,13 +1,14 @@
 package redot.redot_server.domain.auth.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-import io.swagger.v3.oas.annotations.Operation;
+import java.net.URI;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,9 @@ import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
 import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.support.jwt.token.TokenType;
 import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.support.security.social.SocialAuthorizationEndpoints;
+import redot.redot_server.support.security.social.config.AuthRedirectProperties;
+import redot.redot_server.support.security.social.config.FlowRedirect;
 
 @RestController
 @RequestMapping("/api/v1/auth/redot/member")
@@ -36,13 +40,16 @@ public class RedotMemberAuthController {
     private final RedotMemberAuthService redotMemberAuthService;
     private final TokenCookieFactory tokenCookieFactory;
     private final String oauth2BaseUrl;
+    private final AuthRedirectProperties authRedirectProperties;
 
     public RedotMemberAuthController(RedotMemberAuthService redotMemberAuthService,
                                      TokenCookieFactory tokenCookieFactory,
-                                     @Value("${spring.security.oauth2.base-url}") String oauth2BaseUrl) {
+                                     @Value("${spring.security.oauth2.base-url}") String oauth2BaseUrl,
+                                     AuthRedirectProperties authRedirectProperties) {
         this.redotMemberAuthService = redotMemberAuthService;
         this.tokenCookieFactory = tokenCookieFactory;
         this.oauth2BaseUrl = oauth2BaseUrl;
+        this.authRedirectProperties = authRedirectProperties;
     }
 
     @PostMapping("/sign-up")
@@ -97,8 +104,9 @@ public class RedotMemberAuthController {
         String normalizedProvider = provider.toLowerCase();
         String registrationId = "redot-member-" + normalizedProvider;
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oauth2BaseUrl)
-                .path("/oauth2/authorization/")
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(resolveAuthorizationBaseUrl("redot-member", redirectUri))
+                .path(SocialAuthorizationEndpoints.API_AUTHORIZATION_BASE_URI)
+                .path("/")
                 .path(registrationId);
 
         if (StringUtils.hasText(redirectUri)) {
@@ -109,5 +117,39 @@ public class RedotMemberAuthController {
         }
 
         return ResponseEntity.ok(new SocialLoginUrlResponse(builder.toUriString()));
+    }
+
+    private String resolveAuthorizationBaseUrl(String flowKey, String requestedRedirect) {
+        if (!StringUtils.hasText(requestedRedirect)) {
+            return oauth2BaseUrl;
+        }
+
+        FlowRedirect flowRedirect;
+        try {
+            flowRedirect = authRedirectProperties.getFlow(flowKey);
+        } catch (AuthException ex) {
+            return oauth2BaseUrl;
+        }
+
+        if (!flowRedirect.isAllowed(requestedRedirect)) {
+            return oauth2BaseUrl;
+        }
+
+        try {
+            URI parsed = URI.create(requestedRedirect);
+            if (!StringUtils.hasText(parsed.getScheme()) || !StringUtils.hasText(parsed.getHost())) {
+                return oauth2BaseUrl;
+            }
+
+            UriComponentsBuilder builder = UriComponentsBuilder.newInstance()
+                    .scheme(parsed.getScheme())
+                    .host(parsed.getHost());
+            if (parsed.getPort() >= 0) {
+                builder.port(parsed.getPort());
+            }
+            return builder.build(true).toUriString();
+        } catch (IllegalArgumentException ex) {
+            return oauth2BaseUrl;
+        }
     }
 }

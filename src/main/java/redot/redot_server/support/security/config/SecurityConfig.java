@@ -24,6 +24,7 @@ import redot.redot_server.support.security.filter.jwt.auth.RedotMemberJwtAuthent
 import redot.redot_server.support.security.filter.jwt.refresh.AdminRefreshTokenFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.RedotAppRefreshTokenFilter;
 import redot.redot_server.support.security.filter.jwt.refresh.RedotMemberRefreshTokenFilter;
+import redot.redot_server.support.security.social.SocialAuthorizationEndpoints;
 import redot.redot_server.support.security.social.filter.OAuth2RedirectCaptureFilter;
 import redot.redot_server.support.security.social.handler.RedotOAuth2FailureHandler;
 import redot.redot_server.support.security.social.handler.RedotOAuth2SuccessHandler;
@@ -58,11 +59,17 @@ public class SecurityConfig {
                                                 RedotOAuth2FailureHandler redotOAuth2FailureHandler,
                                                 FlowAwareRedirectUriResolver flowAwareRedirectUriResolver) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/oauth2/**", "/login/oauth2/**", "/api/v1/sign-in/*/social/callback/**")
+        http.securityMatcher(
+                        SocialAuthorizationEndpoints.API_AUTHORIZATION_BASE_URI + "/**",
+                        "/oauth2/**",
+                        "/login/oauth2/**",
+                        "/api/v1/sign-in/*/social/callback/**"
+                )
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .addFilterBefore(redirectCaptureFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(endpoint -> endpoint
+                                .baseUri(SocialAuthorizationEndpoints.API_AUTHORIZATION_BASE_URI)
                                 .authorizationRequestResolver(flowAwareRedirectUriResolver))
                         .redirectionEndpoint(redirection -> redirection.baseUri("/api/v1/sign-in/*/social/callback/*"))
                         .userInfoEndpoint(userInfo -> userInfo
@@ -126,7 +133,7 @@ public class SecurityConfig {
     @Bean
     @Order(3)
     public SecurityFilterChain redotAppPublicChain(HttpSecurity http,
-                                                  RedotAppFilter redotAppFilter) throws Exception {
+                                                   RedotAppFilter redotAppFilter) throws Exception {
         applyCommonSecurity(http);
         http.securityMatcher("/api/v1/app/by-subdomain")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())

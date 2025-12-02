@@ -2,16 +2,18 @@ package redot.redot_server.support.security.social.resolver;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.support.security.social.SocialAuthorizationEndpoints;
 import redot.redot_server.support.security.social.config.AuthRedirectProperties;
 import redot.redot_server.support.security.social.config.FlowRedirect;
 import redot.redot_server.support.security.social.model.FlowResolver;
@@ -19,28 +21,39 @@ import redot.redot_server.support.security.social.model.FlowResolver;
 @Component
 public class FlowAwareRedirectUriResolver implements OAuth2AuthorizationRequestResolver {
 
-    private final OAuth2AuthorizationRequestResolver delegate;
+    private final List<OAuth2AuthorizationRequestResolver> delegates;
     private final AuthRedirectProperties authRedirectProperties;
 
     public FlowAwareRedirectUriResolver(ClientRegistrationRepository clientRegistrationRepository,
                                         AuthRedirectProperties authRedirectProperties) {
-        this.delegate = new DefaultOAuth2AuthorizationRequestResolver(
-                clientRegistrationRepository,
-                OAuth2AuthorizationRequestRedirectFilter.DEFAULT_AUTHORIZATION_REQUEST_BASE_URI
-        );
+        this.delegates = SocialAuthorizationEndpoints.SUPPORTED_AUTHORIZATION_BASE_URIS.stream()
+                .map(base -> new DefaultOAuth2AuthorizationRequestResolver(clientRegistrationRepository, base))
+                .collect(Collectors.toList());
         this.authRedirectProperties = authRedirectProperties;
     }
 
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
-        OAuth2AuthorizationRequest original = delegate.resolve(request);
+        OAuth2AuthorizationRequest original = resolveWithDelegates(request, null);
         return customize(original, request);
     }
 
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String clientRegistrationId) {
-        OAuth2AuthorizationRequest original = delegate.resolve(request, clientRegistrationId);
+        OAuth2AuthorizationRequest original = resolveWithDelegates(request, clientRegistrationId);
         return customize(original, request);
+    }
+
+    private OAuth2AuthorizationRequest resolveWithDelegates(HttpServletRequest request, String clientRegistrationId) {
+        for (OAuth2AuthorizationRequestResolver delegate : delegates) {
+            OAuth2AuthorizationRequest resolved = clientRegistrationId == null
+                    ? delegate.resolve(request)
+                    : delegate.resolve(request, clientRegistrationId);
+            if (resolved != null) {
+                return resolved;
+            }
+        }
+        return null;
     }
 
     private OAuth2AuthorizationRequest customize(OAuth2AuthorizationRequest original, HttpServletRequest request) {
