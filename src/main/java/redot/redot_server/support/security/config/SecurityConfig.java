@@ -58,13 +58,13 @@ public class SecurityConfig {
                                                 RedotOAuth2FailureHandler redotOAuth2FailureHandler,
                                                 FlowAwareRedirectUriResolver flowAwareRedirectUriResolver) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/oauth2/**", "/login/oauth2/**", "/sign-in/*/social/callback/**")
+        http.securityMatcher("/oauth2/**", "/login/oauth2/**", "/api/v1/sign-in/*/social/callback/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .addFilterBefore(redirectCaptureFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .oauth2Login(oauth -> oauth
                         .authorizationEndpoint(endpoint -> endpoint
                                 .authorizationRequestResolver(flowAwareRedirectUriResolver))
-                        .redirectionEndpoint(redirection -> redirection.baseUri("/sign-in/*/social/callback/*"))
+                        .redirectionEndpoint(redirection -> redirection.baseUri("/api/v1/sign-in/*/social/callback/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(redotOAuth2UserService)
                                 .oidcUserService(redotOidcUserService))
