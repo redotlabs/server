@@ -116,6 +116,17 @@ public class SecurityConfig {
 
     @Bean
     @Order(2)
+    public SecurityFilterChain redotAppPublicChain(HttpSecurity http,
+                                                   RedotAppFilter redotAppFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/app/by-subdomain")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class);
+        return http.build();
+    }
+
+    @Bean
+    @Order(3)
     public SecurityFilterChain redotMemberAppChain(HttpSecurity http,
                                                    RedotMemberJwtAuthenticationFilter redotMemberJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
@@ -130,16 +141,6 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    @Order(3)
-    public SecurityFilterChain redotAppPublicChain(HttpSecurity http,
-                                                   RedotAppFilter redotAppFilter) throws Exception {
-        applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/app/by-subdomain")
-                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class);
-        return http.build();
-    }
     @Bean
     @Order(4)
     public SecurityFilterChain redotAppApiChain(HttpSecurity http,
