@@ -28,7 +28,9 @@ jobs:
       - name: Create application-dev.yml from Secret
         run: |
           mkdir -p src/main/resources
-          echo "${{ secrets.SPRING_APPLICATION_DEV_YML }}" > src/main/resources/application-dev.yml
+          cat <<'EOF' > src/main/resources/application-dev.yml
+          ${{ secrets.SPRING_APPLICATION_DEV_YML }}
+          EOF
 
       # 4. Gradle 빌드
       - name: Build with Gradle
