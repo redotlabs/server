@@ -27,6 +27,7 @@ import redot.redot_server.support.security.filter.jwt.refresh.RedotMemberRefresh
 import redot.redot_server.support.security.social.filter.OAuth2RedirectCaptureFilter;
 import redot.redot_server.support.security.social.handler.RedotOAuth2FailureHandler;
 import redot.redot_server.support.security.social.handler.RedotOAuth2SuccessHandler;
+import redot.redot_server.support.security.social.resolver.FlowAwareRedirectUriResolver;
 import redot.redot_server.support.security.social.service.RedotOAuth2UserService;
 import redot.redot_server.support.security.social.service.RedotOidcUserService;
 
@@ -54,12 +55,15 @@ public class SecurityConfig {
                                                 RedotOAuth2UserService redotOAuth2UserService,
                                                 RedotOidcUserService redotOidcUserService,
                                                 RedotOAuth2SuccessHandler redotOAuth2SuccessHandler,
-                                                RedotOAuth2FailureHandler redotOAuth2FailureHandler) throws Exception {
+                                                RedotOAuth2FailureHandler redotOAuth2FailureHandler,
+                                                FlowAwareRedirectUriResolver flowAwareRedirectUriResolver) throws Exception {
         applyCommonSecurity(http);
         http.securityMatcher("/oauth2/**", "/login/oauth2/**", "/sign-in/*/social/callback/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .addFilterBefore(redirectCaptureFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .oauth2Login(oauth -> oauth
+                        .authorizationEndpoint(endpoint -> endpoint
+                                .authorizationRequestResolver(flowAwareRedirectUriResolver))
                         .redirectionEndpoint(redirection -> redirection.baseUri("/sign-in/*/social/callback/*"))
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(redotOAuth2UserService)
