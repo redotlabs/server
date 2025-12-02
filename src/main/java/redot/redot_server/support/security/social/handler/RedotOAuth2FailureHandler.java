@@ -23,7 +23,7 @@ import redot.redot_server.support.util.CookieUtils;
 public class RedotOAuth2FailureHandler implements AuthenticationFailureHandler {
 
     private static final RequestMatcher REDIRECTION_MATCHER =
-            new PathTemplateRequestMatcher("/sign-in/{flow}/social/callback/{registrationId}");
+            new PathTemplateRequestMatcher("/api/v1/sign-in/{flow}/social/callback/{registrationId}");
 
     private final AuthRedirectProperties authRedirectProperties;
 
