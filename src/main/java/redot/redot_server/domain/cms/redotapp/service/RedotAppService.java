@@ -1,6 +1,7 @@
 package redot.redot_server.domain.cms.redotapp.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,6 +48,7 @@ import redot.redot_server.support.common.dto.PageResponse;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class RedotAppService {
 
     private final RedotAppRepository redotAppRepository;
@@ -165,6 +167,7 @@ public class RedotAppService {
         try {
             cmsMemberRepository.save(manager);
         } catch (DataIntegrityViolationException e) {
+            log.error("CMS member insert failed: {}", e.getMostSpecificCause().getMessage(), e);
             throw new RedotAppException(RedotAppErrorCode.MANAGER_ALREADY_CREATED);
         }
 
