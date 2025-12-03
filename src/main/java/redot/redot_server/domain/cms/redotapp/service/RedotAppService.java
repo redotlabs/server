@@ -14,7 +14,7 @@ import redot.redot_server.domain.redot.admin.exception.DomainException;
 import redot.redot_server.domain.redot.admin.repository.DomainRepository;
 import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.redot.admin.util.SubDomainNameGenerator;
-import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
@@ -25,12 +25,12 @@ import redot.redot_server.domain.cms.plan.entity.Plan;
 import redot.redot_server.domain.cms.plan.exception.PlanErrorCode;
 import redot.redot_server.domain.cms.plan.exception.PlanException;
 import redot.redot_server.domain.cms.plan.repository.PlanRepository;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
-import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
-import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
+import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateManagerRequest;
+import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
+import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
+import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppResponse;
+import redot.redot_server.domain.cms.site.dto.response.SiteSettingResponse;
+import redot.redot_server.domain.cms.style.dto.response.StyleInfoResponse;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.site.entity.SiteSetting;
 import redot.redot_server.domain.cms.style.entity.StyleInfo;
@@ -43,7 +43,7 @@ import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.cms.style.exception.StyleInfoErrorCode;
 import redot.redot_server.domain.cms.style.exception.StyleInfoException;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.common.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor

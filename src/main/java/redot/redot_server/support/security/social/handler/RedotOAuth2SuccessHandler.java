@@ -10,7 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import redot.redot_server.domain.auth.dto.AuthResult;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.auth.service.AuthTokenService;
 import redot.redot_server.support.jwt.token.TokenContext;
 import redot.redot_server.support.security.social.config.AuthRedirectProperties;

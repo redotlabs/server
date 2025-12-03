@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquiryCreateRequest;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquiryDTO;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquirySearchCondition;
+import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquiryCreateRequest;
+import redot.redot_server.domain.cms.inquiry.dto.response.RedotAppInquiryResponse;
+import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquirySearchCondition;
 import redot.redot_server.domain.cms.inquiry.service.RedotAppInquiryService;
-import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.common.dto.response.PageResponse;
 import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 
@@ -30,23 +30,23 @@ public class RedotAppInquiryController {
     private final RedotAppInquiryService inquiryService;
 
     @PostMapping
-    public ResponseEntity<RedotAppInquiryDTO> createInquiry(@CurrentRedotApp Long redotAppId,
-                                                            @Valid @RequestBody RedotAppInquiryCreateRequest request) {
+    public ResponseEntity<RedotAppInquiryResponse> createInquiry(@CurrentRedotApp Long redotAppId,
+                                                                 @Valid @RequestBody RedotAppInquiryCreateRequest request) {
         return ResponseEntity.ok(inquiryService.createInquiry(redotAppId, request));
     }
 
     @GetMapping("/{inquiryId}")
-    public ResponseEntity<RedotAppInquiryDTO> getInquiry(@CurrentRedotApp Long redotAppId,
-                                                         @PathVariable("inquiryId") Long inquiryId) {
+    public ResponseEntity<RedotAppInquiryResponse> getInquiry(@CurrentRedotApp Long redotAppId,
+                                                              @PathVariable("inquiryId") Long inquiryId) {
         return ResponseEntity.ok(inquiryService.getInquiry(redotAppId, inquiryId));
     }
 
     @GetMapping
-    public ResponseEntity<PageResponse<RedotAppInquiryDTO>> getAllInquiries(
+    public ResponseEntity<PageResponse<RedotAppInquiryResponse>> getAllInquiries(
             @CurrentRedotApp Long redotAppId,
             RedotAppInquirySearchCondition searchCondition,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
-        PageResponse<RedotAppInquiryDTO> response = inquiryService
+        PageResponse<RedotAppInquiryResponse> response = inquiryService
                 .getAllInquiriesBySearchCondition(redotAppId, searchCondition, pageable);
         return ResponseEntity.ok(response);
     }

@@ -5,7 +5,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.cms.plan.dto.PlanResponse;
+import redot.redot_server.domain.cms.plan.dto.response.PlanResponse;
 import redot.redot_server.domain.cms.plan.repository.PlanRepository;
 
 @Service

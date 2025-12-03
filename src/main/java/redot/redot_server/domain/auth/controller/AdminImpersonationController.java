@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.auth.dto.AuthResult;
-import redot.redot_server.domain.auth.dto.CMSAdminImpersonationRequest;
-import redot.redot_server.domain.auth.dto.TokenResponse;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.CMSAdminImpersonationRequest;
+import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.service.AdminImpersonationService;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 

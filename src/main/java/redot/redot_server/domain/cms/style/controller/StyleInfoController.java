@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
-import redot.redot_server.domain.cms.style.dto.StyleInfoUpdateRequest;
+import redot.redot_server.domain.cms.style.dto.response.StyleInfoResponse;
+import redot.redot_server.domain.cms.style.dto.request.StyleInfoUpdateRequest;
 import redot.redot_server.domain.cms.style.service.StyleInfoService;
 import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 

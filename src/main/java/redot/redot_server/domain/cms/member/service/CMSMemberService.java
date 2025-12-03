@@ -1,17 +1,16 @@
 package redot.redot_server.domain.cms.member.service;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.cms.member.dto.CMSMemberCreateRequest;
-import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
-import redot.redot_server.domain.cms.member.dto.CMSMemberRoleRequest;
-import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
-import redot.redot_server.domain.cms.member.dto.CMSMemberUpdateRequest;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberCreateRequest;
+import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberRoleRequest;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
@@ -20,7 +19,7 @@ import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
 import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.common.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor

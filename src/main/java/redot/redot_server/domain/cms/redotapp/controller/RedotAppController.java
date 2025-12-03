@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateManagerRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
+import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateManagerRequest;
+import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
+import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.service.RedotAppService;
-import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.support.common.dto.response.PageResponse;
 import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.support.security.principal.JwtPrincipal;
 
