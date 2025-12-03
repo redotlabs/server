@@ -21,7 +21,7 @@ import redot.redot_server.domain.redot.admin.dto.request.AdminResetPasswordReque
 import redot.redot_server.domain.redot.admin.dto.response.AdminResponse;
 import redot.redot_server.domain.redot.admin.dto.request.AdminUpdateRequest;
 import redot.redot_server.domain.redot.admin.service.AdminService;
-import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.principal.JwtPrincipal;

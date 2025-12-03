@@ -43,7 +43,7 @@ import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.cms.style.exception.StyleInfoErrorCode;
 import redot.redot_server.domain.cms.style.exception.StyleInfoException;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor

@@ -18,7 +18,7 @@ import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateManagerR
 import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.service.RedotAppService;
-import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.global.security.principal.JwtPrincipal;
 

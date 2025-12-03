@@ -27,7 +27,7 @@ import redot.redot_server.domain.cms.member.dto.request.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.service.CMSMemberService;
-import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;

@@ -1,4 +1,4 @@
-package redot.redot_server.global.common.dto.response;
+package redot.redot_server.global.util.dto.response;
 
 import java.util.List;
 import org.springframework.data.domain.Page;
