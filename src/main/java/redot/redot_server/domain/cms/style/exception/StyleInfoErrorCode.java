@@ -2,7 +2,7 @@ package redot.redot_server.domain.cms.style.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import redot.redot_server.support.exception.ErrorCode;
+import redot.redot_server.global.exception.ErrorCode;
 
 @Getter
 @RequiredArgsConstructor

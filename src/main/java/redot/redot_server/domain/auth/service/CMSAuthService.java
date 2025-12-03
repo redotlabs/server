@@ -13,10 +13,10 @@ import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.support.jwt.token.TokenContext;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayload;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
 
 
 @Service

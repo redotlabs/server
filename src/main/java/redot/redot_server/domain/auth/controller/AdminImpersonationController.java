@@ -14,7 +14,7 @@ import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.auth.dto.request.CMSAdminImpersonationRequest;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.service.AdminImpersonationService;
-import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor

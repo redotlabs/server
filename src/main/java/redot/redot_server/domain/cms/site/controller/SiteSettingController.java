@@ -15,8 +15,8 @@ import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.cms.site.dto.response.SiteSettingResponse;
 import redot.redot_server.domain.cms.site.dto.request.SiteSettingUpdateRequest;
 import redot.redot_server.domain.cms.site.service.SiteSettingService;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
-import redot.redot_server.support.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 
 @RestController
 @RequiredArgsConstructor

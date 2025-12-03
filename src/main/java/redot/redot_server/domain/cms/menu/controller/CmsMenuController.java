@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.cms.menu.dto.response.CmsMenuResponse;
 import redot.redot_server.domain.cms.menu.service.CmsMenuService;
 import redot.redot_server.domain.cms.redotapp.service.RedotAppService;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 
 @Tag(name = "CMS Menu", description = "CMS 메뉴 관리 API")
 @RestController

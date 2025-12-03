@@ -17,8 +17,8 @@ import redot.redot_server.domain.cms.site.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.cms.site.exception.SiteSettingException;
 import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.cms.site.util.LogoPathGenerator;
-import redot.redot_server.support.s3.dto.UploadedImageUrlResponse;
-import redot.redot_server.support.s3.util.S3Manager;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
 @RequiredArgsConstructor

@@ -1,6 +1,6 @@
 package redot.redot_server.domain.cms.site.exception;
 
-import redot.redot_server.support.exception.BaseException;
+import redot.redot_server.global.exception.BaseException;
 
 public class SiteSettingException extends BaseException {
     public SiteSettingException(SiteSettingErrorCode errorCode) {

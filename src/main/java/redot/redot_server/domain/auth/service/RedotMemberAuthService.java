@@ -14,11 +14,11 @@ import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateReque
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.support.jwt.token.TokenContext;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayload;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

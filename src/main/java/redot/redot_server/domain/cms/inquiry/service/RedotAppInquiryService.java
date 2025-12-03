@@ -20,7 +20,7 @@ import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.support.common.dto.response.PageResponse;
+import redot.redot_server.global.common.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor

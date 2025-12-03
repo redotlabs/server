@@ -1,7 +1,7 @@
 package redot.redot_server.domain.cms.menu.exception;
 
 import lombok.Getter;
-import redot.redot_server.support.exception.BaseException;
+import redot.redot_server.global.exception.BaseException;
 
 @Getter
 public class CmsMenuException extends BaseException {

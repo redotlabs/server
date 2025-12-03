@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.cms.style.dto.response.StyleInfoResponse;
 import redot.redot_server.domain.cms.style.dto.request.StyleInfoUpdateRequest;
 import redot.redot_server.domain.cms.style.service.StyleInfoService;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 
 @RestController
 @RequestMapping("/api/v1/app/cms/style-info")

@@ -18,9 +18,9 @@ import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquiryCreateRe
 import redot.redot_server.domain.cms.inquiry.dto.response.RedotAppInquiryResponse;
 import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquirySearchCondition;
 import redot.redot_server.domain.cms.inquiry.service.RedotAppInquiryService;
-import redot.redot_server.support.common.dto.response.PageResponse;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
-import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor

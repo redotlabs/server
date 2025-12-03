@@ -18,9 +18,9 @@ import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateManagerR
 import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
 import redot.redot_server.domain.cms.redotapp.service.RedotAppService;
-import redot.redot_server.support.common.dto.response.PageResponse;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
-import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.global.common.dto.response.PageResponse;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequestMapping("/api/v1/app")

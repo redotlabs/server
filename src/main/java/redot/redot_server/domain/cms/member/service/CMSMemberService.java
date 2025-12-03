@@ -19,7 +19,7 @@ import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
 import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.support.common.dto.response.PageResponse;
+import redot.redot_server.global.common.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor

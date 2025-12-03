@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
-import redot.redot_server.support.email.EmailVerificationProperties;
+import redot.redot_server.global.email.EmailVerificationProperties;
 
 @Component
 @RequiredArgsConstructor

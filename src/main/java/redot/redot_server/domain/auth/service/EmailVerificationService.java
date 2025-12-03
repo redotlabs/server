@@ -13,8 +13,8 @@ import redot.redot_server.domain.auth.dto.response.EmailVerificationVerifyRespon
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
-import redot.redot_server.support.email.EmailVerificationProperties;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.email.EmailVerificationProperties;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor
