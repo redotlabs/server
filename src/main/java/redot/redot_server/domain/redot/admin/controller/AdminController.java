@@ -28,7 +28,7 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/redot/admin")
 public class AdminController {
 
     private final AdminService adminService;

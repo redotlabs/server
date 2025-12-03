@@ -24,7 +24,7 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/app/inquiries")
+@RequestMapping("/api/v1/app/cms/inquiries")
 public class RedotAppInquiryController {
 
     private final RedotAppInquiryService inquiryService;

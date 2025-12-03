@@ -108,7 +108,7 @@ public class SecurityConfig {
     public SecurityFilterChain adminRefreshChain(HttpSecurity http,
                                                  AdminRefreshTokenFilter adminRefreshTokenFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/auth/admin/reissue")
+        http.securityMatcher("/api/v1/auth/redot/admin/reissue")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .addFilterBefore(adminRefreshTokenFilter, LogoutFilter.class);
         return http.build();
@@ -170,7 +170,7 @@ public class SecurityConfig {
     public SecurityFilterChain adminApiChain(HttpSecurity http,
                                              AdminJwtAuthenticationFilter adminJwtAuthenticationFilter) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/admin/**", "/api/v1/auth/admin/impersonation/**", "/api/v1/auth/admin/me")
+        http.securityMatcher("/api/v1/redot/admin/**", "/api/v1/auth/redot/admin/impersonation/**", "/api/v1/auth/redot/admin/me")
                 .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
                 .addFilterBefore(adminJwtAuthenticationFilter, LogoutFilter.class);
         return http.build();
@@ -180,7 +180,7 @@ public class SecurityConfig {
     @Order(7)
     public SecurityFilterChain adminAuthChain(HttpSecurity http) throws Exception {
         applyCommonSecurity(http);
-        http.securityMatcher("/api/v1/auth/admin/**")
+        http.securityMatcher("/api/v1/auth/redot/admin/**")
                 .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
         return http.build();
     }

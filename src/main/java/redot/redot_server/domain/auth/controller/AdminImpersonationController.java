@@ -18,7 +18,7 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth/admin/impersonation")
+@RequestMapping("/api/v1/auth/redot/admin/impersonation")
 public class AdminImpersonationController {
     private final AdminImpersonationService adminImpersonationService;
 

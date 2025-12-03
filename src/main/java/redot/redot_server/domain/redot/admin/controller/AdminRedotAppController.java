@@ -12,7 +12,7 @@ import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
 
 @RestController
-@RequestMapping("/api/v1/admin/app")
+@RequestMapping("/api/v1/redot/admin/app")
 @RequiredArgsConstructor
 public class AdminRedotAppController {
 
