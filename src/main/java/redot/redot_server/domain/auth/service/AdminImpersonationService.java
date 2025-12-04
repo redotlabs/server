@@ -5,11 +5,11 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.dto.CMSAdminImpersonationRequest;
-import redot.redot_server.domain.auth.dto.AuthResult;
+import redot.redot_server.domain.auth.dto.request.CMSAdminImpersonationRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
-import redot.redot_server.support.jwt.token.TokenContext;
-import redot.redot_server.support.jwt.token.TokenType;
+import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.global.jwt.token.TokenType;
 
 @Service
 @RequiredArgsConstructor

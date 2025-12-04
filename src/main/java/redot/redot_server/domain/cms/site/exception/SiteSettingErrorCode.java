@@ -1,7 +1,7 @@
 package redot.redot_server.domain.cms.site.exception;
 
 import lombok.Getter;
-import redot.redot_server.support.exception.ErrorCode;
+import redot.redot_server.global.exception.ErrorCode;
 
 @Getter
 public enum SiteSettingErrorCode implements ErrorCode {

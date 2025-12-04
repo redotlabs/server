@@ -1,6 +1,6 @@
 package redot.redot_server.domain.auth.exception;
 
-import redot.redot_server.support.exception.BaseException;
+import redot.redot_server.global.exception.BaseException;
 
 public class AuthException extends BaseException {
     public AuthException(AuthErrorCode errorCode) {

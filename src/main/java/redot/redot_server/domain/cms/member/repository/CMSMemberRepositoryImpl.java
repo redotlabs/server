@@ -11,7 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
 

@@ -9,9 +9,9 @@ import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
 import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
 import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquiryCreateRequest;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquiryDTO;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquirySearchCondition;
+import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquiryCreateRequest;
+import redot.redot_server.domain.cms.inquiry.dto.response.RedotAppInquiryResponse;
+import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquirySearchCondition;
 import redot.redot_server.domain.cms.inquiry.entity.RedotAppInquiry;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryErrorCode;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryException;
@@ -20,7 +20,7 @@ import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.support.common.dto.PageResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class RedotAppInquiryService {
     private final CMSMemberRepository cmsMemberRepository;
 
     @Transactional
-    public RedotAppInquiryDTO createInquiry(Long redotAppId, RedotAppInquiryCreateRequest request) {
+    public RedotAppInquiryResponse createInquiry(Long redotAppId, RedotAppInquiryCreateRequest request) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId).orElseThrow(()-> new RedotAppException(
                 RedotAppErrorCode.REDOT_APP_NOT_FOUND));
 
@@ -47,7 +47,7 @@ public class RedotAppInquiryService {
                 request.content()
         ));
 
-        return new RedotAppInquiryDTO(
+        return new RedotAppInquiryResponse(
                 savedInquiry.getId(),
                 redotAppId,
                 savedInquiry.getInquiryNumber(),
@@ -59,11 +59,11 @@ public class RedotAppInquiryService {
         );
     }
 
-    public RedotAppInquiryDTO getInquiry(Long redotAppId, Long inquiryId) {
+    public RedotAppInquiryResponse getInquiry(Long redotAppId, Long inquiryId) {
         RedotAppInquiry inquiry = redotAppInquiryRepository.findByIdAndRedotApp_Id(inquiryId, redotAppId)
                 .orElseThrow(() -> new RedotAppInquiryException(RedotAppInquiryErrorCode.REDOT_APP_INQUIRY_NOT_FOUND));
 
-        return new RedotAppInquiryDTO(
+        return new RedotAppInquiryResponse(
                 inquiry.getId(),
                 redotAppId,
                 inquiry.getInquiryNumber(),
@@ -93,12 +93,12 @@ public class RedotAppInquiryService {
         inquiry.reopenInquiry();
     }
 
-    public PageResponse<RedotAppInquiryDTO> getAllInquiriesBySearchCondition(Long redotAppId,
-                                                                             RedotAppInquirySearchCondition searchCondition,
-                                                                             Pageable pageable) {
-        Page<RedotAppInquiryDTO> page = redotAppInquiryRepository
+    public PageResponse<RedotAppInquiryResponse> getAllInquiriesBySearchCondition(Long redotAppId,
+                                                                                  RedotAppInquirySearchCondition searchCondition,
+                                                                                  Pageable pageable) {
+        Page<RedotAppInquiryResponse> page = redotAppInquiryRepository
                 .findAllBySearchCondition(redotAppId, searchCondition, pageable)
-                .map(inquiry -> new RedotAppInquiryDTO(
+                .map(inquiry -> new RedotAppInquiryResponse(
                         inquiry.getId(),
                         redotAppId,
                         inquiry.getInquiryNumber(),

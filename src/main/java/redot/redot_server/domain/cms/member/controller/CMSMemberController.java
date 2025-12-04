@@ -19,19 +19,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.cms.member.dto.CMSMemberCreateRequest;
-import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
-import redot.redot_server.domain.cms.member.dto.CMSMemberRoleRequest;
-import redot.redot_server.domain.cms.member.dto.CMSMemberSearchCondition;
-import redot.redot_server.domain.cms.member.dto.CMSMemberUpdateRequest;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberCreateRequest;
+import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberRoleRequest;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
+import redot.redot_server.domain.cms.member.dto.request.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.service.CMSMemberService;
-import redot.redot_server.support.common.dto.PageResponse;
-import redot.redot_server.support.redotapp.resolver.annotation.CurrentRedotApp;
-import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.global.util.dto.response.PageResponse;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor

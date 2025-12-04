@@ -5,20 +5,20 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.dto.AuthResult;
-import redot.redot_server.domain.auth.dto.RedotMemberSignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
-import redot.redot_server.domain.redot.member.dto.RedotMemberCreateRequest;
-import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
+import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateRequest;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.support.jwt.token.TokenContext;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayload;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

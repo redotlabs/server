@@ -7,21 +7,21 @@ import redot.redot_server.domain.cms.plan.entity.Plan;
 import redot.redot_server.domain.cms.plan.exception.PlanErrorCode;
 import redot.redot_server.domain.cms.plan.exception.PlanException;
 import redot.redot_server.domain.cms.plan.repository.PlanRepository;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppCreateRequest;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppInfoResponse;
-import redot.redot_server.domain.cms.redotapp.dto.RedotAppResponse;
+import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
+import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
+import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppResponse;
 import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
 import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
-import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
+import redot.redot_server.domain.cms.site.dto.response.SiteSettingResponse;
 import redot.redot_server.domain.cms.site.entity.SiteSetting;
 import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
-import redot.redot_server.domain.cms.style.dto.StyleInfoResponse;
+import redot.redot_server.domain.cms.style.dto.response.StyleInfoResponse;
 import redot.redot_server.domain.cms.style.entity.StyleInfo;
 import redot.redot_server.domain.redot.admin.entity.Domain;
 import redot.redot_server.domain.redot.admin.repository.DomainRepository;
 import redot.redot_server.domain.redot.admin.repository.StyleInfoRepository;
 import redot.redot_server.domain.redot.admin.util.SubDomainNameGenerator;
-import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 
 @Service
 @RequiredArgsConstructor

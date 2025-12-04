@@ -8,13 +8,13 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import redot.redot_server.domain.auth.dto.EmailVerificationSendResponse;
-import redot.redot_server.domain.auth.dto.EmailVerificationVerifyResponse;
+import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
+import redot.redot_server.domain.auth.dto.response.EmailVerificationVerifyResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
-import redot.redot_server.support.email.EmailVerificationProperties;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.email.EmailVerificationProperties;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

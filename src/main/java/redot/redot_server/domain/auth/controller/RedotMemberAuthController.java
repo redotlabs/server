@@ -17,21 +17,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import redot.redot_server.domain.auth.dto.AuthResult;
-import redot.redot_server.domain.auth.dto.RedotMemberSignInRequest;
-import redot.redot_server.domain.auth.dto.SocialLoginUrlResponse;
-import redot.redot_server.domain.auth.dto.TokenResponse;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
+import redot.redot_server.domain.auth.dto.response.SocialLoginUrlResponse;
+import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.service.RedotMemberAuthService;
-import redot.redot_server.domain.redot.member.dto.RedotMemberCreateRequest;
-import redot.redot_server.domain.redot.member.dto.RedotMemberResponse;
-import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.principal.JwtPrincipal;
-import redot.redot_server.support.security.social.SocialAuthorizationEndpoints;
-import redot.redot_server.support.security.social.config.AuthRedirectProperties;
-import redot.redot_server.support.security.social.config.FlowRedirect;
+import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateRequest;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
+import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.principal.JwtPrincipal;
+import redot.redot_server.global.security.social.SocialAuthorizationEndpoints;
+import redot.redot_server.global.security.social.config.AuthRedirectProperties;
+import redot.redot_server.global.security.social.config.FlowRedirect;
 
 @RestController
 @RequestMapping("/api/v1/auth/redot/member")

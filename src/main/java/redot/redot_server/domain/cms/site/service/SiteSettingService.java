@@ -10,15 +10,15 @@ import redot.redot_server.domain.redot.admin.entity.Domain;
 import redot.redot_server.domain.redot.admin.exception.DomainErrorCode;
 import redot.redot_server.domain.redot.admin.exception.DomainException;
 import redot.redot_server.domain.redot.admin.repository.DomainRepository;
-import redot.redot_server.domain.cms.site.dto.SiteSettingResponse;
-import redot.redot_server.domain.cms.site.dto.SiteSettingUpdateRequest;
+import redot.redot_server.domain.cms.site.dto.response.SiteSettingResponse;
+import redot.redot_server.domain.cms.site.dto.request.SiteSettingUpdateRequest;
 import redot.redot_server.domain.cms.site.entity.SiteSetting;
 import redot.redot_server.domain.cms.site.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.cms.site.exception.SiteSettingException;
 import redot.redot_server.domain.cms.site.repository.SiteSettingRepository;
 import redot.redot_server.domain.cms.site.util.LogoPathGenerator;
-import redot.redot_server.support.s3.dto.UploadedImageUrlResponse;
-import redot.redot_server.support.s3.util.S3Manager;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
 @RequiredArgsConstructor

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.cms.plan.dto.PlanResponse;
+import redot.redot_server.domain.cms.plan.dto.response.PlanResponse;
 import redot.redot_server.domain.cms.plan.service.PlanService;
 
 @Tag(name = "Plan", description = "플랜 관리 API")

@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.cms.menu.dto.CmsMenuResponse;
+import redot.redot_server.domain.cms.menu.dto.response.CmsMenuResponse;
 import redot.redot_server.domain.cms.menu.repository.CmsMenuRepository;
 import redot.redot_server.domain.cms.plan.entity.Plan;
 import redot.redot_server.domain.cms.plan.entity.PlanType;

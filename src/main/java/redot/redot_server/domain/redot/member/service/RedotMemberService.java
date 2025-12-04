@@ -4,13 +4,11 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.exception.AuthErrorCode;
-import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.entity.SocialProvider;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.support.security.social.model.SocialProfile;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.security.social.model.SocialProfile;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

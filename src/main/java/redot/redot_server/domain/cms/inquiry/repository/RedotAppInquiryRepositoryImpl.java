@@ -13,7 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import redot.redot_server.domain.cms.inquiry.dto.RedotAppInquirySearchCondition;
+import redot.redot_server.domain.cms.inquiry.dto.request.RedotAppInquirySearchCondition;
 import redot.redot_server.domain.cms.inquiry.entity.RedotAppInquiry;
 import redot.redot_server.domain.cms.inquiry.entity.RedotAppInquiryStatus;
 

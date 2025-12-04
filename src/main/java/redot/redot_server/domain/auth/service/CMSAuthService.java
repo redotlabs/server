@@ -6,17 +6,17 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.dto.AuthResult;
-import redot.redot_server.domain.auth.dto.SignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.SignInRequest;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.domain.cms.member.dto.CMSMemberResponse;
+import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.support.jwt.token.TokenContext;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayload;
-import redot.redot_server.support.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.jwt.token.TokenContext;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
+import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
 
 
 @Service

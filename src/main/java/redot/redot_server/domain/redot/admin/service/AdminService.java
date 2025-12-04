@@ -7,16 +7,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.redot.admin.dto.AdminCreateRequest;
-import redot.redot_server.domain.redot.admin.dto.AdminResetPasswordRequest;
-import redot.redot_server.domain.redot.admin.dto.AdminResponse;
-import redot.redot_server.domain.redot.admin.dto.AdminUpdateRequest;
+import redot.redot_server.domain.redot.admin.dto.request.AdminCreateRequest;
+import redot.redot_server.domain.redot.admin.dto.request.AdminResetPasswordRequest;
+import redot.redot_server.domain.redot.admin.dto.response.AdminResponse;
+import redot.redot_server.domain.redot.admin.dto.request.AdminUpdateRequest;
 import redot.redot_server.domain.redot.admin.entity.Admin;
 import redot.redot_server.domain.redot.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.support.common.dto.PageResponse;
-import redot.redot_server.support.util.EmailUtils;
+import redot.redot_server.global.util.dto.response.PageResponse;
+import redot.redot_server.global.util.EmailUtils;
 
 @Service
 @RequiredArgsConstructor

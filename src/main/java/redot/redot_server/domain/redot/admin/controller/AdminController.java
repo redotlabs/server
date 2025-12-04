@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.redot.admin.dto.AdminCreateRequest;
-import redot.redot_server.domain.redot.admin.dto.AdminResetPasswordRequest;
-import redot.redot_server.domain.redot.admin.dto.AdminResponse;
-import redot.redot_server.domain.redot.admin.dto.AdminUpdateRequest;
+import redot.redot_server.domain.redot.admin.dto.request.AdminCreateRequest;
+import redot.redot_server.domain.redot.admin.dto.request.AdminResetPasswordRequest;
+import redot.redot_server.domain.redot.admin.dto.response.AdminResponse;
+import redot.redot_server.domain.redot.admin.dto.request.AdminUpdateRequest;
 import redot.redot_server.domain.redot.admin.service.AdminService;
-import redot.redot_server.support.common.dto.PageResponse;
-import redot.redot_server.support.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.support.jwt.token.TokenType;
-import redot.redot_server.support.security.principal.JwtPrincipal;
+import redot.redot_server.global.util.dto.response.PageResponse;
+import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
+import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/redot/admin")
 public class AdminController {
 
     private final AdminService adminService;
