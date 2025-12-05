@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.redot.admin.service.AdminRedotAppService;
-import redot.redot_server.domain.cms.redotapp.dto.request.RedotAppCreateRequest;
-import redot.redot_server.domain.cms.redotapp.dto.response.RedotAppInfoResponse;
+import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
+import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
 
 @RestController
 @RequestMapping("/api/v1/redot/admin/app")

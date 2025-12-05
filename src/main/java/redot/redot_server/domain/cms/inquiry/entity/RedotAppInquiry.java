@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
+import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryErrorCode;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryException;
 import redot.redot_server.domain.cms.member.entity.CMSMember;

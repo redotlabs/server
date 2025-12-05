@@ -12,13 +12,13 @@ import redot.redot_server.domain.cms.member.dto.request.CMSMemberRoleRequest;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberUpdateRequest;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
-import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
+import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppErrorCode;
-import redot.redot_server.domain.cms.redotapp.exception.RedotAppException;
+import redot.redot_server.domain.redot.app.exception.RedotAppErrorCode;
+import redot.redot_server.domain.redot.app.exception.RedotAppException;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.domain.cms.redotapp.repository.RedotAppRepository;
+import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service

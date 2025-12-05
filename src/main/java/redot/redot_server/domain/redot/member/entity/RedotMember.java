@@ -23,7 +23,7 @@ import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
+import redot.redot_server.domain.redot.app.entity.RedotApp;
 
 @Entity
 @Getter
