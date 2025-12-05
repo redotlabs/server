@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.dto.ConsultationSearchCondition;
 import redot.redot_server.domain.admin.dto.request.ConsultationUpdateRequest;
 import redot.redot_server.domain.admin.service.AdminConsultationService;
-import redot.redot_server.domain.cms.inquiry.dto.response.RedotAppInquiryResponse;
 import redot.redot_server.domain.redot.consultation.dto.response.ConsultationResponse;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
