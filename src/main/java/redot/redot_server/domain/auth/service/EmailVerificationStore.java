@@ -50,14 +50,14 @@ public class EmailVerificationStore {
     }
 
     private String codeKey(EmailVerificationPurpose purpose, String email) {
-        return CODE_KEY.formatted(purpose.getCode(), email);
+        return CODE_KEY.formatted(purpose.name(), email);
     }
 
     private String cooldownKey(EmailVerificationPurpose purpose, String email) {
-        return COOLDOWN_KEY.formatted(purpose.getCode(), email);
+        return COOLDOWN_KEY.formatted(purpose.name(), email);
     }
 
     private String tokenKey(EmailVerificationPurpose purpose, String token) {
-        return TOKEN_KEY.formatted(purpose.getCode(), token);
+        return TOKEN_KEY.formatted(purpose.name(), token);
     }
 }

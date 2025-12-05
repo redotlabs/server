@@ -17,8 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
-import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.auth.dto.response.SocialLoginUrlResponse;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
@@ -93,6 +94,12 @@ public class RedotMemberAuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())
                 .header(HttpHeaders.SET_COOKIE, deleteRefresh.toString())
                 .build();
+    }
+
+    @PostMapping("/password-reset")
+    public ResponseEntity<Void> confirmPasswordReset(@RequestBody @Valid PasswordResetConfirmRequest request) {
+        redotMemberAuthService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/social/login-url")

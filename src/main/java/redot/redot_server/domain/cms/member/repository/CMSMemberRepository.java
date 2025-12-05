@@ -10,6 +10,8 @@ import redot.redot_server.domain.cms.member.entity.CMSMember;
 public interface CMSMemberRepository extends JpaRepository<CMSMember, Long>, CMSMemberRepositoryCustom {
     Optional<CMSMember> findByEmailAndRedotApp_Id(String email, Long redotAppId);
 
+    Optional<CMSMember> findByEmailIgnoreCaseAndRedotApp_Id(String email, Long redotAppId);
+
     Optional<CMSMember> findByIdAndRedotApp_Id(Long id, Long redotAppId);
 
     List<CMSMember> findAllByRedotApp_Id(Long redotAppId);

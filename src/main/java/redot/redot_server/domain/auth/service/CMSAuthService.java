@@ -6,10 +6,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
 import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
@@ -17,6 +19,7 @@ import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
+import redot.redot_server.global.util.EmailUtils;
 
 
 @Service
@@ -27,9 +30,11 @@ public class CMSAuthService {
     private final CMSMemberRepository cmsMemberRepository;
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerificationService emailVerificationService;
 
     public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest, Long redotAppId) {
-        CMSMember cmsMember = cmsMemberRepository.findByEmailAndRedotApp_Id(signInRequest.email(), redotAppId)
+        CMSMember cmsMember = cmsMemberRepository
+                .findByEmailIgnoreCaseAndRedotApp_Id(EmailUtils.normalize(signInRequest.email()), redotAppId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.INVALID_USER_INFO));
 
         if (!passwordEncoder.matches(signInRequest.password(), cmsMember.getPassword())) {
@@ -80,5 +85,21 @@ public class CMSAuthService {
                 cmsMember.getRole(),
                 cmsMember.getCreatedAt()
         );
+    }
+
+    @Transactional
+    public void resetPassword(Long redotAppId, PasswordResetConfirmRequest request) {
+        String normalizedEmail = EmailUtils.normalize(request.email());
+        emailVerificationService.consumeVerifiedToken(
+                EmailVerificationPurpose.CMS_MEMBER_PASSWORD_RESET,
+                normalizedEmail,
+                request.verificationToken()
+        );
+
+        CMSMember cmsMember = cmsMemberRepository
+                .findByEmailIgnoreCaseAndRedotApp_Id(normalizedEmail, redotAppId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
+
+        cmsMember.resetPassword(passwordEncoder.encode(request.newPassword()));
     }
 }
