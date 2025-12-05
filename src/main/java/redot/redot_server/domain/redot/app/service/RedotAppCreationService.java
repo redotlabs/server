@@ -1,6 +1,7 @@
 package redot.redot_server.domain.redot.app.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.site.setting.dto.response.SiteSettingResponse;
@@ -17,6 +18,8 @@ import redot.redot_server.domain.redot.plan.exception.PlanErrorCode;
 import redot.redot_server.domain.redot.plan.exception.PlanException;
 import redot.redot_server.domain.redot.plan.repository.PlanRepository;
 import redot.redot_server.domain.site.domain.entity.Domain;
+import redot.redot_server.domain.site.domain.exception.DomainErrorCode;
+import redot.redot_server.domain.site.domain.exception.DomainException;
 import redot.redot_server.domain.site.domain.repository.DomainRepository;
 import redot.redot_server.domain.site.domain.util.SubDomainNameGenerator;
 import redot.redot_server.domain.site.setting.entity.SiteSetting;
@@ -34,6 +37,22 @@ public class RedotAppCreationService {
     private final DomainRepository domainRepository;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
+    private static final int DOMAIN_ALLOCATION_RETRY_LIMIT = 5;
+
+    private Domain createDomainWithRetry(RedotApp redotApp) {
+        for (int attempt = 0; attempt < DOMAIN_ALLOCATION_RETRY_LIMIT; attempt++) {
+            String subdomain = SubDomainNameGenerator.generateSubdomain();
+            try {
+                return domainRepository.save(Domain.ofRedotApp(subdomain, redotApp));
+            } catch (DataIntegrityViolationException ex) {
+                if (attempt == DOMAIN_ALLOCATION_RETRY_LIMIT - 1) {
+                    throw new DomainException(DomainErrorCode.DOMAIN_ALLOCATION_FAILED);
+                }
+            }
+        }
+        throw new DomainException(DomainErrorCode.DOMAIN_ALLOCATION_FAILED);
+    }
+
 
     public RedotAppInfoResponse createWithOwner(RedotAppCreateRequest request, RedotMember owner) {
         Plan plan = planRepository.findById(request.planId())
@@ -52,8 +71,7 @@ public class RedotAppCreationService {
     }
 
     private RedotAppInfoResponse initializeAppAssets(RedotAppCreateRequest request, RedotApp redotApp) {
-        String domainName = SubDomainNameGenerator.generateSubdomain();
-        Domain domain = domainRepository.save(Domain.ofRedotApp(domainName, redotApp));
+        Domain domain = createDomainWithRetry(redotApp);
 
         SiteSetting siteSetting = siteSettingRepository.save(SiteSetting.createDefault(redotApp));
 

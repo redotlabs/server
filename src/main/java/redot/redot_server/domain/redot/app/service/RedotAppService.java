@@ -26,7 +26,6 @@ import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
-import redot.redot_server.domain.redot.plan.repository.PlanRepository;
 import redot.redot_server.domain.site.domain.entity.Domain;
 import redot.redot_server.domain.site.domain.exception.DomainErrorCode;
 import redot.redot_server.domain.site.domain.exception.DomainException;
@@ -49,12 +48,12 @@ public class RedotAppService {
 
     private final RedotAppRepository redotAppRepository;
     private final DomainRepository domainRepository;
+    private static final int DOMAIN_ALLOCATION_RETRY_LIMIT = 5;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
     private final RedotMemberRepository redotMemberRepository;
     private final CMSMemberRepository cmsMemberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final PlanRepository planRepository;
     private final RedotAppCreationService redotAppCreationService;
     
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
@@ -148,4 +147,18 @@ public class RedotAppService {
         // 초기 관리자 생성 완료 표시
         redotApp.markManagerCreated();
     }
+    private Domain createDomainWithRetry(RedotApp redotApp) {
+        for (int attempt = 0; attempt < DOMAIN_ALLOCATION_RETRY_LIMIT; attempt++) {
+            String subdomain = SubDomainNameGenerator.generateSubdomain();
+            try {
+                return domainRepository.save(Domain.ofRedotApp(subdomain, redotApp));
+            } catch (org.springframework.dao.DataIntegrityViolationException ex) {
+                if (attempt == DOMAIN_ALLOCATION_RETRY_LIMIT - 1) {
+                    throw new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND, ex);
+                }
+            }
+        }
+        throw new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND);
+    }
+
 }
