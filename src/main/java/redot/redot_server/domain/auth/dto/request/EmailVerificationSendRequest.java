@@ -3,6 +3,7 @@ package redot.redot_server.domain.auth.dto.request;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
 
 public record EmailVerificationSendRequest(
@@ -11,6 +12,7 @@ public record EmailVerificationSendRequest(
         @NotBlank
         String email,
         @Schema(description = "인증 용도")
+        @NotNull
         EmailVerificationPurpose purpose,
         @Schema(description = "CMS 멤버 비밀번호 초기화 시 사용할 RedotApp ID", nullable = true)
         Long redotAppId
