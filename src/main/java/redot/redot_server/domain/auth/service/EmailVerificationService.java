@@ -8,6 +8,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.dto.request.EmailVerificationSendRequest;
 import redot.redot_server.domain.auth.dto.request.EmailVerificationVerifyRequest;
 import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
@@ -15,6 +16,9 @@ import redot.redot_server.domain.auth.dto.response.EmailVerificationVerifyRespon
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
+import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
+import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
+import redot.redot_server.domain.site.domain.repository.DomainRepository;
 import redot.redot_server.global.email.EmailVerificationProperties;
 import redot.redot_server.global.util.EmailUtils;
 
@@ -27,8 +31,14 @@ public class EmailVerificationService {
     private final EmailVerificationStore verificationStore;
     private final EmailVerificationMailService mailService;
     private final EmailVerificationProperties properties;
+    private final RedotMemberRepository redotMemberRepository;
+    private final AdminRepository adminRepository;
+    private final CMSMemberRepository cmsMemberRepository;
+    private final DomainRepository domainRepository;
 
     public EmailVerificationSendResponse sendCode(EmailVerificationSendRequest request) {
+        validatePurposeTarget(request);
+
         String normalizedEmail = normalize(request.email());
         EmailVerificationPurpose purpose = request.purpose();
 
@@ -51,6 +61,35 @@ public class EmailVerificationService {
                 properties.getCodeTtlSeconds(),
                 properties.getResendCooldownSeconds()
         );
+    }
+
+    private void validatePurposeTarget(EmailVerificationSendRequest request) {
+        EmailVerificationPurpose purpose = request.purpose();
+        if (purpose == null) {
+            throw new AuthException(AuthErrorCode.UNSUPPORTED_EMAIL_VERIFICATION_PURPOSE);
+        }
+        String normalizedEmail = EmailUtils.normalize(request.email());
+        switch (purpose) {
+            case REDOT_MEMBER_PASSWORD_RESET -> redotMemberRepository.findByEmail(normalizedEmail)
+                    .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+            case REDOT_ADMIN_PASSWORD_RESET -> adminRepository.findByEmailIgnoreCase(normalizedEmail)
+                    .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+            case CMS_MEMBER_PASSWORD_RESET -> {
+                String redotAppSubdomain = request.redotAppSubdomain();
+                if (!StringUtils.hasText(redotAppSubdomain)) {
+                    throw new AuthException(AuthErrorCode.REDOT_APP_CONTEXT_REQUIRED);
+                }
+
+                Long redotAppId = domainRepository.findBySubdomain(redotAppSubdomain).orElseThrow(() ->
+                        new AuthException(AuthErrorCode.REDOT_APP_DOMAIN_NOT_FOUND)
+                ).getRedotApp().getId();
+
+                cmsMemberRepository.findByEmailIgnoreCaseAndRedotApp_Id(normalizedEmail, redotAppId)
+                        .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
+            }
+            default -> {
+            }
+        }
     }
 
     public EmailVerificationVerifyResponse verifyCode(EmailVerificationVerifyRequest request) {

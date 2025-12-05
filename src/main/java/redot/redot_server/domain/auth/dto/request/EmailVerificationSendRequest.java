@@ -14,7 +14,7 @@ public record EmailVerificationSendRequest(
         @Schema(description = "인증 용도")
         @NotNull
         EmailVerificationPurpose purpose,
-        @Schema(description = "CMS 멤버 비밀번호 초기화 시 사용할 RedotApp ID", nullable = true)
-        Long redotAppId
+        @Schema(description = "CMS 멤버 비밀번호 초기화 시 사용할 RedotApp의 Subdomain", nullable = true)
+        String redotAppSubdomain
 ) {
 }
