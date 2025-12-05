@@ -1,9 +1,9 @@
-package redot.redot_server.domain.redot.app.plan.dto.response;
+package redot.redot_server.domain.redot.plan.dto.response;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import redot.redot_server.domain.redot.app.plan.entity.Plan;
-import redot.redot_server.domain.redot.app.plan.entity.PlanType;
+import redot.redot_server.domain.redot.plan.entity.Plan;
+import redot.redot_server.domain.redot.plan.entity.PlanType;
 
 public record PlanResponse(
         Long id,

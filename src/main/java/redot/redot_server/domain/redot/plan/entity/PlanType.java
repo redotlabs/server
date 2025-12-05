@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.app.plan.entity;
+package redot.redot_server.domain.redot.plan.entity;
 
 import java.util.Arrays;
 import java.util.List;

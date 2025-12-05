@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import redot.redot_server.domain.site.menu.entity.CMSMenu;
-import redot.redot_server.domain.redot.app.plan.entity.PlanType;
+import redot.redot_server.domain.redot.plan.entity.PlanType;
 
 public interface CMSMenuRepository extends JpaRepository<CMSMenu, Long> {
 

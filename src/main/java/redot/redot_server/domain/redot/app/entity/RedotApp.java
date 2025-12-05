@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import redot.redot_server.domain.redot.app.plan.entity.Plan;
+import redot.redot_server.domain.redot.plan.entity.Plan;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 
 @Getter

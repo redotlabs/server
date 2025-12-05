@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.app.plan.controller;
+package redot.redot_server.domain.redot.plan.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.redot.app.plan.dto.response.PlanResponse;
-import redot.redot_server.domain.redot.app.plan.service.PlanService;
+import redot.redot_server.domain.redot.plan.dto.response.PlanResponse;
+import redot.redot_server.domain.redot.plan.service.PlanService;
 
 @Tag(name = "Plan", description = "플랜 관리 API")
 @RestController

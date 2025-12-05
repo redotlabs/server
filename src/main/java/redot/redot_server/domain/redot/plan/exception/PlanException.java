@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.app.plan.exception;
+package redot.redot_server.domain.redot.plan.exception;
 
 import lombok.Getter;
 import redot.redot_server.global.exception.BaseException;

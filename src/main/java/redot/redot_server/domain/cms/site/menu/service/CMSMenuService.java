@@ -6,11 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.site.menu.dto.response.CMSMenuResponse;
 import redot.redot_server.domain.site.menu.repository.CMSMenuRepository;
-import redot.redot_server.domain.redot.app.plan.entity.Plan;
-import redot.redot_server.domain.redot.app.plan.entity.PlanType;
-import redot.redot_server.domain.redot.app.plan.exception.PlanErrorCode;
-import redot.redot_server.domain.redot.app.plan.exception.PlanException;
-import redot.redot_server.domain.redot.app.plan.repository.PlanRepository;
+import redot.redot_server.domain.redot.plan.entity.Plan;
+import redot.redot_server.domain.redot.plan.entity.PlanType;
+import redot.redot_server.domain.redot.plan.exception.PlanErrorCode;
+import redot.redot_server.domain.redot.plan.exception.PlanException;
+import redot.redot_server.domain.redot.plan.repository.PlanRepository;
 
 @Service
 @RequiredArgsConstructor

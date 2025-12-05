@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.app.plan.entity;
+package redot.redot_server.domain.redot.plan.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
