@@ -48,7 +48,6 @@ public class RedotAppService {
 
     private final RedotAppRepository redotAppRepository;
     private final DomainRepository domainRepository;
-    private static final int DOMAIN_ALLOCATION_RETRY_LIMIT = 5;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
     private final RedotMemberRepository redotMemberRepository;
@@ -147,18 +146,4 @@ public class RedotAppService {
         // 초기 관리자 생성 완료 표시
         redotApp.markManagerCreated();
     }
-    private Domain createDomainWithRetry(RedotApp redotApp) {
-        for (int attempt = 0; attempt < DOMAIN_ALLOCATION_RETRY_LIMIT; attempt++) {
-            String subdomain = SubDomainNameGenerator.generateSubdomain();
-            try {
-                return domainRepository.save(Domain.ofRedotApp(subdomain, redotApp));
-            } catch (org.springframework.dao.DataIntegrityViolationException ex) {
-                if (attempt == DOMAIN_ALLOCATION_RETRY_LIMIT - 1) {
-                    throw new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND, ex);
-                }
-            }
-        }
-        throw new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND);
-    }
-
 }
