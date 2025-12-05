@@ -17,7 +17,7 @@ import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
 import redot.redot_server.domain.auth.service.EmailVerificationService;
 import redot.redot_server.domain.cms.member.repository.CMSMemberRepository;
-import redot.redot_server.domain.redot.admin.repository.AdminRepository;
+import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 import redot.redot_server.global.util.EmailUtils;
 

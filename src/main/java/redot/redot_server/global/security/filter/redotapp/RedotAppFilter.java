@@ -13,12 +13,12 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import redot.redot_server.domain.redot.admin.entity.Domain;
-import redot.redot_server.domain.redot.admin.repository.DomainRepository;
+import redot.redot_server.domain.site.domain.entity.Domain;
+import redot.redot_server.domain.site.domain.repository.DomainRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.domain.cms.redotapp.entity.RedotApp;
-import redot.redot_server.domain.cms.redotapp.entity.RedotAppStatus;
+import redot.redot_server.domain.redot.app.entity.RedotApp;
+import redot.redot_server.domain.redot.app.entity.RedotAppStatus;
 import redot.redot_server.global.redotapp.context.RedotAppContextHolder;
 
 @Component
