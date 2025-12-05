@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.admin.controller;
+package redot.redot_server.domain.admin.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.redot.admin.service.AdminRedotAppService;
+import redot.redot_server.domain.admin.service.AdminRedotAppService;
 import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
 

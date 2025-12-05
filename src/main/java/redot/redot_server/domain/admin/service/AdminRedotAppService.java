@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.admin.service;
+package redot.redot_server.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

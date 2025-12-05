@@ -1,4 +1,4 @@
-package redot.redot_server.domain.redot.admin.service;
+package redot.redot_server.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.redot.admin.dto.request.AdminCreateRequest;
-import redot.redot_server.domain.redot.admin.dto.request.AdminResetPasswordRequest;
-import redot.redot_server.domain.redot.admin.dto.response.AdminResponse;
-import redot.redot_server.domain.redot.admin.dto.request.AdminUpdateRequest;
-import redot.redot_server.domain.redot.admin.entity.Admin;
-import redot.redot_server.domain.redot.admin.repository.AdminRepository;
+import redot.redot_server.domain.admin.dto.request.AdminCreateRequest;
+import redot.redot_server.domain.admin.dto.request.AdminResetPasswordRequest;
+import redot.redot_server.domain.admin.dto.response.AdminResponse;
+import redot.redot_server.domain.admin.dto.request.AdminUpdateRequest;
+import redot.redot_server.domain.admin.entity.Admin;
+import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.util.dto.response.PageResponse;
