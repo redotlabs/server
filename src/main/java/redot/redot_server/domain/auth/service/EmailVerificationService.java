@@ -8,6 +8,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import redot.redot_server.domain.auth.dto.request.EmailVerificationSendRequest;
 import redot.redot_server.domain.auth.dto.request.EmailVerificationVerifyRequest;
 import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.dto.response.EmailVerificationVerifyResponse;
@@ -27,8 +28,9 @@ public class EmailVerificationService {
     private final EmailVerificationMailService mailService;
     private final EmailVerificationProperties properties;
 
-    public EmailVerificationSendResponse sendCode(EmailVerificationPurpose purpose, String email) {
-        String normalizedEmail = normalize(email);
+    public EmailVerificationSendResponse sendCode(EmailVerificationSendRequest request) {
+        String normalizedEmail = normalize(request.email());
+        EmailVerificationPurpose purpose = request.purpose();
 
         if (properties.getResendCooldownSeconds() > 0 &&
                 verificationStore.hasCooldown(purpose, normalizedEmail)) {
