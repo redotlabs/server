@@ -1,5 +1,6 @@
 package redot.redot_server.domain.admin.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,7 +26,8 @@ public class AdminConsultationController {
     private final AdminConsultationService adminConsultationService;
 
     @GetMapping("/{consultationId}")
-    public ResponseEntity<ConsultationResponse> getConsultationInfo(@PathVariable("consultationId") Long consultationId) {
+    public ResponseEntity<ConsultationResponse> getConsultationInfo(
+            @PathVariable("consultationId") Long consultationId) {
         return ResponseEntity.ok(adminConsultationService.getConsultationInfo(consultationId));
     }
 
@@ -39,7 +41,9 @@ public class AdminConsultationController {
     }
 
     @PutMapping("/{consultationId}")
-    public ResponseEntity<ConsultationResponse> updateConsultationInfo(@RequestBody ConsultationUpdateRequest request, @PathVariable("consultationId") Long consultationId) {
+    public ResponseEntity<ConsultationResponse> updateConsultationInfo(
+            @RequestBody @Valid ConsultationUpdateRequest request,
+            @PathVariable("consultationId") Long consultationId) {
         return ResponseEntity.ok(adminConsultationService.updateConsultationInfo(consultationId, request));
     }
 }

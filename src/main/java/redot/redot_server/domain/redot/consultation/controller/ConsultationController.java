@@ -1,8 +1,10 @@
 package redot.redot_server.domain.redot.consultation.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.redot.consultation.dto.request.ConsultationCreateRequest;
@@ -17,7 +19,7 @@ public class ConsultationController {
     private final ConsultationService consultationService;
 
     @PostMapping
-    public ResponseEntity<ConsultationResponse> createConsultation(ConsultationCreateRequest request) {
+    public ResponseEntity<ConsultationResponse> createConsultation(@RequestBody @Valid ConsultationCreateRequest request) {
         ConsultationResponse response = consultationService.createConsultation(request);
         return ResponseEntity.ok(response);
     }
