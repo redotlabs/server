@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
 import redot.redot_server.domain.auth.dto.response.AuthResult;
-import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
@@ -86,13 +85,6 @@ public class CMSAuthService {
                 cmsMember.getRole(),
                 cmsMember.getCreatedAt()
         );
-    }
-
-    public EmailVerificationSendResponse sendPasswordResetCode(Long redotAppId, String email) {
-        CMSMember cmsMember = cmsMemberRepository
-                .findByEmailIgnoreCaseAndRedotApp_Id(EmailUtils.normalize(email), redotAppId)
-                .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
-        return emailVerificationService.sendCode(EmailVerificationPurpose.CMS_MEMBER_PASSWORD_RESET, cmsMember.getEmail());
     }
 
     @Transactional

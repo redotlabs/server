@@ -13,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
-import redot.redot_server.domain.auth.dto.request.PasswordResetSendRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
 import redot.redot_server.domain.auth.dto.response.AuthResult;
-import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.service.AdminAuthService;
 import redot.redot_server.domain.redot.admin.dto.request.AdminCreateRequest;
@@ -76,13 +74,7 @@ public class AdminAuthController {
                 .build();
     }
 
-    @PostMapping("/password-reset/send")
-    public ResponseEntity<EmailVerificationSendResponse> sendPasswordReset(@RequestBody @Valid PasswordResetSendRequest request) {
-        EmailVerificationSendResponse response = adminAuthService.sendPasswordResetCode(request.email());
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/password-reset/confirm")
+    @PostMapping("/password-reset")
     public ResponseEntity<Void> confirmPasswordReset(@RequestBody @Valid PasswordResetConfirmRequest request) {
         adminAuthService.resetPassword(request);
         return ResponseEntity.noContent().build();

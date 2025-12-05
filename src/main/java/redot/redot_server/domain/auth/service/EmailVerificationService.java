@@ -8,6 +8,7 @@ import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import redot.redot_server.domain.auth.dto.request.EmailVerificationVerifyRequest;
 import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.dto.response.EmailVerificationVerifyResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
@@ -50,11 +51,11 @@ public class EmailVerificationService {
         );
     }
 
-    public EmailVerificationVerifyResponse verifyCode(EmailVerificationPurpose purpose,
-                                                      String email,
-                                                      String code) {
-        String normalizedEmail = normalize(email);
-        String trimmedCode = code == null ? null : code.trim();
+    public EmailVerificationVerifyResponse verifyCode(EmailVerificationVerifyRequest request) {
+        String normalizedEmail = normalize(request.email());
+        EmailVerificationPurpose purpose = request.purpose();
+        String trimmedCode = request.code() == null ? null : request.code().trim();
+
         if (!StringUtils.hasText(trimmedCode)) {
             throw new AuthException(AuthErrorCode.INVALID_EMAIL_VERIFICATION_CODE);
         }

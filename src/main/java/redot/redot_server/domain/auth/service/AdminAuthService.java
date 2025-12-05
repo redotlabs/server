@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
 import redot.redot_server.domain.auth.dto.response.AuthResult;
-import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
@@ -71,12 +70,6 @@ public class AdminAuthService {
 
         return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
                 admin.getCreatedAt());
-    }
-
-    public EmailVerificationSendResponse sendPasswordResetCode(String email) {
-        Admin admin = adminRepository.findByEmailIgnoreCase(EmailUtils.normalize(email))
-                .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
-        return emailVerificationService.sendCode(EmailVerificationPurpose.REDOT_ADMIN_PASSWORD_RESET, admin.getEmail());
     }
 
     @Transactional
