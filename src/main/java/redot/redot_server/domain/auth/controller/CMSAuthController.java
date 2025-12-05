@@ -12,8 +12,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
+import redot.redot_server.domain.auth.dto.request.PasswordResetSendRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
 import redot.redot_server.domain.auth.service.CMSAuthService;
 import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
@@ -64,6 +67,20 @@ public class CMSAuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())
                 .header(HttpHeaders.SET_COOKIE, deleteRefresh.toString())
                 .build();
+    }
+
+    @PostMapping("/password-reset/send")
+    public ResponseEntity<EmailVerificationSendResponse> sendPasswordReset(@CurrentRedotApp Long redotAppId,
+                                                                           @RequestBody @Valid PasswordResetSendRequest request) {
+        EmailVerificationSendResponse response = cmsAuthService.sendPasswordResetCode(redotAppId, request.email());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/password-reset/confirm")
+    public ResponseEntity<Void> confirmPasswordReset(@CurrentRedotApp Long redotAppId,
+                                                     @RequestBody @Valid PasswordResetConfirmRequest request) {
+        cmsAuthService.resetPassword(redotAppId, request);
+        return ResponseEntity.noContent().build();
     }
 
 }

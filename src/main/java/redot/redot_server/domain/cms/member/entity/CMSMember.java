@@ -121,4 +121,8 @@ public class CMSMember {
         this.status = CMSMemberStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
     }
+
+    public void resetPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }

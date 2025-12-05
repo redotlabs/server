@@ -12,20 +12,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
+import redot.redot_server.domain.auth.dto.request.PasswordResetSendRequest;
+import redot.redot_server.domain.auth.dto.request.SignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
+import redot.redot_server.domain.auth.dto.response.TokenResponse;
+import redot.redot_server.domain.auth.service.AdminAuthService;
 import redot.redot_server.domain.redot.admin.dto.request.AdminCreateRequest;
 import redot.redot_server.domain.redot.admin.dto.response.AdminResponse;
 import redot.redot_server.domain.redot.admin.service.AdminService;
-import redot.redot_server.domain.auth.dto.response.AuthResult;
-import redot.redot_server.domain.auth.dto.request.SignInRequest;
-import redot.redot_server.domain.auth.dto.response.TokenResponse;
-import redot.redot_server.domain.auth.service.AdminAuthService;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/auth//redot/admin")
+@RequestMapping("/api/v1/auth/redot/admin")
 public class AdminAuthController {
 
     private final AdminAuthService adminAuthService;
@@ -71,6 +74,18 @@ public class AdminAuthController {
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())
                 .header(HttpHeaders.SET_COOKIE, deleteRefresh.toString())
                 .build();
+    }
+
+    @PostMapping("/password-reset/send")
+    public ResponseEntity<EmailVerificationSendResponse> sendPasswordReset(@RequestBody @Valid PasswordResetSendRequest request) {
+        EmailVerificationSendResponse response = adminAuthService.sendPasswordResetCode(request.email());
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/password-reset/confirm")
+    public ResponseEntity<Void> confirmPasswordReset(@RequestBody @Valid PasswordResetConfirmRequest request) {
+        adminAuthService.resetPassword(request);
+        return ResponseEntity.noContent().build();
     }
 
 }

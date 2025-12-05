@@ -9,6 +9,8 @@ import redot.redot_server.domain.redot.admin.entity.Admin;
 public interface AdminRepository extends JpaRepository<Admin, Long> {
     Optional<Admin> findByEmail(String email);
 
+    Optional<Admin> findByEmailIgnoreCase(String email);
+
     boolean existsByEmail(String email);
 
     @Query(value = "SELECT * FROM admins WHERE id = :id", nativeQuery = true)

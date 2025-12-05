@@ -122,4 +122,8 @@ public class RedotMember {
             this.profileImageUrl = profileImageUrl;
         }
     }
+
+    public void resetPassword(String encodedPassword) {
+        this.password = encodedPassword;
+    }
 }

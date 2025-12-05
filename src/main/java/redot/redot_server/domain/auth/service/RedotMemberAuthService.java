@@ -5,11 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import redot.redot_server.domain.auth.dto.response.AuthResult;
+import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
+import redot.redot_server.domain.auth.dto.response.AuthResult;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
+import redot.redot_server.domain.auth.dto.response.EmailVerificationSendResponse;
 import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateRequest;
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
@@ -107,5 +109,28 @@ public class RedotMemberAuthService {
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
 
         return RedotMemberResponse.from(member);
+    }
+
+    public EmailVerificationSendResponse sendPasswordResetCode(String email) {
+        String normalizedEmail = EmailUtils.normalize(email);
+        redotMemberRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        return emailVerificationService.sendCode(EmailVerificationPurpose.REDOT_MEMBER_PASSWORD_RESET, normalizedEmail);
+    }
+
+    @Transactional
+    public void resetPassword(PasswordResetConfirmRequest request) {
+        String normalizedEmail = EmailUtils.normalize(request.email());
+        emailVerificationService.consumeVerifiedToken(
+                EmailVerificationPurpose.REDOT_MEMBER_PASSWORD_RESET,
+                normalizedEmail,
+                request.verificationToken()
+        );
+
+        RedotMember member = redotMemberRepository.findByEmail(normalizedEmail)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        member.resetPassword(passwordEncoder.encode(request.newPassword()));
     }
 }
