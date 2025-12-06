@@ -2,7 +2,6 @@ package redot.redot_server.domain.cms.inquiry.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -12,18 +11,16 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryErrorCode;
 import redot.redot_server.domain.cms.inquiry.exception.RedotAppInquiryException;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
@@ -31,9 +28,7 @@ import redot.redot_server.domain.cms.member.entity.CMSMember;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "redot_app_inquiries")
-@EntityListeners(AuditingEntityListener.class)
-
-public class RedotAppInquiry {
+public class RedotAppInquiry extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,9 +57,6 @@ public class RedotAppInquiry {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "assignee_id")
     private CMSMember assignee;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public static RedotAppInquiry create(RedotApp redotApp, String inquiryNumber, String inquirerName, String title,
                                          String content) {

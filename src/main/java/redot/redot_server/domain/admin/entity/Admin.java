@@ -2,7 +2,6 @@ package redot.redot_server.domain.admin.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -16,18 +15,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "admins")
 @SQLRestriction("status = 'ACTIVE'")
-public class Admin {
+public class Admin extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,9 +43,6 @@ public class Admin {
 
     @Column(nullable = false)
     private String password;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     private LocalDateTime deletedAt;
 

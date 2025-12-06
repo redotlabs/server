@@ -1,7 +1,6 @@
 package redot.redot_server.domain.site.setting.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,17 +12,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Builder(access = lombok.AccessLevel.PRIVATE)
 @Table(name = "site_settings")
-public class SiteSetting {
+public class SiteSetting extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

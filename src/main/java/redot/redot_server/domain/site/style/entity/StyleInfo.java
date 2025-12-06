@@ -2,7 +2,6 @@ package redot.redot_server.domain.site.style.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -16,18 +15,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.site.setting.entity.Theme;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 @Getter
 @Table(name = "style_info")
-public class StyleInfo {
+public class StyleInfo extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

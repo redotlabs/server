@@ -2,7 +2,6 @@ package redot.redot_server.domain.site.menu.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -11,22 +10,19 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.redot.plan.entity.Plan;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "cms_menus",
         uniqueConstraints = {
@@ -34,7 +30,7 @@ import redot.redot_server.domain.redot.plan.entity.Plan;
                 @UniqueConstraint(columnNames = {"plan_id", "sort_order"})
         }
 )
-public class CMSMenu {
+public class CMSMenu extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,7 +49,4 @@ public class CMSMenu {
     @Column(name = "sort_order", nullable = false)
     private Integer order;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
 }
-
