@@ -60,12 +60,12 @@ CREATE TABLE IF NOT EXISTS redot_apps (
     id                  BIGSERIAL PRIMARY KEY,
     redot_member_id     BIGINT REFERENCES redot_members (id),
     plan_id             BIGINT NOT NULL REFERENCES app_plans (id),
-    status              INTEGER      NOT NULL,
+    status              VARCHAR(50)  NOT NULL,
     name                VARCHAR(255) NOT NULL,
     is_created_manager  BOOLEAN      NOT NULL DEFAULT FALSE,
     created_at          TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
     updated_at          TIMESTAMP    DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT redot_apps_status_check CHECK (status IN (0, 1, 2, 3, 4))
+    CONSTRAINT redot_apps_status_check CHECK (status IN ('ACTIVE', 'INACTIVE', 'DELETED', 'RESIGNED', 'PAYMENT_DELAYED'))
 );
 
 CREATE TABLE IF NOT EXISTS cms_members (
