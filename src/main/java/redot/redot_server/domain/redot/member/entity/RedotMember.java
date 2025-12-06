@@ -3,7 +3,6 @@ package redot.redot_server.domain.redot.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
@@ -21,8 +20,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
 
 @Entity
@@ -30,7 +28,6 @@ import redot.redot_server.domain.redot.app.entity.RedotApp;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
-@EntityListeners(AuditingEntityListener.class)
 @Table(
         name = "redot_members",
         uniqueConstraints = {
@@ -38,7 +35,7 @@ import redot.redot_server.domain.redot.app.entity.RedotApp;
         }
 )
 @SQLRestriction("status = 'ACTIVE'")
-public class RedotMember {
+public class RedotMember extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,9 +59,6 @@ public class RedotMember {
     private SocialProvider socialProvider;
 
     private String socialProviderId;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     private LocalDateTime deletedAt;
 

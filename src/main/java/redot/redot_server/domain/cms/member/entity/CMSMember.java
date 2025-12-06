@@ -2,7 +2,6 @@ package redot.redot_server.domain.cms.member.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
@@ -20,18 +19,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.SQLRestriction;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Builder(access = AccessLevel.PRIVATE)
 @SQLRestriction("status = 'ACTIVE'")
 @Table(
@@ -40,7 +37,7 @@ import redot.redot_server.domain.cms.member.exception.CMSMemberException;
                 @UniqueConstraint(columnNames = {"redot_app_id", "email"})
         }
 )
-public class CMSMember {
+public class CMSMember extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -69,9 +66,6 @@ public class CMSMember {
     private CMSMemberStatus status;
 
     private LocalDateTime deletedAt;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public boolean belongsTo(RedotApp redotApp) {
         return this.redotApp.equals(redotApp);

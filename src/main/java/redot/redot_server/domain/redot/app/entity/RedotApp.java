@@ -2,7 +2,6 @@ package redot.redot_server.domain.redot.app.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,25 +9,22 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import redot.redot_server.domain.redot.plan.entity.Plan;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
 
 @Getter
 @Entity
 @NoArgsConstructor(access = lombok.AccessLevel.PROTECTED)
 @AllArgsConstructor(access = lombok.AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Builder(access = lombok.AccessLevel.PRIVATE)
 @Table(name = "redot_apps")
-public class RedotApp {
+public class RedotApp extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -50,9 +46,6 @@ public class RedotApp {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id", nullable = false)
     private Plan plan;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
 
     public static RedotApp create(String name, RedotMember owner, Plan plan) {
         return RedotApp.builder()
