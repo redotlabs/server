@@ -1,0 +1,59 @@
+package redot.redot_server.domain.site.style.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import redot.redot_server.domain.redot.app.entity.RedotApp;
+import redot.redot_server.domain.site.setting.entity.Theme;
+import redot.redot_server.global.common.entity.BaseTimeEntity;
+
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder(access = AccessLevel.PRIVATE)
+@Getter
+@Table(name = "style_info")
+public class StyleInfo extends BaseTimeEntity {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @OneToOne
+    @JoinColumn(name = "redot_app_id", nullable = false, unique = true)
+    private RedotApp redotApp;
+
+    @Column(nullable = false)
+    private String font;
+    @Column(nullable = false)
+    private String color;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Theme theme;
+
+    public static StyleInfo create(String font, String color, Theme theme, RedotApp redotApp) {
+        return StyleInfo.builder()
+                .font(font)
+                .color(color)
+                .theme(theme)
+                .redotApp(redotApp)
+                .build();
+    }
+
+    public void update(String font, String color, Theme theme) {
+        this.font = font;
+        this.color = color;
+        this.theme = theme;
+    }
+}
