@@ -5,10 +5,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.domain.redot.member.dto.RedotMemberUpdateRequest;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.service.RedotMemberService;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.security.principal.JwtPrincipal;
@@ -19,6 +23,17 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 public class RedotMemberController {
 
     private final RedotMemberService redotMemberService;
+
+
+    @PutMapping
+    public ResponseEntity<RedotMemberResponse> updateRedotMemberInfo(
+            @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
+            @RequestBody RedotMemberUpdateRequest request
+    ) {
+        RedotMemberResponse redotMemberResponse = redotMemberService.updateRedotMemberInfo(jwtPrincipal.id(), request);
+        return ResponseEntity.ok(redotMemberResponse);
+    }
+
 
     @PostMapping("/upload-profile-image")
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(

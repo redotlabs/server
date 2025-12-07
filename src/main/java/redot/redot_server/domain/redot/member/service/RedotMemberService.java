@@ -7,6 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
+import redot.redot_server.domain.redot.member.dto.RedotMemberUpdateRequest;
+import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.entity.SocialProvider;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
@@ -60,4 +62,21 @@ public class RedotMemberService {
         return new UploadedImageUrlResponse(imageUrl);
     }
 
+    public RedotMemberResponse updateRedotMemberInfo(Long id, RedotMemberUpdateRequest request) {
+        RedotMember redotMember = redotMemberRepository.findById(id)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        deleteOldProfileImageUrlIfChanged(request, redotMember);
+
+        redotMember.updateInfo(request.name(), request.profileImageUrl());
+
+        return RedotMemberResponse.fromEntity(redotMember);
+    }
+
+    private void deleteOldProfileImageUrlIfChanged(RedotMemberUpdateRequest request, RedotMember redotMember) {
+        String oldProfileImageUrl = redotMember.getProfileImageUrl();
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+            imageStorageService.delete(oldProfileImageUrl);
+        }
+    }
 }
