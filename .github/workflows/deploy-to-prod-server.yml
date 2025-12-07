@@ -66,9 +66,10 @@ jobs:
           script: |
             cd ${{ secrets.PROD_SERVER_DEPLOY_PATH }}
             
-            # 최신 이미지 pull
-            docker compose -f docker-compose.prod.yml pull
+            # 최신 이미지 pull (spring만)
+            docker compose -f docker-compose.prod.yml pull redot-server
 
-            # 컨테이너 재시작
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml --env-file .env up -d
+            # spring만 재시작
+            docker compose -f docker-compose.prod.yml stop redot-server
+            docker compose -f docker-compose.prod.yml rm -f redot-server
+            docker compose -f docker-compose.prod.yml --env-file .env up -d redot-server

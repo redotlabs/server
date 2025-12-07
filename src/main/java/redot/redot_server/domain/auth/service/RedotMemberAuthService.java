@@ -53,7 +53,7 @@ public class RedotMemberAuthService {
         );
 
         RedotMember savedMember = redotMemberRepository.save(redotMember);
-        return RedotMemberResponse.from(savedMember);
+        return RedotMemberResponse.fromEntity(savedMember);
     }
 
     public AuthResult signIn(HttpServletRequest request, RedotMemberSignInRequest signInRequest) {
@@ -107,7 +107,7 @@ public class RedotMemberAuthService {
         RedotMember member = redotMemberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
 
-        return RedotMemberResponse.from(member);
+        return RedotMemberResponse.fromEntity(member);
     }
 
     @Transactional
