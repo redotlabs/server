@@ -62,6 +62,7 @@ public class RedotMemberService {
         return new UploadedImageUrlResponse(imageUrl);
     }
 
+    @Transactional
     public RedotMemberResponse updateRedotMemberInfo(Long id, RedotMemberUpdateRequest request) {
         RedotMember redotMember = redotMemberRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
