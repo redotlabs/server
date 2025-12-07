@@ -17,10 +17,10 @@ import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot_redot_server.global.s3.dto.UploadedImageUrlResponse;
-import redot_redot_server.global.s3.event.ImageDeletionEvent;
-import redot-redot_server.global.s3.service.ImageStorageService;
-import redot-redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.event.ImageDeletionEvent;
+import redot.redot_server.global.s3.service.ImageStorageService;
+import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.EmailUtils;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
