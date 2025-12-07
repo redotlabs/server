@@ -3,8 +3,8 @@ package redot.redot_server.global.s3.util;
 import java.util.function.Function;
 
 public enum ImageDirectory {
-    ADMIN_PROFILE(id -> String.format("admin/profile/%d", id)),
-    CMS_MEMBER_PROFILE(id -> String.format("cms/member/profile/%d", id)),
+    ADMIN_PROFILE(id -> String.format("redot/admin/profile/%d", id)),
+    CMS_MEMBER_PROFILE(id -> String.format("app/cms/member/profile/%d", id)),
     REDOT_MEMBER_PROFILE(id -> String.format("redot/member/profile/%d", id)),
     APP_LOGO(id -> String.format("app/%d/logo", id));
 
