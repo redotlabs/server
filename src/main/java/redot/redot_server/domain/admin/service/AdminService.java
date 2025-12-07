@@ -9,14 +9,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.admin.dto.request.AdminCreateRequest;
 import redot.redot_server.domain.admin.dto.request.AdminResetPasswordRequest;
-import redot.redot_server.domain.admin.dto.response.AdminResponse;
+import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.admin.dto.request.AdminUpdateRequest;
+import redot.redot_server.domain.admin.dto.response.AdminResponse;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
-import redot.redot_server.global.util.dto.response.PageResponse;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.service.ImageStorageService;
+import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.EmailUtils;
+import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ import redot.redot_server.global.util.EmailUtils;
 public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ImageStorageService imageStorageService;
 
     @Transactional
     public AdminResponse createAdmin(AdminCreateRequest request) {
@@ -100,5 +105,14 @@ public class AdminService {
     public void deleteCurrentAdmin(Long id) {
         Admin admin = adminRepository.findById(id).orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
         admin.delete();
+    }
+
+    @Transactional
+    public UploadedImageUrlResponse uploadProfileImage(Long adminId, MultipartFile imageFile) {
+        adminRepository.findById(adminId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
+
+        String imageUrl = imageStorageService.upload(ImageDirectory.ADMIN_PROFILE, adminId, imageFile);
+        return new UploadedImageUrlResponse(imageUrl);
     }
 }

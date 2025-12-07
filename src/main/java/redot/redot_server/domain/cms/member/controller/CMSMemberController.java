@@ -2,6 +2,7 @@ package redot.redot_server.domain.cms.member.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -18,20 +19,23 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberCreateRequest;
-import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberRoleRequest;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberUpdateRequest;
+import redot.redot_server.domain.cms.member.dto.response.CMSMemberResponse;
 import redot.redot_server.domain.cms.member.exception.CMSMemberErrorCode;
 import redot.redot_server.domain.cms.member.exception.CMSMemberException;
 import redot.redot_server.domain.cms.member.service.CMSMemberService;
-import redot.redot_server.global.util.dto.response.PageResponse;
-import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
 import redot.redot_server.global.jwt.token.TokenType;
+import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
+import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.security.principal.JwtPrincipal;
+import redot.redot_server.global.util.dto.response.PageResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -101,6 +105,15 @@ public class CMSMemberController {
                 .header(HttpHeaders.SET_COOKIE, deleteAccess.toString())
                 .header(HttpHeaders.SET_COOKIE, deleteRefresh.toString())
                 .build();
+    }
+
+    @PostMapping("/upload-profile-image")
+    public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
+            @CurrentRedotApp Long redotAppId,
+            @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
+            @RequestPart("image") @NotNull MultipartFile image
+    ) {
+        return ResponseEntity.ok(cmsMemberService.uploadProfileImage(redotAppId, jwtPrincipal.id(), image));
     }
 
 }
