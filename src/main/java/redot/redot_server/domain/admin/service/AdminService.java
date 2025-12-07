@@ -75,11 +75,20 @@ public class AdminService {
                 throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
             }
 
+            deleteOldProfileImageUrlIfChanged(request, admin);
+
             admin.update(request.name(), normalizedEmail, request.profileImageUrl());
 
             return AdminResponse.from(admin);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
+        }
+    }
+
+    private void deleteOldProfileImageUrlIfChanged(AdminUpdateRequest request, Admin admin) {
+        String oldProfileImageUrl = admin.getProfileImageUrl();
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+            imageStorageService.delete(oldProfileImageUrl);
         }
     }
 

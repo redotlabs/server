@@ -36,18 +36,26 @@ public class SiteSettingService {
         Domain domain = domainRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
-        if(isCustomDomainExists(request, domain)) {
+        if (isCustomDomainExists(request, domain)) {
             throw new DomainException(DomainErrorCode.CUSTOM_DOMAIN_ALREADY_EXISTS);
         }
+
+        deleteOldLogoUrlIfChanged(request, siteSetting);
 
         siteSetting.updateSiteName(request.siteName());
         siteSetting.updateLogoUrl(request.logoUrl());
         siteSetting.updateGaInfo(request.gaInfo());
         domain.updateCustomDomain(request.customDomain());
 
-        deleteOldLogoIfChanged(siteSetting, request.logoUrl());
-
         return SiteSettingResponse.fromEntity(siteSetting, domain);
+    }
+
+    private void deleteOldLogoUrlIfChanged(SiteSettingUpdateRequest request, SiteSetting siteSetting) {
+        String oldLogoUrl = siteSetting.getLogoUrl();
+
+        if (oldLogoUrl != null && !oldLogoUrl.equals(request.logoUrl())) {
+            imageStorageService.delete(oldLogoUrl);
+        }
     }
 
     public UploadedImageUrlResponse uploadLogoImage(Long redotAppId, MultipartFile logoFile) {
@@ -75,15 +83,6 @@ public class SiteSettingService {
         return domainRepository.existsByCustomDomain(requestedCustomDomain);
     }
 
-    private void deleteOldLogoIfChanged(SiteSetting siteSetting, String newLogoUrl) {
-        String currentLogoUrl = siteSetting.getLogoUrl();
-        if(currentLogoUrl == null) {
-            return;
-        }
-        if (newLogoUrl == null || !newLogoUrl.equals(currentLogoUrl)) {
-            imageStorageService.delete(currentLogoUrl);
-        }
-    }
 
     public SiteSettingResponse getSiteSetting(Long redotAppId) {
         SiteSetting siteSetting = siteSettingRepository.findByRedotAppId(redotAppId)

@@ -69,9 +69,18 @@ public class CMSMemberService {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
+        deleteOldProfileImageUrlIfChanged(request, cmsMember);
+
         cmsMember.updateProfile(request.name(), request.profileImageUrl());
 
         return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+    }
+
+    private void deleteOldProfileImageUrlIfChanged(CMSMemberUpdateRequest request, CMSMember cmsMember) {
+        String oldProfileImageUrl = cmsMember.getProfileImageUrl();
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+            imageStorageService.delete(oldProfileImageUrl);
+        }
     }
 
     @Transactional
