@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,5 +42,13 @@ public class RedotMemberController {
             @RequestPart("image") @NotNull MultipartFile image
     ) {
         return ResponseEntity.ok(redotMemberService.uploadProfileImage(jwtPrincipal.id(), image));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteRedotMember(
+            @AuthenticationPrincipal JwtPrincipal jwtPrincipal
+    ) {
+        redotMemberService.deleteRedotMember(jwtPrincipal.id());
+        return ResponseEntity.noContent().build();
     }
 }
