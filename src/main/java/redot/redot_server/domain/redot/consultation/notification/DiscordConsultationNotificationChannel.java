@@ -1,5 +1,6 @@
 package redot.redot_server.domain.redot.consultation.notification;
 
+import jakarta.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,6 +29,21 @@ public class DiscordConsultationNotificationChannel implements ConsultationNotif
 
     private final RestTemplateBuilder restTemplateBuilder;
     private final ConsultationNotificationProperties properties;
+    private RestTemplate restTemplate;
+
+    @PostConstruct
+    void initRestTemplate() {
+        this.restTemplate = restTemplateBuilder
+                .requestFactory(this::createRequestFactory)
+                .build();
+    }
+
+    private ClientHttpRequestFactory createRequestFactory() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+        factory.setConnectTimeout(5000);
+        factory.setReadTimeout(10000);
+        return factory;
+    }
 
     @Override
     public void send(Consultation consultation) {
@@ -34,7 +52,6 @@ public class DiscordConsultationNotificationChannel implements ConsultationNotif
             return;
         }
 
-        RestTemplate restTemplate = restTemplateBuilder.build();
         Map<String, Object> payload = buildPayload(consultation);
 
         HttpHeaders headers = new HttpHeaders();
