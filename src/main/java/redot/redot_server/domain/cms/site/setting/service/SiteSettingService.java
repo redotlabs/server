@@ -6,18 +6,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.domain.cms.site.setting.dto.request.SiteSettingUpdateRequest;
+import redot.redot_server.domain.cms.site.setting.dto.response.SiteSettingResponse;
 import redot.redot_server.domain.site.domain.entity.Domain;
 import redot.redot_server.domain.site.domain.exception.DomainErrorCode;
 import redot.redot_server.domain.site.domain.exception.DomainException;
 import redot.redot_server.domain.site.domain.repository.DomainRepository;
-import redot.redot_server.domain.cms.site.setting.dto.response.SiteSettingResponse;
-import redot.redot_server.domain.cms.site.setting.dto.request.SiteSettingUpdateRequest;
 import redot.redot_server.domain.site.setting.entity.SiteSetting;
 import redot.redot_server.domain.site.setting.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.site.setting.exception.SiteSettingException;
 import redot.redot_server.domain.site.setting.repository.SiteSettingRepository;
-import redot.redot_server.domain.site.setting.util.LogoPathGenerator;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.service.ImageUploadService;
+import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
@@ -28,6 +29,7 @@ public class SiteSettingService {
     private final SiteSettingRepository siteSettingRepository;
     private final DomainRepository domainRepository;
     private final S3Manager s3Manager;
+    private final ImageUploadService imageUploadService;
 
     @Transactional
     public SiteSettingResponse updateSiteSetting(Long redotAppId, SiteSettingUpdateRequest request) {
@@ -55,10 +57,7 @@ public class SiteSettingService {
             throw new SiteSettingException(SiteSettingErrorCode.LOGO_FILE_REQUIRED);
         }
 
-        String logoUrl = s3Manager.uploadFile(
-                logoFile,
-                LogoPathGenerator.generateLogoPath(redotAppId, logoFile.getOriginalFilename())
-        );
+        String logoUrl = imageUploadService.upload(ImageDirectory.APP_LOGO, redotAppId, logoFile);
 
         return new UploadedImageUrlResponse(logoUrl);
     }
