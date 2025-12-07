@@ -83,11 +83,11 @@ public class AdminController {
                 .build();
     }
 
-    @PostMapping("/{adminId}/profile-image")
+    @PostMapping("/upload-profile-image")
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
-            @PathVariable Long adminId,
+            @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
             @RequestPart("image") @NotNull MultipartFile image
     ) {
-        return ResponseEntity.ok(adminService.uploadProfileImage(adminId, image));
+        return ResponseEntity.ok(adminService.uploadProfileImage(jwtPrincipal.id(), image));
     }
 }

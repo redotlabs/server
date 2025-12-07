@@ -36,10 +36,6 @@ import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.security.principal.JwtPrincipal;
 import redot.redot_server.global.util.dto.response.PageResponse;
-import redot.redot_server.global.redotapp.resolver.annotation.CurrentRedotApp;
-import redot.redot_server.global.jwt.cookie.TokenCookieFactory;
-import redot.redot_server.global.jwt.token.TokenType;
-import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @RestController
 @RequiredArgsConstructor
@@ -111,7 +107,7 @@ public class CMSMemberController {
                 .build();
     }
 
-    @PostMapping("/profile-image")
+    @PostMapping("/upload-profile-image")
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @CurrentRedotApp Long redotAppId,
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,

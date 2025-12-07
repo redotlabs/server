@@ -20,7 +20,7 @@ public class RedotMemberController {
 
     private final RedotMemberService redotMemberService;
 
-    @PostMapping("/profile-image")
+    @PostMapping("/upload-profile-image")
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
             @RequestPart("image") @NotNull MultipartFile image
