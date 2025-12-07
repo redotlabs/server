@@ -1,6 +1,7 @@
 package redot.redot_server.domain.admin.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,7 @@ import redot.redot_server.domain.admin.repository.AdminRepository;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.EmailUtils;
@@ -29,6 +31,7 @@ public class AdminService {
     private final AdminRepository adminRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageStorageService imageStorageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public AdminResponse createAdmin(AdminCreateRequest request) {
@@ -75,11 +78,20 @@ public class AdminService {
                 throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
             }
 
+            deleteOldProfileImageUrlIfChanged(request, admin);
+
             admin.update(request.name(), normalizedEmail, request.profileImageUrl());
 
             return AdminResponse.from(admin);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
+        }
+    }
+
+    private void deleteOldProfileImageUrlIfChanged(AdminUpdateRequest request, Admin admin) {
+        String oldProfileImageUrl = admin.getProfileImageUrl();
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+            eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }
 

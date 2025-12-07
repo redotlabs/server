@@ -10,7 +10,7 @@ public record RedotMemberResponse(
         String profileImageUrl,
         SocialProvider socialProvider
 ) {
-    public static RedotMemberResponse from(RedotMember member) {
+    public static RedotMemberResponse fromEntity(RedotMember member) {
         return new RedotMemberResponse(
                 member.getId(),
                 member.getName(),
@@ -21,6 +21,6 @@ public record RedotMemberResponse(
     }
 
     public static RedotMemberResponse fromNullable(RedotMember member) {
-        return member == null ? null : from(member);
+        return member == null ? null : fromEntity(member);
     }
 }

@@ -28,7 +28,10 @@ public class ImageStorageService {
         return s3Manager.uploadFile(file, path);
     }
 
-    public void delete(String imageUrl) {
+    public void delete(String imageUrl) throws ImageUploadException {
+        if(!s3Manager.exists(imageUrl)){
+            return;
+        }
         s3Manager.deleteFile(imageUrl);
     }
 

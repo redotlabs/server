@@ -120,4 +120,9 @@ public class RedotMember extends BaseTimeEntity {
     public void resetPassword(String encodedPassword) {
         this.password = encodedPassword;
     }
+
+    public void updateInfo(String name, String profileImageUrl) {
+        this.name = name;
+        this.profileImageUrl = profileImageUrl;
+    }
 }

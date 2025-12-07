@@ -3,6 +3,7 @@ package redot.redot_server.domain.cms.site.setting.service;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import redot.redot_server.domain.site.setting.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.site.setting.exception.SiteSettingException;
 import redot.redot_server.domain.site.setting.repository.SiteSettingRepository;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
 
@@ -28,6 +30,7 @@ public class SiteSettingService {
     private final SiteSettingRepository siteSettingRepository;
     private final DomainRepository domainRepository;
     private final ImageStorageService imageStorageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public SiteSettingResponse updateSiteSetting(Long redotAppId, SiteSettingUpdateRequest request) {
@@ -36,18 +39,26 @@ public class SiteSettingService {
         Domain domain = domainRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
-        if(isCustomDomainExists(request, domain)) {
+        if (isCustomDomainExists(request, domain)) {
             throw new DomainException(DomainErrorCode.CUSTOM_DOMAIN_ALREADY_EXISTS);
         }
+
+        deleteOldLogoUrlIfChanged(request, siteSetting);
 
         siteSetting.updateSiteName(request.siteName());
         siteSetting.updateLogoUrl(request.logoUrl());
         siteSetting.updateGaInfo(request.gaInfo());
         domain.updateCustomDomain(request.customDomain());
 
-        deleteOldLogoIfChanged(siteSetting, request.logoUrl());
-
         return SiteSettingResponse.fromEntity(siteSetting, domain);
+    }
+
+    private void deleteOldLogoUrlIfChanged(SiteSettingUpdateRequest request, SiteSetting siteSetting) {
+        String oldLogoUrl = siteSetting.getLogoUrl();
+
+        if (oldLogoUrl != null && !oldLogoUrl.equals(request.logoUrl())) {
+            eventPublisher.publishEvent(new ImageDeletionEvent(oldLogoUrl));
+        }
     }
 
     public UploadedImageUrlResponse uploadLogoImage(Long redotAppId, MultipartFile logoFile) {
@@ -75,15 +86,6 @@ public class SiteSettingService {
         return domainRepository.existsByCustomDomain(requestedCustomDomain);
     }
 
-    private void deleteOldLogoIfChanged(SiteSetting siteSetting, String newLogoUrl) {
-        String currentLogoUrl = siteSetting.getLogoUrl();
-        if(currentLogoUrl == null) {
-            return;
-        }
-        if (newLogoUrl == null || !newLogoUrl.equals(currentLogoUrl)) {
-            imageStorageService.delete(currentLogoUrl);
-        }
-    }
 
     public SiteSettingResponse getSiteSetting(Long redotAppId) {
         SiteSetting siteSetting = siteSettingRepository.findByRedotAppId(redotAppId)
