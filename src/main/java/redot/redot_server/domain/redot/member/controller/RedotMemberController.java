@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.domain.redot.member.controller.docs.RedotMemberControllerDocs;
 import redot.redot_server.domain.redot.member.dto.RedotMemberUpdateRequest;
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.service.RedotMemberService;
@@ -21,12 +22,13 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/redot/members")
-public class RedotMemberController {
+public class RedotMemberController implements RedotMemberControllerDocs {
 
     private final RedotMemberService redotMemberService;
 
 
     @PutMapping
+    @Override
     public ResponseEntity<RedotMemberResponse> updateRedotMemberInfo(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
             @RequestBody RedotMemberUpdateRequest request
@@ -37,6 +39,7 @@ public class RedotMemberController {
 
 
     @PostMapping("/upload-profile-image")
+    @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
             @RequestPart("image") @NotNull MultipartFile image
@@ -45,6 +48,7 @@ public class RedotMemberController {
     }
 
     @DeleteMapping
+    @Override
     public ResponseEntity<Void> deleteRedotMember(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal
     ) {

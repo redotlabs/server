@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.domain.admin.controller.docs.AdminControllerDocs;
 import redot.redot_server.domain.admin.dto.request.AdminCreateRequest;
 import redot.redot_server.domain.admin.dto.request.AdminResetPasswordRequest;
 import redot.redot_server.domain.admin.dto.response.AdminResponse;
@@ -33,38 +34,44 @@ import redot.redot_server.global.security.principal.JwtPrincipal;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/redot/admin")
-public class AdminController {
+public class AdminController implements AdminControllerDocs {
 
     private final AdminService adminService;
     private final TokenCookieFactory tokenCookieFactory;
 
     @GetMapping("/{adminId}")
+    @Override
     public ResponseEntity<AdminResponse> getAdminInfo(@PathVariable("adminId") Long adminId) {
         return ResponseEntity.ok(adminService.getAdminInfo(adminId));
     }
 
     @PostMapping
+    @Override
     public ResponseEntity<AdminResponse> createAdmin(@Valid @RequestBody AdminCreateRequest request) {
         return ResponseEntity.ok(adminService.createAdmin(request));
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<PageResponse<AdminResponse>> getAdminInfoList(Pageable pageable) {
         return ResponseEntity.ok(adminService.getAdminInfoList(pageable));
     }
 
     @PutMapping("/{adminId}")
+    @Override
     public ResponseEntity<AdminResponse> updateAdmin(@PathVariable("adminId") Long adminId, @Valid @RequestBody AdminUpdateRequest request) {
         return ResponseEntity.ok(adminService.updateAdmin(adminId, request));
     }
 
     @PostMapping("/{adminId}/reset-password")
+    @Override
     public ResponseEntity<Void> resetAdminPassword(@PathVariable("adminId") Long adminId, @Valid @RequestBody AdminResetPasswordRequest request) {
         adminService.resetAdminPassword(adminId, request);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{adminId}")
+    @Override
     public ResponseEntity<Void> deleteAdmin(@PathVariable("adminId") Long adminId, @AuthenticationPrincipal
     JwtPrincipal jwtPrincipal) {
         adminService.deleteAdmin(jwtPrincipal.id(), adminId);
@@ -72,6 +79,7 @@ public class AdminController {
     }
 
     @DeleteMapping
+    @Override
     public ResponseEntity<Void> deleteCurrentAdmin(HttpServletRequest request, @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
         adminService.deleteCurrentAdmin(jwtPrincipal.id());
         ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(request, TokenType.ADMIN.getAccessCookieName());
@@ -84,6 +92,7 @@ public class AdminController {
     }
 
     @PostMapping("/upload-profile-image")
+    @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
             @RequestPart("image") @NotNull MultipartFile image

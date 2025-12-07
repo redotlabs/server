@@ -1,6 +1,5 @@
 package redot.redot_server.domain.auth.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
+import redot.redot_server.domain.auth.controller.docs.RedotMemberAuthControllerDocs;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
 import redot.redot_server.domain.auth.dto.response.AuthResult;
@@ -36,7 +36,7 @@ import redot.redot_server.global.security.social.config.FlowRedirect;
 
 @RestController
 @RequestMapping("/api/v1/auth/redot/member")
-public class RedotMemberAuthController {
+public class RedotMemberAuthController implements RedotMemberAuthControllerDocs {
 
     private final RedotMemberAuthService redotMemberAuthService;
     private final TokenCookieFactory tokenCookieFactory;
@@ -54,11 +54,13 @@ public class RedotMemberAuthController {
     }
 
     @PostMapping("/sign-up")
+    @Override
     public ResponseEntity<RedotMemberResponse> signUp(@RequestBody @Valid RedotMemberCreateRequest request) {
         return ResponseEntity.ok(redotMemberAuthService.signUp(request));
     }
 
     @PostMapping("/sign-in")
+    @Override
     public ResponseEntity<TokenResponse> signIn(HttpServletRequest request,
                                                 @RequestBody @Valid RedotMemberSignInRequest signInRequest) {
         AuthResult authResult = redotMemberAuthService.signIn(request, signInRequest);
@@ -69,6 +71,7 @@ public class RedotMemberAuthController {
     }
 
     @PostMapping("/reissue")
+    @Override
     public ResponseEntity<TokenResponse> reissue(HttpServletRequest request) {
         AuthResult authResult = redotMemberAuthService.reissue(request);
         return ResponseEntity.ok()
@@ -78,6 +81,7 @@ public class RedotMemberAuthController {
     }
 
     @GetMapping("/me")
+    @Override
     public ResponseEntity<RedotMemberResponse> getCurrentMember(@AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
         if (jwtPrincipal == null || jwtPrincipal.tokenType() != TokenType.REDOT_MEMBER) {
             throw new AuthException(AuthErrorCode.INVALID_TOKEN_TYPE);
@@ -86,6 +90,7 @@ public class RedotMemberAuthController {
     }
 
     @PostMapping("/sign-out")
+    @Override
     public ResponseEntity<Void> signOut(HttpServletRequest request) {
         ResponseCookie deleteAccess = tokenCookieFactory.deleteAccessTokenCookie(request, TokenType.REDOT_MEMBER.getAccessCookieName());
         ResponseCookie deleteRefresh = tokenCookieFactory.deleteRefreshTokenCookie(request, TokenType.REDOT_MEMBER.getRefreshCookieName());
@@ -97,14 +102,14 @@ public class RedotMemberAuthController {
     }
 
     @PostMapping("/password-reset")
+    @Override
     public ResponseEntity<Void> confirmPasswordReset(@RequestBody @Valid PasswordResetConfirmRequest request) {
         redotMemberAuthService.resetPassword(request);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/social/login-url")
-    @Operation(summary = "소셜 로그인 인가 URL 조회",
-            description = "프론트엔드가 브라우저를 리다이렉트하기 위해 OAuth2 인가 URL을 받아갈 때 사용합니다.")
+    @Override
     public ResponseEntity<SocialLoginUrlResponse> getSocialLoginUrl(@RequestParam(name = "provider", defaultValue = "google") String provider,
                                                                     @RequestParam(name = "redirect_uri", required = false) String redirectUri,
                                                                     @RequestParam(name = "failure_uri", required = false) String failureUri) {
