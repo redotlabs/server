@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import redot.redot_server.domain.redot.consultation.controller.docs.ConsultationControllerDocs;
 import redot.redot_server.domain.redot.consultation.dto.request.ConsultationCreateRequest;
 import redot.redot_server.domain.redot.consultation.dto.response.ConsultationResponse;
 import redot.redot_server.domain.redot.consultation.service.ConsultationService;
@@ -14,11 +15,12 @@ import redot.redot_server.domain.redot.consultation.service.ConsultationService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/redot/consultations")
-public class ConsultationController {
+public class ConsultationController implements ConsultationControllerDocs {
 
     private final ConsultationService consultationService;
 
     @PostMapping
+    @Override
     public ResponseEntity<ConsultationResponse> createConsultation(@RequestBody @Valid ConsultationCreateRequest request) {
         ConsultationResponse response = consultationService.createConsultation(request);
         return ResponseEntity.ok(response);

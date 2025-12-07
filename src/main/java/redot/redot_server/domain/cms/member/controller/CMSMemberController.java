@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import redot.redot_server.domain.cms.member.controller.docs.CMSMemberControllerDocs;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberCreateRequest;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberRoleRequest;
 import redot.redot_server.domain.cms.member.dto.request.CMSMemberSearchCondition;
@@ -40,24 +41,27 @@ import redot.redot_server.global.util.dto.response.PageResponse;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/app/cms/members")
-public class CMSMemberController {
+public class CMSMemberController implements CMSMemberControllerDocs {
 
     private final CMSMemberService cmsMemberService;
     private final TokenCookieFactory tokenCookieFactory;
 
     @PostMapping
+    @Override
     public ResponseEntity<CMSMemberResponse> createCMSMember(@CurrentRedotApp Long redotAppId,
                                                              @RequestBody @Valid CMSMemberCreateRequest request) {
         return ResponseEntity.ok(cmsMemberService.createCMSMember(redotAppId, request));
     }
 
     @GetMapping("/{memberId}")
+    @Override
     public ResponseEntity<CMSMemberResponse> getCMSMemberInfo(@CurrentRedotApp Long redotAppId,
                                                               @PathVariable(name = "memberId") Long memberId) {
         return ResponseEntity.ok(cmsMemberService.getCMSMemberInfo(redotAppId, memberId));
     }
 
     @GetMapping
+    @Override
     public ResponseEntity<PageResponse<CMSMemberResponse>> getCMSMemberList(@CurrentRedotApp Long redotAppId,
                                                                             CMSMemberSearchCondition searchCondition,
                                                                             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -66,6 +70,7 @@ public class CMSMemberController {
     }
 
     @PatchMapping("/role/{memberId}")
+    @Override
     public ResponseEntity<CMSMemberResponse> changeCMSMemberRole(@CurrentRedotApp Long redotAppId,
                                                                  @PathVariable(name = "memberId") Long memberId,
                                                                  @RequestBody @Valid CMSMemberRoleRequest request) {
@@ -73,6 +78,7 @@ public class CMSMemberController {
     }
 
     @PutMapping
+    @Override
     public ResponseEntity<CMSMemberResponse> updateCMSMember(@CurrentRedotApp Long redotAppId,
                                                              @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                              @RequestBody @Valid CMSMemberUpdateRequest request) {
@@ -80,6 +86,7 @@ public class CMSMemberController {
     }
 
     @DeleteMapping("/{memberId}")
+    @Override
     public ResponseEntity<Void> deleteCMSMember(@CurrentRedotApp Long redotAppId,
                                                 @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
                                                 @PathVariable(name = "memberId") Long memberId) {
@@ -92,6 +99,7 @@ public class CMSMemberController {
     }
 
     @DeleteMapping
+    @Override
     public ResponseEntity<Void> deleteCurrentCMSMember(HttpServletRequest request,
                                                        @CurrentRedotApp Long redotAppId,
                                                        @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
@@ -108,6 +116,7 @@ public class CMSMemberController {
     }
 
     @PostMapping("/upload-profile-image")
+    @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @CurrentRedotApp Long redotAppId,
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
