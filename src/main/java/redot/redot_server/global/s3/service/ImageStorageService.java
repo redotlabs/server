@@ -9,6 +9,7 @@ import redot.redot_server.global.s3.config.ImageUploadProperties;
 import redot.redot_server.global.s3.exception.ImageErrorCode;
 import redot.redot_server.global.s3.exception.ImageUploadException;
 import redot.redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.util.ImageMimeDetector;
 import redot.redot_server.global.s3.util.ImagePathGenerator;
 import redot.redot_server.global.s3.util.S3Manager;
 
@@ -18,6 +19,7 @@ public class ImageStorageService {
 
     private final S3Manager s3Manager;
     private final ImageUploadProperties properties;
+    private final ImageMimeDetector imageMimeDetector;
 
     public String upload(ImageDirectory directory, Long ownerId, MultipartFile file) {
         validateFile(file);
@@ -44,6 +46,14 @@ public class ImageStorageService {
         boolean allowedType = StringUtils.hasText(contentType) &&
                 allowed.stream().anyMatch(pattern -> matchesContentType(contentType, pattern));
         if (!allowedType) {
+            throw new ImageUploadException(ImageErrorCode.UNSUPPORTED_IMAGE_TYPE);
+        }
+
+        String detected = imageMimeDetector.detect(file)
+                .orElseThrow(() -> new ImageUploadException(ImageErrorCode.UNSUPPORTED_IMAGE_TYPE));
+
+        boolean detectedAllowed = allowed.stream().anyMatch(pattern -> matchesContentType(detected, pattern));
+        if (!detectedAllowed) {
             throw new ImageUploadException(ImageErrorCode.UNSUPPORTED_IMAGE_TYPE);
         }
     }
