@@ -1,5 +1,6 @@
 package redot.redot_server.domain.cms.site.style.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +29,7 @@ public class StyleInfoController implements StyleInfoControllerDocs {
 
     @PatchMapping
     @Override
-    public ResponseEntity<StyleInfoResponse> updateStyleInfo(@CurrentRedotApp Long redotAppId, @RequestBody StyleInfoUpdateRequest request) {
+    public ResponseEntity<StyleInfoResponse> updateStyleInfo(@CurrentRedotApp Long redotAppId, @RequestBody @Valid StyleInfoUpdateRequest request) {
         return ResponseEntity.ok().body(styleInfoService.updateStyleInfo(redotAppId, request));
     }
 }

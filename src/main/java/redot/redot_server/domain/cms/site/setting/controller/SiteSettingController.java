@@ -1,5 +1,6 @@
 package redot.redot_server.domain.cms.site.setting.controller;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class SiteSettingController implements SiteSettingControllerDocs {
     @Override
     public ResponseEntity<SiteSettingResponse> updateSiteSetting(
             @CurrentRedotApp Long redotAppId,
-            @RequestBody SiteSettingUpdateRequest request
+            @RequestBody @Valid SiteSettingUpdateRequest request
     ) {
         SiteSettingResponse siteSettingResponse = siteSettingService.updateSiteSetting(redotAppId, request);
         return ResponseEntity.ok(siteSettingResponse);
