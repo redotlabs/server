@@ -36,7 +36,7 @@ public class ImageMimeDetector {
             if (isWebp(header)) {
                 return Optional.of("image/webp");
             }
-            if (isHeic(header, inputStream)) {
+            if (isHeic(header)) {
                 return Optional.of("image/heic");
             }
             if (isSvg(file)) {
@@ -68,17 +68,13 @@ public class ImageMimeDetector {
                 && header[8] == 'W' && header[9] == 'E' && header[10] == 'B' && header[11] == 'P';
     }
 
-    private boolean isHeic(byte[] header, InputStream inputStream) throws IOException {
+    private boolean isHeic(byte[] header) {
         if (header.length < 12) {
             return false;
         }
         byte[] type = new byte[8];
         System.arraycopy(header, 4, type, 0, 8);
-        if (matches(type, HEIC) || matches(type, HEIF)) {
-            return true;
-        }
-        byte[] next = inputStream.readNBytes(12);
-        return next.length >= 12 && (matches(next, HEIC) || matches(next, HEIF));
+        return matches(type, HEIC) || matches(type, HEIF);
     }
 
     private boolean isSvg(MultipartFile file) {
