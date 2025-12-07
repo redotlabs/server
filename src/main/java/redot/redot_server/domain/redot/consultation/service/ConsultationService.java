@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.redot.consultation.dto.request.ConsultationCreateRequest;
 import redot.redot_server.domain.redot.consultation.dto.response.ConsultationResponse;
 import redot.redot_server.domain.redot.consultation.entity.Consultation;
+import redot.redot_server.domain.redot.consultation.notification.ConsultationNotificationService;
 import redot.redot_server.domain.redot.consultation.repository.ConsultationRepository;
 
 @Service
@@ -14,11 +15,14 @@ import redot.redot_server.domain.redot.consultation.repository.ConsultationRepos
 public class ConsultationService {
 
     private final ConsultationRepository consultationRepository;
+    private final ConsultationNotificationService consultationNotificationService;
 
     @Transactional
     public ConsultationResponse createConsultation(ConsultationCreateRequest request) {
 
         Consultation saved = consultationRepository.save(Consultation.create(request));
+
+        consultationNotificationService.sendConsultationCreated(saved);
 
         return ConsultationResponse.fromEntity(saved);
     }
