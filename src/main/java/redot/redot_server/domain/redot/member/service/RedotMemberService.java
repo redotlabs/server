@@ -2,6 +2,7 @@ package redot.redot_server.domain.redot.member.service;
 
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +14,7 @@ import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.entity.SocialProvider;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.security.social.model.SocialProfile;
@@ -25,6 +27,7 @@ public class RedotMemberService {
 
     private final RedotMemberRepository redotMemberRepository;
     private final ImageStorageService imageStorageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public RedotMember findOrCreateSocialMember(SocialProfile profile, SocialProvider provider) {
@@ -77,7 +80,7 @@ public class RedotMemberService {
     private void deleteOldProfileImageUrlIfChanged(RedotMemberUpdateRequest request, RedotMember redotMember) {
         String oldProfileImageUrl = redotMember.getProfileImageUrl();
         if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
-            imageStorageService.delete(oldProfileImageUrl);
+            eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }
 }

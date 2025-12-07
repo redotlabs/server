@@ -1,6 +1,7 @@
 package redot.redot_server.domain.cms.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,9 +21,10 @@ import redot.redot_server.domain.redot.app.entity.RedotApp;
 import redot.redot_server.domain.redot.app.exception.RedotAppErrorCode;
 import redot.redot_server.domain.redot.app.exception.RedotAppException;
 import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
-import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
-import redot.redot_server.global.s3.service.ImageStorageService;
-import redot.redot_server.global.s3.util.ImageDirectory;
+import redot_redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot_redot_server.global.s3.event.ImageDeletionEvent;
+import redot_redot_server.global.s3.service.ImageStorageService;
+import redot_redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service
@@ -34,6 +36,7 @@ public class CMSMemberService {
     private final RedotAppRepository redotAppRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageStorageService imageStorageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public CMSMemberResponse createCMSMember(Long redotAppId, CMSMemberCreateRequest request) {
@@ -79,7 +82,7 @@ public class CMSMemberService {
     private void deleteOldProfileImageUrlIfChanged(CMSMemberUpdateRequest request, CMSMember cmsMember) {
         String oldProfileImageUrl = cmsMember.getProfileImageUrl();
         if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
-            imageStorageService.delete(oldProfileImageUrl);
+            eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }
 
