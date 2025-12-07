@@ -1,6 +1,7 @@
 package redot.redot_server.domain.cms.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +22,7 @@ import redot.redot_server.domain.redot.app.exception.RedotAppErrorCode;
 import redot.redot_server.domain.redot.app.exception.RedotAppException;
 import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
+import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.dto.response.PageResponse;
@@ -35,6 +37,7 @@ public class CMSMemberService {
     private final RedotAppRepository redotAppRepository;
     private final PasswordEncoder passwordEncoder;
     private final ImageStorageService imageStorageService;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Transactional
     public CMSMemberResponse createCMSMember(Long redotAppId, CMSMemberCreateRequest request) {
@@ -70,14 +73,18 @@ public class CMSMemberService {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        String oldProfileImageUrl = cmsMember.getProfileImageUrl();
-        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
-            imageStorageService.delete(oldProfileImageUrl);
-        }
-        
+        deleteOldProfileImageUrlIfChanged(request, cmsMember);
+
         cmsMember.updateProfile(request.name(), request.profileImageUrl());
 
         return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+    }
+
+    private void deleteOldProfileImageUrlIfChanged(CMSMemberUpdateRequest request, CMSMember cmsMember) {
+        String oldProfileImageUrl = cmsMember.getProfileImageUrl();
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+            eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
+        }
     }
 
     @Transactional
