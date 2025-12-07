@@ -11,7 +11,7 @@ import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
 @RequiredArgsConstructor
-public class ImageUploadService {
+public class ImageStorageService {
 
     private final S3Manager s3Manager;
 
@@ -22,5 +22,9 @@ public class ImageUploadService {
 
         String path = ImagePathGenerator.generate(directory, ownerId, file.getOriginalFilename());
         return s3Manager.uploadFile(file, path);
+    }
+
+    public void delete(String imageUrl) {
+        s3Manager.deleteFile(imageUrl);
     }
 }

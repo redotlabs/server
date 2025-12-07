@@ -17,9 +17,8 @@ import redot.redot_server.domain.site.setting.exception.SiteSettingErrorCode;
 import redot.redot_server.domain.site.setting.exception.SiteSettingException;
 import redot.redot_server.domain.site.setting.repository.SiteSettingRepository;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
-import redot.redot_server.global.s3.service.ImageUploadService;
+import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
-import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
 @RequiredArgsConstructor
@@ -28,8 +27,7 @@ public class SiteSettingService {
 
     private final SiteSettingRepository siteSettingRepository;
     private final DomainRepository domainRepository;
-    private final S3Manager s3Manager;
-    private final ImageUploadService imageUploadService;
+    private final ImageStorageService imageStorageService;
 
     @Transactional
     public SiteSettingResponse updateSiteSetting(Long redotAppId, SiteSettingUpdateRequest request) {
@@ -57,7 +55,7 @@ public class SiteSettingService {
             throw new SiteSettingException(SiteSettingErrorCode.LOGO_FILE_REQUIRED);
         }
 
-        String logoUrl = imageUploadService.upload(ImageDirectory.APP_LOGO, redotAppId, logoFile);
+        String logoUrl = imageStorageService.upload(ImageDirectory.APP_LOGO, redotAppId, logoFile);
 
         return new UploadedImageUrlResponse(logoUrl);
     }
@@ -83,7 +81,7 @@ public class SiteSettingService {
             return;
         }
         if (newLogoUrl == null || !newLogoUrl.equals(currentLogoUrl)) {
-            s3Manager.deleteFile(currentLogoUrl);
+            imageStorageService.delete(currentLogoUrl);
         }
     }
 

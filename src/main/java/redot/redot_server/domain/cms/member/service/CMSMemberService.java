@@ -21,7 +21,7 @@ import redot.redot_server.domain.redot.app.exception.RedotAppErrorCode;
 import redot.redot_server.domain.redot.app.exception.RedotAppException;
 import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
 import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
-import redot.redot_server.global.s3.service.ImageUploadService;
+import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
@@ -33,7 +33,7 @@ public class CMSMemberService {
     private final CMSMemberRepository cmsMemberRepository;
     private final RedotAppRepository redotAppRepository;
     private final PasswordEncoder passwordEncoder;
-    private final ImageUploadService imageUploadService;
+    private final ImageStorageService imageStorageService;
 
     @Transactional
     public CMSMemberResponse createCMSMember(Long redotAppId, CMSMemberCreateRequest request) {
@@ -97,7 +97,7 @@ public class CMSMemberService {
         cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        String imageUrl = imageUploadService.upload(ImageDirectory.CMS_MEMBER_PROFILE, memberId, imageFile);
+        String imageUrl = imageStorageService.upload(ImageDirectory.CMS_MEMBER_PROFILE, memberId, imageFile);
         return new UploadedImageUrlResponse(imageUrl);
     }
 }
