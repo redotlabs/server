@@ -9,8 +9,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,19 +39,6 @@ public class AppVersion extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private AppVersionStatus status;
 
-    @Column(name = "published_app_id", unique = true)
-    private Long publishedAppId;
-
-    @PrePersist
-    @PreUpdate
-    private void syncPublishedAppId() {
-        if (status == AppVersionStatus.PUBLISHED && redotApp != null) {
-            this.publishedAppId = redotApp.getId();
-        } else {
-            this.publishedAppId = null;
-        }
-    }
-
     public static AppVersion create(RedotApp redotApp, AppVersionStatus status, String remark) {
         return AppVersion.builder()
                 .redotApp(redotApp)
@@ -64,6 +49,5 @@ public class AppVersion extends BaseTimeEntity {
 
     public void changeStatus(AppVersionStatus status) {
         this.status = status;
-        syncPublishedAppId();
     }
 }

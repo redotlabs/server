@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.site.page.dto.request.AppPageCreateRequest;
@@ -94,13 +95,21 @@ public class CMSSitePageService {
         }
 
         AppVersionStatus initialStatus = publishRequested ? AppVersionStatus.DRAFT : request.status();
-        AppVersion savedVersion = appVersionRepository.save(
-                AppVersion.create(redotApp, initialStatus, request.remark())
-        );
+        AppVersion newVersion = AppVersion.create(redotApp, initialStatus, request.remark());
+        AppVersion savedVersion = saveVersion(newVersion);
         if (publishRequested) {
             savedVersion.changeStatus(AppVersionStatus.PUBLISHED);
+            saveVersion(savedVersion);
         }
         return savedVersion;
+    }
+
+    private AppVersion saveVersion(AppVersion version) {
+        try {
+            return appVersionRepository.save(version);
+        } catch (DataIntegrityViolationException e) {
+            throw new CMSSitePageException(CMSSitePageErrorCode.PUBLISHED_VERSION_ALREADY_EXISTS);
+        }
     }
 
     private List<AppVersionPage> buildVersionPages(Long redotAppId,
