@@ -221,4 +221,15 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    @Order(-3)
+    public SecurityFilterChain sitePublicChain(HttpSecurity http,
+                                               RedotAppFilter redotAppFilter) throws Exception {
+        applyCommonSecurity(http);
+        http.securityMatcher("/api/v1/app/site/**")
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+                .addFilterBefore(redotAppFilter, SecurityContextHolderFilter.class);
+        return http.build();
+    }
+
 }
