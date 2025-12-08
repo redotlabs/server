@@ -1,5 +1,6 @@
 package redot.redot_server.domain.site.page.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -21,7 +22,8 @@ import redot.redot_server.global.common.entity.BaseTimeEntity;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder(access = AccessLevel.PRIVATE)
 @Table(name = "app_version_pages", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"app_version_id", "app_page_id"})
+        @UniqueConstraint(columnNames = {"app_version_id", "app_page_id"}),
+        @UniqueConstraint(columnNames = {"app_version_id", "path"})
 })
 public class AppVersionPage extends BaseTimeEntity {
     @Id
@@ -36,7 +38,10 @@ public class AppVersionPage extends BaseTimeEntity {
     @JoinColumn(name = "app_page_id", nullable = false)
     private AppPage appPage;
 
+    @Column(nullable = false, length = 255)
+    private String path;
+
     public static AppVersionPage create(AppVersion appVersion, AppPage appPage) {
-        return new AppVersionPage(null, appVersion, appPage);
+        return new AppVersionPage(null, appVersion, appPage, appPage.getPath());
     }
 }

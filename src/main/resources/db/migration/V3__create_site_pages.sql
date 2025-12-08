@@ -29,9 +29,11 @@ CREATE TABLE IF NOT EXISTS app_version_pages
     id             BIGSERIAL PRIMARY KEY,
     app_version_id BIGINT NOT NULL REFERENCES app_versions (id) ON DELETE RESTRICT,
     app_page_id    BIGINT NOT NULL REFERENCES app_pages (id) ON DELETE CASCADE,
+    path           VARCHAR(255) NOT NULL,
     created_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT uk_app_version_page UNIQUE (app_version_id, app_page_id)
+    CONSTRAINT uk_app_version_page UNIQUE (app_version_id, app_page_id),
+    CONSTRAINT uk_app_version_page_path UNIQUE (app_version_id, path)
 );
 
 CREATE UNIQUE INDEX IF NOT EXISTS uk_app_versions_published_per_app

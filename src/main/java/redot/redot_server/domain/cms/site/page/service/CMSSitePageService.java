@@ -73,9 +73,7 @@ public class CMSSitePageService {
 
         AppVersion savedVersion = createVersion(redotAppId, redotApp, request);
         List<AppVersionPage> versionPages = buildVersionPages(redotAppId, savedVersion, request);
-        if (!versionPages.isEmpty()) {
-            appVersionPageRepository.saveAll(versionPages);
-        }
+        saveVersionPages(versionPages);
 
         return AppVersionSummaryResponse.from(savedVersion, fetchPagesForVersion(savedVersion.getId()));
     }
@@ -150,10 +148,7 @@ public class CMSSitePageService {
             if (ownerAppId == null || !ownerAppId.equals(redotAppId)) {
                 throw new CMSSitePageException(CMSSitePageErrorCode.PAGE_NOT_BELONG_TO_APP);
             }
-            result.add(AppVersionPage.create(version, page));
-            if (!usedPaths.add(page.getPath())) {
-                throw new CMSSitePageException(CMSSitePageErrorCode.PAGE_PATH_DUPLICATED);
-            }
+            addPageMapping(result, version, page, page.getPath(), usedPaths);
         }
         return result;
     }
@@ -167,9 +162,6 @@ public class CMSSitePageService {
         List<AppVersionPage> result = new ArrayList<>();
         RedotApp redotApp = version.getRedotApp();
         for (AppPageCreateRequest request : added) {
-            if (!usedPaths.add(request.path())) {
-                throw new CMSSitePageException(CMSSitePageErrorCode.PAGE_PATH_DUPLICATED);
-            }
             AppPage page = AppPage.create(
                     redotApp,
                     request.content(),
@@ -179,9 +171,31 @@ public class CMSSitePageService {
                     request.title()
             );
             AppPage savedPage = appPageRepository.save(page);
-            result.add(AppVersionPage.create(version, savedPage));
+            addPageMapping(result, version, savedPage, savedPage.getPath(), usedPaths);
         }
         return result;
+    }
+
+    private void addPageMapping(List<AppVersionPage> accumulator,
+                                AppVersion version,
+                                AppPage page,
+                                String path,
+                                Set<String> usedPaths) {
+        if (!usedPaths.add(path)) {
+            throw new CMSSitePageException(CMSSitePageErrorCode.PAGE_PATH_DUPLICATED);
+        }
+        accumulator.add(AppVersionPage.create(version, page));
+    }
+
+    private void saveVersionPages(List<AppVersionPage> versionPages) {
+        if (versionPages.isEmpty()) {
+            return;
+        }
+        try {
+            appVersionPageRepository.saveAll(versionPages);
+        } catch (DataIntegrityViolationException e) {
+            throw new CMSSitePageException(CMSSitePageErrorCode.PAGE_PATH_DUPLICATED);
+        }
     }
 
     private void validateStatus(AppVersionStatus status) {
