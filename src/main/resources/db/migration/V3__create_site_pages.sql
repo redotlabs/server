@@ -11,6 +11,9 @@ CREATE TABLE IF NOT EXISTS app_pages
     updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE INDEX IF NOT EXISTS ix_app_pages_redot_app_id ON app_pages (redot_app_id);
+CREATE INDEX IF NOT EXISTS ix_app_pages_path ON app_pages (path);
+
 CREATE TABLE IF NOT EXISTS app_versions
 (
     id               BIGSERIAL PRIMARY KEY,
@@ -35,6 +38,9 @@ CREATE TABLE IF NOT EXISTS app_version_pages
     CONSTRAINT uk_app_version_page UNIQUE (app_version_id, app_page_id),
     CONSTRAINT uk_app_version_page_path UNIQUE (app_version_id, path)
 );
+
+CREATE INDEX IF NOT EXISTS ix_app_version_pages_app_version_id ON app_version_pages (app_version_id);
+CREATE INDEX IF NOT EXISTS ix_app_version_pages_path ON app_version_pages (path);
 
 CREATE UNIQUE INDEX IF NOT EXISTS uk_app_versions_published_per_app
     ON app_versions (redot_app_id)
