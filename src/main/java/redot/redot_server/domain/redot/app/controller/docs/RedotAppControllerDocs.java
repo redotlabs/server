@@ -2,6 +2,7 @@ package redot.redot_server.domain.redot.app.controller.docs;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,6 +19,8 @@ import redot.redot_server.global.util.dto.response.PageResponse;
 @Tag(name = "Redot App", description = "Redot 앱 API")
 public interface RedotAppControllerDocs {
 
+    @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
+            description = "요청 대상 앱의 서브도메인")
     @Operation(summary = "앱 기본 정보 조회", description = "현재 도메인에 매핑된 Redot 앱 정보를 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
