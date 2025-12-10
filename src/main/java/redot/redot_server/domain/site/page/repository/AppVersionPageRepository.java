@@ -16,14 +16,14 @@ public interface AppVersionPageRepository extends JpaRepository<AppVersionPage, 
     List<AppVersionPage> findAllByAppVersionId(Long appVersionId);
 
     @Query("select new redot.redot_server.domain.cms.site.page.dto.response.AppVersionPageSummaryResponse(" +
-            " ap.id, ap.path, ap.title, ap.description)" +
+            " ap.id, ap.path, ap.title, ap.description, ap.isProtected)" +
             " from AppVersionPage avp" +
             " join avp.appPage ap" +
             " where avp.appVersion.id = :appVersionId")
     List<AppVersionPageSummaryResponse> findSummariesByAppVersionId(@Param("appVersionId") Long appVersionId);
 
     @Query("select new redot.redot_server.domain.cms.site.page.service.dto.AppVersionPageSummaryWithVersionResponse(" +
-            " avp.appVersion.id, ap.id, ap.path, ap.title, ap.description)" +
+            " avp.appVersion.id, ap.id, ap.path, ap.title, ap.description, ap.isProtected)" +
             " from AppVersionPage avp" +
             " join avp.appPage ap" +
             " where avp.appVersion.id in :appVersionIds")
