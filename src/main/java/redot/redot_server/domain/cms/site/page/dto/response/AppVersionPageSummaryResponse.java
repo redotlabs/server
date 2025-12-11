@@ -4,6 +4,7 @@ public record AppVersionPageSummaryResponse(
         Long id,
         String path,
         String title,
-        String description
+        String description,
+        boolean isProtected
 ) {
 }

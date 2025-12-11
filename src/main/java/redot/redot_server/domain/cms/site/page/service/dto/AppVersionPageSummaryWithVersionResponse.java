@@ -7,10 +7,11 @@ public record AppVersionPageSummaryWithVersionResponse(
         Long id,
         String path,
         String title,
-        String description
+        String description,
+        boolean isProtected
 ) {
 
     public AppVersionPageSummaryResponse toSummary() {
-        return new AppVersionPageSummaryResponse(id, path, title, description);
+        return new AppVersionPageSummaryResponse(id, path, title, description, isProtected);
     }
 }
