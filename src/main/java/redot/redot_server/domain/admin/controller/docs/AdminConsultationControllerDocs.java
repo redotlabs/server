@@ -22,7 +22,7 @@ public interface AdminConsultationControllerDocs {
             content = @Content(schema = @Schema(implementation = ConsultationResponse.class)))
     ResponseEntity<ConsultationResponse> getConsultationInfo(@Parameter(description = "상담 ID", example = "1") Long consultationId);
 
-    @Operation(summary = "상담 목록 조회", description = "`email`, `phone`, `status`, `type`, `currentWebsiteUrl` 검색 조건을 조합해 조회하며 `sort=createdAt,desc` 와 같은 Pageable 쿼리 파라미터를 사용합니다.")
+    @Operation(summary = "상담 목록 조회", description = "`email`, `phone`, `status`, `type`, `currentWebsiteUrl`, `startDate`, `endDate` 검색 조건을 조합해 조회하며 `sort=createdAt,desc` 와 같은 Pageable 쿼리 파라미터를 사용합니다. `status` 파라미터를 생략하면 CANCELLED 상태 상담은 응답에서 제외됩니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공",
             content = @Content(schema = @Schema(implementation = PageResponse.class)))
     ResponseEntity<PageResponse<ConsultationResponse>> getAllConsultations(

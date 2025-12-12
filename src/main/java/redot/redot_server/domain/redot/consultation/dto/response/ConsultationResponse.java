@@ -12,6 +12,7 @@ public record ConsultationResponse(
         String content,
         String page,
         String currentWebsiteUrl,
+        String remark,
         ConsultationStatus status,
         ConsultationType type,
         LocalDateTime createdAt
@@ -24,6 +25,7 @@ public record ConsultationResponse(
                 consultation.getContent(),
                 consultation.getPage(),
                 consultation.getCurrentWebsiteUrl(),
+                consultation.getRemark(),
                 consultation.getStatus(),
                 consultation.getType(),
                 consultation.getCreatedAt()

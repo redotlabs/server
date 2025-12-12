@@ -5,6 +5,7 @@ import static redot.redot_server.domain.redot.consultation.entity.QConsultation.
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,9 +29,11 @@ public class ConsultationRepositoryImpl implements ConsultationRepositoryCustom 
         BooleanExpression[] predicates = new BooleanExpression[]{
                 emailContains(condition.email()),
                 phoneContains(condition.phone()),
-                statusEq(condition.status()),
+                statusCondition(condition.status()),
                 typeEq(condition.type()),
-                currentWebsiteUrlContains(condition.currentWebsiteUrl())
+                currentWebsiteUrlContains(condition.currentWebsiteUrl()),
+                createdAtGoe(condition.startDate()),
+                createdAtLt(condition.endDate())
         };
 
         List<Consultation> content = queryFactory.selectFrom(consultation)
@@ -70,12 +73,23 @@ public class ConsultationRepositoryImpl implements ConsultationRepositoryCustom 
         return hasText(url) ? consultation.currentWebsiteUrl.containsIgnoreCase(url) : null;
     }
 
-    private BooleanExpression statusEq(ConsultationStatus status) {
-        return status == null ? null : consultation.status.eq(status);
+    private BooleanExpression statusCondition(ConsultationStatus status) {
+        if (status == null) {
+            return consultation.status.ne(ConsultationStatus.CANCELLED);
+        }
+        return consultation.status.eq(status);
     }
 
     private BooleanExpression typeEq(ConsultationType type) {
         return type == null ? null : consultation.type.eq(type);
+    }
+
+    private BooleanExpression createdAtGoe(LocalDate startDate) {
+        return startDate == null ? null : consultation.createdAt.goe(startDate.atStartOfDay());
+    }
+
+    private BooleanExpression createdAtLt(LocalDate endDate) {
+        return endDate == null ? null : consultation.createdAt.lt(endDate.plusDays(1).atStartOfDay());
     }
 
     private boolean hasText(String value) {
