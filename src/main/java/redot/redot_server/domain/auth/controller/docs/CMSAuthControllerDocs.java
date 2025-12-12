@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.SignInRequest;
@@ -24,7 +25,7 @@ public interface CMSAuthControllerDocs {
     @ApiResponse(responseCode = "200", description = "로그인 성공",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     ResponseEntity<TokenResponse> signIn(@Parameter(hidden = true) HttpServletRequest request,
-                                         SignInRequest signInRequest,
+                                         @Valid SignInRequest signInRequest,
                                          @Parameter(hidden = true) Long redotAppId);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
@@ -52,5 +53,5 @@ public interface CMSAuthControllerDocs {
     @Operation(summary = "CMS 비밀번호 재설정 확정", description = "발급받은 인증 코드로 비밀번호 재설정을 확정합니다.")
     @ApiResponse(responseCode = "204", description = "재설정 완료")
     ResponseEntity<Void> confirmPasswordReset(@Parameter(hidden = true) Long redotAppId,
-                                              PasswordResetConfirmRequest request);
+                                              @Valid PasswordResetConfirmRequest request);
 }

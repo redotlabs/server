@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,7 @@ public interface AdminControllerDocs {
     @Operation(summary = "관리자 생성", description = "새로운 관리자를 생성합니다.")
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = AdminResponse.class)))
-    ResponseEntity<AdminResponse> createAdmin(AdminCreateRequest request);
+    ResponseEntity<AdminResponse> createAdmin(@Valid AdminCreateRequest request);
 
     @Operation(summary = "관리자 목록 조회", description = "`page`, `size`, `sort` 파라미터를 사용해 페이징/정렬하며 `sort=필드명,정렬방향` (예: `sort=createdAt,desc`) 형식을 따릅니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공",
@@ -42,12 +44,12 @@ public interface AdminControllerDocs {
     @ApiResponse(responseCode = "200", description = "수정 성공",
             content = @Content(schema = @Schema(implementation = AdminResponse.class)))
     ResponseEntity<AdminResponse> updateAdmin(@Parameter(description = "관리자 ID", example = "1") Long adminId,
-                                              AdminUpdateRequest request);
+                                              @Valid AdminUpdateRequest request);
 
     @Operation(summary = "관리자 비밀번호 초기화", description = "관리자의 비밀번호를 재설정합니다.")
     @ApiResponse(responseCode = "204", description = "재설정 완료")
     ResponseEntity<Void> resetAdminPassword(@Parameter(description = "관리자 ID", example = "1") Long adminId,
-                                            AdminResetPasswordRequest request);
+                                            @Valid AdminResetPasswordRequest request);
 
     @Operation(summary = "다른 관리자 삭제", description = "현재 로그인한 관리자가 다른 관리자를 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "삭제 완료")
@@ -63,5 +65,5 @@ public interface AdminControllerDocs {
     @ApiResponse(responseCode = "200", description = "업로드 성공",
             content = @Content(schema = @Schema(implementation = UploadedImageUrlResponse.class)))
     ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(@Parameter(hidden = true) JwtPrincipal jwtPrincipal,
-                                                                MultipartFile image);
+                                                                @NotNull MultipartFile image);
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.redot.member.dto.RedotMemberUpdateRequest;
@@ -26,7 +27,7 @@ public interface RedotMemberControllerDocs {
     @ApiResponse(responseCode = "200", description = "업로드 성공",
             content = @Content(schema = @Schema(implementation = UploadedImageUrlResponse.class)))
     ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(@Parameter(hidden = true) JwtPrincipal jwtPrincipal,
-                                                                MultipartFile image);
+                                                                @NotNull MultipartFile image);
 
     @Operation(summary = "Redot 회원 탈퇴", description = "회원 계정을 삭제합니다.")
     @ApiResponse(responseCode = "204", description = "탈퇴 완료")

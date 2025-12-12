@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.auth.dto.request.PasswordResetConfirmRequest;
 import redot.redot_server.domain.auth.dto.request.RedotMemberSignInRequest;
@@ -22,13 +23,13 @@ public interface RedotMemberAuthControllerDocs {
     @Operation(summary = "Redot 회원 회원가입", description = "새로운 Redot 회원 계정을 생성합니다.")
     @ApiResponse(responseCode = "200", description = "회원가입 성공",
             content = @Content(schema = @Schema(implementation = RedotMemberResponse.class)))
-    ResponseEntity<RedotMemberResponse> signUp(RedotMemberCreateRequest request);
+    ResponseEntity<RedotMemberResponse> signUp(@Valid RedotMemberCreateRequest request);
 
     @Operation(summary = "Redot 회원 로그인", description = "Redot 회원 자격 증명을 사용해 로그인합니다.")
     @ApiResponse(responseCode = "200", description = "로그인 성공",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     ResponseEntity<TokenResponse> signIn(@Parameter(hidden = true) HttpServletRequest request,
-                                         RedotMemberSignInRequest signInRequest);
+                                         @Valid RedotMemberSignInRequest signInRequest);
 
     @Operation(summary = "Redot 회원 토큰 재발급", description = "로그인된 회원의 토큰을 재발급합니다.")
     @ApiResponse(responseCode = "200", description = "재발급 성공",
@@ -46,7 +47,7 @@ public interface RedotMemberAuthControllerDocs {
 
     @Operation(summary = "Redot 회원 비밀번호 재설정 확정", description = "비밀번호 재설정 토큰을 확인하고 비밀번호를 교체합니다.")
     @ApiResponse(responseCode = "204", description = "재설정 완료")
-    ResponseEntity<Void> confirmPasswordReset(PasswordResetConfirmRequest request);
+    ResponseEntity<Void> confirmPasswordReset(@Valid PasswordResetConfirmRequest request);
 
     @Operation(summary = "소셜 로그인 인가 URL 조회", description = "선택한 소셜 제공자의 OAuth2 인가 URL을 제공합니다.")
     @ApiResponse(responseCode = "200", description = "URL 생성 성공",

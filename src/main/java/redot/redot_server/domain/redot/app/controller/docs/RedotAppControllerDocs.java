@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springdoc.core.annotations.ParameterObject;
@@ -36,12 +37,12 @@ public interface RedotAppControllerDocs {
     @Operation(summary = "앱 생성", description = "새로운 Redot 앱을 생성합니다.")
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
-    ResponseEntity<RedotAppInfoResponse> createRedotApp(RedotAppCreateRequest request,
+    ResponseEntity<RedotAppInfoResponse> createRedotApp(@Valid RedotAppCreateRequest request,
                                                         @Parameter(hidden = true) JwtPrincipal jwtPrincipal);
 
     @Operation(summary = "앱 매니저 생성", description = "Redot 앱에 추가 매니저를 초대합니다.")
     @ApiResponse(responseCode = "200", description = "생성 성공")
     ResponseEntity<Void> createManager(@Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId,
-                                       RedotAppCreateManagerRequest request,
+                                       @Valid RedotAppCreateManagerRequest request,
                                        @Parameter(hidden = true) JwtPrincipal jwtPrincipal);
 }
