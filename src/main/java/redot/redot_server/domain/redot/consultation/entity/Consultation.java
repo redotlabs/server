@@ -40,7 +40,7 @@ public class Consultation extends BaseTimeEntity {
 
     private String page;
 
-        @Column(length = 1000)
+    @Column(length = 1000)
     private String remark;
 
     @Column(nullable = false)
