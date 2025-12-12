@@ -9,6 +9,7 @@ import redot.redot_server.domain.admin.dto.ConsultationSearchCondition;
 import redot.redot_server.domain.admin.dto.request.ConsultationUpdateRequest;
 import redot.redot_server.domain.redot.consultation.dto.response.ConsultationResponse;
 import redot.redot_server.domain.redot.consultation.entity.Consultation;
+import redot.redot_server.domain.redot.consultation.entity.ConsultationStatus;
 import redot.redot_server.domain.redot.consultation.exception.ConsultationErrorCode;
 import redot.redot_server.domain.redot.consultation.exception.ConsultationException;
 import redot.redot_server.domain.redot.consultation.repository.ConsultationRepository;
@@ -22,16 +23,13 @@ public class AdminConsultationService {
     private final ConsultationRepository consultationRepository;
 
     public ConsultationResponse getConsultationInfo(Long consultationId) {
-        return consultationRepository.findById(consultationId)
-                .map(ConsultationResponse::fromEntity)
-                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUND));
+        Consultation consultation = getConsultation(consultationId);
+        return ConsultationResponse.fromEntity(consultation);
     }
 
     @Transactional
     public ConsultationResponse updateConsultationInfo(Long consultationId, ConsultationUpdateRequest request) {
-        Consultation consultation = consultationRepository.findById(consultationId)
-                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUND));
-
+        Consultation consultation = getConsultation(consultationId);
         consultation.update(request);
 
         return ConsultationResponse.fromEntity(consultation);
@@ -44,4 +42,10 @@ public class AdminConsultationService {
                 .map(ConsultationResponse::fromEntity);
         return PageResponse.from(page);
     }
+
+    private Consultation getConsultation(Long consultationId) {
+        return consultationRepository.findById(consultationId)
+                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUND));
+    }
+
 }

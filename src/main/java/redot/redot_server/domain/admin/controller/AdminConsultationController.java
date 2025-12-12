@@ -38,8 +38,11 @@ public class AdminConsultationController implements AdminConsultationControllerD
     public ResponseEntity<PageResponse<ConsultationResponse>> getAllConsultations(
             ConsultationSearchCondition searchCondition,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
+        ConsultationSearchCondition condition = searchCondition == null
+                ? ConsultationSearchCondition.empty()
+                : searchCondition;
         PageResponse<ConsultationResponse> response = adminConsultationService
-                .getAllConsultationsBySearchCondition(searchCondition, pageable);
+                .getAllConsultationsBySearchCondition(condition, pageable);
         return ResponseEntity.ok(response);
     }
 

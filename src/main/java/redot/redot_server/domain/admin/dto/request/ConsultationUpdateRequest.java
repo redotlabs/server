@@ -17,6 +17,8 @@ public record ConsultationUpdateRequest(
         String content,
         String page,
         String currentWebsiteUrl,
+        @Size(max = 1000, message = "비고는 1000자를 초과할 수 없습니다")
+        String remark,
         @NotNull(message = "상담 상태를 선택해주세요.")
         ConsultationStatus status,
         @NotNull(message = "상담 타입을 선택해주세요.")
