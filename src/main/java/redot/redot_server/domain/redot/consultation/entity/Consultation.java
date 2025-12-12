@@ -40,6 +40,9 @@ public class Consultation extends BaseTimeEntity {
 
     private String page;
 
+    @Column(length = 1000)
+    private String remark;
+
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ConsultationStatus status;
@@ -66,6 +69,7 @@ public class Consultation extends BaseTimeEntity {
         this.content = request.content();
         this.currentWebsiteUrl = request.currentWebsiteUrl();
         this.page = request.page();
+        this.remark = request.remark();
         this.status = request.status();
         this.type = request.type();
     }
