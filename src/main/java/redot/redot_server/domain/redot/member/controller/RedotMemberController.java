@@ -2,6 +2,7 @@ package redot.redot_server.domain.redot.member.controller;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,7 +39,7 @@ public class RedotMemberController implements RedotMemberControllerDocs {
     }
 
 
-    @PostMapping("/upload-profile-image")
+    @PostMapping(value = "/upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,

@@ -3,6 +3,7 @@ package redot.redot_server.domain.cms.site.setting.controller;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,7 +39,7 @@ public class SiteSettingController implements SiteSettingControllerDocs {
         return ResponseEntity.ok(siteSettingResponse);
     }
 
-    @PostMapping("/upload-logo")
+    @PostMapping(value = "/upload-logo", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadLogoImage(
             @CurrentRedotApp Long redotAppId,

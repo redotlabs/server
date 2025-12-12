@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -91,7 +92,7 @@ public class AdminController implements AdminControllerDocs {
                 .build();
     }
 
-    @PostMapping("/upload-profile-image")
+    @PostMapping(value = "/upload-profile-image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Override
     public ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(
             @AuthenticationPrincipal JwtPrincipal jwtPrincipal,
