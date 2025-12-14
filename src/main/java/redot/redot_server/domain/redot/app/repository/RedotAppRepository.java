@@ -7,4 +7,6 @@ import redot.redot_server.domain.redot.app.entity.RedotApp;
 
 public interface RedotAppRepository extends JpaRepository<RedotApp, Long> {
     Page<RedotApp> findByOwnerId(Long ownerId, Pageable pageable);
+
+    long countByOwnerId(Long ownerId);
 }
