@@ -25,6 +25,7 @@ import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
 
@@ -38,6 +39,7 @@ public class CMSMemberService {
     private final PasswordEncoder passwordEncoder;
     private final ImageStorageService imageStorageService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ImageUrlResolver imageUrlResolver;
 
     @Transactional
     public CMSMemberResponse createCMSMember(Long redotAppId, CMSMemberCreateRequest request) {
@@ -48,14 +50,14 @@ public class CMSMemberService {
                 CMSMember.join(redotApp, request.name(), request.email(),
                         passwordEncoder.encode(request.password()),
                         request.role()));
-        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver);
     }
 
     public CMSMemberResponse getCMSMemberInfo(Long redotAppId, Long memberId) {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver);
     }
 
     @Transactional
@@ -65,7 +67,7 @@ public class CMSMemberService {
 
         cmsMember.changeRole(request.role());
 
-        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver);
     }
 
     @Transactional
@@ -73,16 +75,18 @@ public class CMSMemberService {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(memberId, redotAppId)
                 .orElseThrow(() -> new CMSMemberException(CMSMemberErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        deleteOldProfileImageUrlIfChanged(request, cmsMember);
+        String newProfileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
 
-        cmsMember.updateProfile(request.name(), request.profileImageUrl());
+        deleteOldProfileImageUrlIfChanged(newProfileImageUrl, cmsMember);
 
-        return CMSMemberResponse.fromEntity(redotAppId, cmsMember);
+        cmsMember.updateProfile(request.name(), newProfileImageUrl);
+
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver);
     }
 
-    private void deleteOldProfileImageUrlIfChanged(CMSMemberUpdateRequest request, CMSMember cmsMember) {
+    private void deleteOldProfileImageUrlIfChanged(String newProfileImageUrl, CMSMember cmsMember) {
         String oldProfileImageUrl = cmsMember.getProfileImageUrl();
-        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(newProfileImageUrl)) {
             eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }
@@ -100,7 +104,7 @@ public class CMSMemberService {
                                                                              Pageable pageable) {
         Page<CMSMemberResponse> page = cmsMemberRepository
                 .findAllBySearchCondition(redotAppId, searchCondition, pageable)
-                .map(cmsMember -> CMSMemberResponse.fromEntity(redotAppId, cmsMember));
+                .map(cmsMember -> CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver));
 
         return PageResponse.from(page);
     }

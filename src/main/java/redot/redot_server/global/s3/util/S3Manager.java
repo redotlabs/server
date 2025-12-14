@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.global.s3.exception.S3ErrorCode;
 import redot.redot_server.global.s3.exception.S3StorageException;
@@ -26,6 +27,7 @@ public class S3Manager {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
+
 
     /**
      * 지정된 경로로 파일 업로드
@@ -54,10 +56,10 @@ public class S3Manager {
      * 지정된 경로의 파일 삭제
      * @param filePath 삭제할 파일 경로 (ex: /app/1/logo/image.png)
      */
-    public void deleteFile(String filePath) {
-        if (filePath == null || filePath.isBlank()) return;
-
-        String key = filePath.startsWith("/") ? filePath.substring(1) : filePath;
+    public void deleteFile(String key) {
+        if (!StringUtils.hasText(key)) {
+            return;
+        }
         try {
             s3Client.deleteObject(DeleteObjectRequest.builder()
                     .bucket(bucketName)
@@ -81,6 +83,9 @@ public class S3Manager {
      * @return 존재하면 true, 존재하지 않으면 false
      */
     public boolean exists(String key) {
+        if (!StringUtils.hasText(key)) {
+            return false;
+        }
         try {
             s3Client.headObject(HeadObjectRequest.builder()
                     .bucket(bucketName)

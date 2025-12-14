@@ -11,6 +11,7 @@ import redot.redot_server.global.s3.exception.ImageUploadException;
 import redot.redot_server.global.s3.util.ImageDirectory;
 import redot.redot_server.global.s3.util.ImageMimeDetector;
 import redot.redot_server.global.s3.util.ImagePathGenerator;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.s3.util.S3Manager;
 
 @Service
@@ -20,19 +21,22 @@ public class ImageStorageService {
     private final S3Manager s3Manager;
     private final ImageUploadProperties properties;
     private final ImageMimeDetector imageMimeDetector;
+    private final ImageUrlResolver imageUrlResolver;
 
     public String upload(ImageDirectory directory, Long ownerId, MultipartFile file) {
         validateFile(file);
 
         String path = ImagePathGenerator.generate(directory, ownerId, file.getOriginalFilename());
-        return s3Manager.uploadFile(file, path);
+        String storedPath = s3Manager.uploadFile(file, path);
+        return imageUrlResolver.toPublicUrl(storedPath);
     }
 
     public void delete(String imageUrl) throws ImageUploadException {
-        if(!s3Manager.exists(imageUrl)){
+        String key = imageUrlResolver.toS3Key(imageUrl);
+        if (!StringUtils.hasText(key) || !s3Manager.exists(key)) {
             return;
         }
-        s3Manager.deleteFile(imageUrl);
+        s3Manager.deleteFile(key);
     }
 
     private void validateFile(MultipartFile file) {

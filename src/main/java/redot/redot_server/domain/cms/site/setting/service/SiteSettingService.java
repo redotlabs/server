@@ -21,6 +21,7 @@ import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +32,7 @@ public class SiteSettingService {
     private final DomainRepository domainRepository;
     private final ImageStorageService imageStorageService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ImageUrlResolver imageUrlResolver;
 
     @Transactional
     public SiteSettingResponse updateSiteSetting(Long redotAppId, SiteSettingUpdateRequest request) {
@@ -43,20 +45,22 @@ public class SiteSettingService {
             throw new DomainException(DomainErrorCode.CUSTOM_DOMAIN_ALREADY_EXISTS);
         }
 
-        deleteOldLogoUrlIfChanged(request, siteSetting);
+        String newLogoUrl = imageUrlResolver.toStoredPath(request.logoUrl());
+
+        deleteOldLogoUrlIfChanged(newLogoUrl, siteSetting);
 
         siteSetting.updateSiteName(request.siteName());
-        siteSetting.updateLogoUrl(request.logoUrl());
+        siteSetting.updateLogoUrl(newLogoUrl);
         siteSetting.updateGaInfo(request.gaInfo());
         domain.updateCustomDomain(request.customDomain());
 
-        return SiteSettingResponse.fromEntity(siteSetting, domain);
+        return SiteSettingResponse.fromEntity(siteSetting, domain, imageUrlResolver);
     }
 
-    private void deleteOldLogoUrlIfChanged(SiteSettingUpdateRequest request, SiteSetting siteSetting) {
+    private void deleteOldLogoUrlIfChanged(String newLogoUrl, SiteSetting siteSetting) {
         String oldLogoUrl = siteSetting.getLogoUrl();
 
-        if (oldLogoUrl != null && !oldLogoUrl.equals(request.logoUrl())) {
+        if (oldLogoUrl != null && !oldLogoUrl.equals(newLogoUrl)) {
             eventPublisher.publishEvent(new ImageDeletionEvent(oldLogoUrl));
         }
     }
@@ -93,6 +97,6 @@ public class SiteSettingService {
         Domain domain = domainRepository.findByRedotAppId(redotAppId)
                 .orElseThrow(() -> new DomainException(DomainErrorCode.DOMAIN_NOT_FOUND));
 
-        return SiteSettingResponse.fromEntity(siteSetting, domain);
+        return SiteSettingResponse.fromEntity(siteSetting, domain, imageUrlResolver);
     }
 }
