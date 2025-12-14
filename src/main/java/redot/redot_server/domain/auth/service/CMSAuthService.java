@@ -20,6 +20,7 @@ import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayloadHolder;
 import redot.redot_server.global.util.EmailUtils;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 
 
 @Service
@@ -31,6 +32,7 @@ public class CMSAuthService {
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
+    private final ImageUrlResolver imageUrlResolver;
 
     public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest, Long redotAppId) {
         CMSMember cmsMember = cmsMemberRepository
@@ -76,15 +78,7 @@ public class CMSAuthService {
         CMSMember cmsMember = cmsMemberRepository.findByIdAndRedotApp_Id(id, redotAppId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.CMS_MEMBER_NOT_FOUND));
 
-        return new CMSMemberResponse(
-                redotAppId,
-                cmsMember.getId(),
-                cmsMember.getName(),
-                cmsMember.getEmail(),
-                cmsMember.getProfileImageUrl(),
-                cmsMember.getRole(),
-                cmsMember.getCreatedAt()
-        );
+        return CMSMemberResponse.fromEntity(redotAppId, cmsMember, imageUrlResolver);
     }
 
     @Transactional

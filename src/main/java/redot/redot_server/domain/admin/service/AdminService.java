@@ -21,6 +21,7 @@ import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.util.EmailUtils;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
@@ -32,6 +33,7 @@ public class AdminService {
     private final PasswordEncoder passwordEncoder;
     private final ImageStorageService imageStorageService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ImageUrlResolver imageUrlResolver;
 
     @Transactional
     public AdminResponse createAdmin(AdminCreateRequest request) {
@@ -42,14 +44,15 @@ public class AdminService {
         }
 
         try {
+            String profileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
             Admin admin = adminRepository.save(
                     Admin.create(
                             request.name(),
                             normalizedEmail,
-                            request.profileImageUrl(),
+                            profileImageUrl,
                             passwordEncoder.encode(request.password())
                     ));
-            return AdminResponse.from(admin);
+            return AdminResponse.from(admin, imageUrlResolver);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
         }
@@ -59,12 +62,12 @@ public class AdminService {
         Admin admin = adminRepository.findById(adminId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
 
-        return AdminResponse.from(admin);
+        return AdminResponse.from(admin, imageUrlResolver);
     }
 
     public PageResponse<AdminResponse> getAdminInfoList(Pageable pageable) {
         Page<Admin> admins = adminRepository.findAll(pageable);
-        return PageResponse.from(admins.map(AdminResponse::from));
+        return PageResponse.from(admins.map(admin -> AdminResponse.from(admin, imageUrlResolver)));
     }
 
     @Transactional
@@ -78,19 +81,20 @@ public class AdminService {
                 throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS);
             }
 
-            deleteOldProfileImageUrlIfChanged(request, admin);
+            String newProfileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
+            deleteOldProfileImageUrlIfChanged(newProfileImageUrl, admin);
 
-            admin.update(request.name(), normalizedEmail, request.profileImageUrl());
+            admin.update(request.name(), normalizedEmail, newProfileImageUrl);
 
-            return AdminResponse.from(admin);
+            return AdminResponse.from(admin, imageUrlResolver);
         } catch (DataIntegrityViolationException ex) {
             throw new AuthException(AuthErrorCode.EMAIL_ALREADY_EXISTS, ex);
         }
     }
 
-    private void deleteOldProfileImageUrlIfChanged(AdminUpdateRequest request, Admin admin) {
+    private void deleteOldProfileImageUrlIfChanged(String newProfileImageUrl, Admin admin) {
         String oldProfileImageUrl = admin.getProfileImageUrl();
-        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(newProfileImageUrl)) {
             eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }

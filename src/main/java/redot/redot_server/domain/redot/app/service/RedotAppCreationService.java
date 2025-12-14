@@ -26,6 +26,7 @@ import redot.redot_server.domain.site.setting.entity.SiteSetting;
 import redot.redot_server.domain.site.setting.repository.SiteSettingRepository;
 import redot.redot_server.domain.site.style.entity.StyleInfo;
 import redot.redot_server.domain.site.style.repository.StyleInfoRepository;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class RedotAppCreationService {
     private final DomainRepository domainRepository;
     private final SiteSettingRepository siteSettingRepository;
     private final StyleInfoRepository styleInfoRepository;
+    private final ImageUrlResolver imageUrlResolver;
     private static final int DOMAIN_ALLOCATION_RETRY_LIMIT = 5;
 
     private Domain createDomainWithRetry(RedotApp redotApp) {
@@ -84,9 +86,9 @@ public class RedotAppCreationService {
 
         return new RedotAppInfoResponse(
                 RedotAppResponse.fromEntity(redotApp),
-                SiteSettingResponse.fromEntity(siteSetting, domain),
+                SiteSettingResponse.fromEntity(siteSetting, domain, imageUrlResolver),
                 StyleInfoResponse.fromEntity(styleInfo),
-                RedotMemberResponse.fromNullable(redotApp.getOwner())
+                RedotMemberResponse.fromNullable(redotApp.getOwner(), imageUrlResolver)
         );
     }
 }
