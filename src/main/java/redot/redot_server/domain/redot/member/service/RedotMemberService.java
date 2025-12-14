@@ -36,30 +36,25 @@ public class RedotMemberService {
     public RedotMember findOrCreateSocialMember(SocialProfile profile, SocialProvider provider) {
         String normalizedEmail = EmailUtils.normalize(profile.email());
 
-        Optional<RedotMember> byProvider = redotMemberRepository
-                .findBySocialProviderAndSocialProviderId(provider, profile.providerId());
-        if (byProvider.isPresent()) {
-            RedotMember existing = byProvider.get();
-            redotMemberStatusValidator.ensureActive(existing);
-            return existing;
-        }
-
-        Optional<RedotMember> byEmail = redotMemberRepository.findByEmail(normalizedEmail);
-        if (byEmail.isPresent()) {
-            RedotMember existing = byEmail.get();
-            redotMemberStatusValidator.ensureActive(existing);
-            existing.linkSocialAccount(provider, profile.providerId(), profile.name(), profile.profileImageUrl());
-            return existing;
-        }
-
-        RedotMember socialMember = RedotMember.createSocialMember(
-                profile.name(),
-                normalizedEmail,
-                profile.profileImageUrl(),
-                provider,
-                profile.providerId()
-        );
-        return redotMemberRepository.save(socialMember);
+        return redotMemberRepository
+                .findBySocialProviderAndSocialProviderId(provider, profile.providerId())
+                .map(existing -> {
+                    redotMemberStatusValidator.ensureActive(existing);
+                    return existing;
+                })
+                .or(() -> redotMemberRepository.findByEmail(normalizedEmail)
+                        .map(existing -> {
+                            redotMemberStatusValidator.ensureActive(existing);
+                            existing.linkSocialAccount(provider, profile.providerId(), profile.name(), profile.profileImageUrl());
+                            return existing;
+                        }))
+                .orElseGet(() -> redotMemberRepository.save(RedotMember.createSocialMember(
+                        profile.name(),
+                        normalizedEmail,
+                        profile.profileImageUrl(),
+                        provider,
+                        profile.providerId()
+                )));
     }
 
     @Transactional

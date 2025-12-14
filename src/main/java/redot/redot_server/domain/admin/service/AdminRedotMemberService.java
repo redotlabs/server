@@ -43,15 +43,17 @@ public class AdminRedotMemberService {
 
     @Transactional
     public AdminRedotMemberResponse updateRedotMember(Long memberId, AdminRedotMemberUpdateRequest request) {
-        RedotMember redotMember = getMemberIncludingDeleted(memberId);
+        RedotMember redotMember = redotMemberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        if (request.status() == RedotMemberStatus.DELETED) {
+            throw new AuthException(AuthErrorCode.INVALID_MEMBER_STATUS_UPDATE);
+        }
 
         String newProfileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
         deleteOldProfileImageUrlIfChanged(newProfileImageUrl, redotMember);
 
         redotMember.updateInfo(request.name(), newProfileImageUrl);
-        if (request.status() == RedotMemberStatus.DELETED) {
-            throw new AuthException(AuthErrorCode.INVALID_MEMBER_STATUS_UPDATE);
-        }
 
         redotMember.changeStatus(request.status());
 
@@ -60,7 +62,8 @@ public class AdminRedotMemberService {
 
     @Transactional
     public void deleteRedotMember(Long memberId) {
-        RedotMember redotMember = getMemberIncludingDeleted(memberId);
+        RedotMember redotMember = redotMemberRepository.findById(memberId)
+                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
         redotMember.delete();
     }
 
@@ -69,11 +72,6 @@ public class AdminRedotMemberService {
         if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(newProfileImageUrl)) {
             eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
-    }
-
-    private RedotMember getMemberIncludingDeleted(Long memberId) {
-        return redotMemberRepository.findByIdIncludingDeleted(memberId)
-                .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
     }
 
 }
