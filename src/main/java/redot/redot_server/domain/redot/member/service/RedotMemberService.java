@@ -1,10 +1,10 @@
 package redot.redot_server.domain.redot.member.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
@@ -35,6 +35,9 @@ public class RedotMemberService {
     @Transactional
     public RedotMember findOrCreateSocialMember(SocialProfile profile, SocialProvider provider) {
         String normalizedEmail = EmailUtils.normalize(profile.email());
+        if (!StringUtils.hasText(normalizedEmail)) {
+            throw new AuthException(AuthErrorCode.SOCIAL_EMAIL_REQUIRED);
+        }
 
         return redotMemberRepository
                 .findBySocialProviderAndSocialProviderId(provider, profile.providerId())
