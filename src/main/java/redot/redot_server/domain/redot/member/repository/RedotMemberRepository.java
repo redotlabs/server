@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.entity.SocialProvider;
 
-public interface RedotMemberRepository extends JpaRepository<RedotMember, Long> {
+public interface RedotMemberRepository extends JpaRepository<RedotMember, Long>, RedotMemberRepositoryCustom {
     boolean existsByEmail(String email);
 
     Optional<RedotMember> findByEmail(String email);

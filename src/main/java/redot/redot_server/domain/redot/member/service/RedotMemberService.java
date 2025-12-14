@@ -1,10 +1,10 @@
 package redot.redot_server.domain.redot.member.service;
 
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.auth.exception.AuthErrorCode;
 import redot.redot_server.domain.auth.exception.AuthException;
@@ -30,38 +30,41 @@ public class RedotMemberService {
     private final ImageStorageService imageStorageService;
     private final ApplicationEventPublisher eventPublisher;
     private final ImageUrlResolver imageUrlResolver;
+    private final RedotMemberStatusValidator redotMemberStatusValidator;
 
     @Transactional
     public RedotMember findOrCreateSocialMember(SocialProfile profile, SocialProvider provider) {
         String normalizedEmail = EmailUtils.normalize(profile.email());
-
-        Optional<RedotMember> byProvider = redotMemberRepository
-                .findBySocialProviderAndSocialProviderId(provider, profile.providerId());
-        if (byProvider.isPresent()) {
-            return byProvider.get();
+        if (!StringUtils.hasText(normalizedEmail)) {
+            throw new AuthException(AuthErrorCode.SOCIAL_EMAIL_REQUIRED);
         }
 
-        Optional<RedotMember> byEmail = redotMemberRepository.findByEmail(normalizedEmail);
-        if (byEmail.isPresent()) {
-            RedotMember existing = byEmail.get();
-            existing.linkSocialAccount(provider, profile.providerId(), profile.name(), profile.profileImageUrl());
-            return existing;
-        }
-
-        RedotMember socialMember = RedotMember.createSocialMember(
-                profile.name(),
-                normalizedEmail,
-                profile.profileImageUrl(),
-                provider,
-                profile.providerId()
-        );
-        return redotMemberRepository.save(socialMember);
+        return redotMemberRepository
+                .findBySocialProviderAndSocialProviderId(provider, profile.providerId())
+                .map(existing -> {
+                    redotMemberStatusValidator.ensureActive(existing);
+                    return existing;
+                })
+                .or(() -> redotMemberRepository.findByEmail(normalizedEmail)
+                        .map(existing -> {
+                            redotMemberStatusValidator.ensureActive(existing);
+                            existing.linkSocialAccount(provider, profile.providerId(), profile.name(), profile.profileImageUrl());
+                            return existing;
+                        }))
+                .orElseGet(() -> redotMemberRepository.save(RedotMember.createSocialMember(
+                        profile.name(),
+                        normalizedEmail,
+                        profile.profileImageUrl(),
+                        provider,
+                        profile.providerId()
+                )));
     }
 
     @Transactional
     public UploadedImageUrlResponse uploadProfileImage(Long memberId, MultipartFile imageFile) {
-        redotMemberRepository.findById(memberId)
+        RedotMember member = redotMemberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+        redotMemberStatusValidator.ensureActive(member);
 
         String imageUrl = imageStorageService.upload(ImageDirectory.REDOT_MEMBER_PROFILE, memberId, imageFile);
         return new UploadedImageUrlResponse(imageUrl);
@@ -71,6 +74,8 @@ public class RedotMemberService {
     public RedotMemberResponse updateRedotMemberInfo(Long id, RedotMemberUpdateRequest request) {
         RedotMember redotMember = redotMemberRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        redotMemberStatusValidator.ensureActive(redotMember);
 
         String newProfileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
 
@@ -92,6 +97,7 @@ public class RedotMemberService {
     public void deleteRedotMember(Long id) {
         RedotMember redotMember = redotMemberRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+        redotMemberStatusValidator.ensureActive(redotMember);
         redotMember.delete();
     }
 }
