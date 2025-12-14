@@ -38,6 +38,7 @@ import redot.redot_server.domain.site.style.entity.StyleInfo;
 import redot.redot_server.domain.site.style.exception.StyleInfoErrorCode;
 import redot.redot_server.domain.site.style.exception.StyleInfoException;
 import redot.redot_server.domain.site.style.repository.StyleInfoRepository;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Service
@@ -54,6 +55,7 @@ public class RedotAppService {
     private final CMSMemberRepository cmsMemberRepository;
     private final PasswordEncoder passwordEncoder;
     private final RedotAppCreationService redotAppCreationService;
+    private final ImageUrlResolver imageUrlResolver;
     
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId).orElseThrow(
@@ -73,9 +75,9 @@ public class RedotAppService {
 
         return new RedotAppInfoResponse(
                 RedotAppResponse.fromEntity(redotApp),
-                SiteSettingResponse.fromEntity(siteSetting, domain),
+                SiteSettingResponse.fromEntity(siteSetting, domain, imageUrlResolver),
                 StyleInfoResponse.fromEntity(styleInfo),
-                RedotMemberResponse.fromNullable(owner)
+                RedotMemberResponse.fromNullable(owner, imageUrlResolver)
         );
     }
 
@@ -94,9 +96,9 @@ public class RedotAppService {
 
             return new RedotAppInfoResponse(
                     RedotAppResponse.fromEntity(redotApp),
-                    SiteSettingResponse.fromEntity(siteSetting, domain),
+                    SiteSettingResponse.fromEntity(siteSetting, domain, imageUrlResolver),
                     StyleInfoResponse.fromEntity(styleInfo),
-                    RedotMemberResponse.fromNullable(redotApp.getOwner())
+                    RedotMemberResponse.fromNullable(redotApp.getOwner(), imageUrlResolver)
             );
         });
 

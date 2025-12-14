@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.admin.dto.request.AdminCreateRequest;
 import redot.redot_server.domain.admin.dto.response.AdminResponse;
@@ -22,12 +23,12 @@ public interface AdminAuthControllerDocs {
     @ApiResponse(responseCode = "200", description = "로그인 성공",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     ResponseEntity<TokenResponse> signIn(@Parameter(hidden = true) HttpServletRequest request,
-                                         SignInRequest signInRequest);
+                                         @Valid SignInRequest signInRequest);
 
     @Operation(summary = "관리자 회원가입", description = "새로운 Redot 관리자를 등록합니다.")
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = AdminResponse.class)))
-    ResponseEntity<AdminResponse> createAdmin(AdminCreateRequest request);
+    ResponseEntity<AdminResponse> createAdmin(@Valid AdminCreateRequest request);
 
     @Operation(summary = "관리자 토큰 재발급", description = "만료 직전의 토큰을 쿠키 기반으로 재발급합니다.")
     @ApiResponse(responseCode = "200", description = "재발급 성공",
@@ -45,5 +46,5 @@ public interface AdminAuthControllerDocs {
 
     @Operation(summary = "관리자 비밀번호 재설정 확정", description = "비밀번호 재설정 코드를 확인하고 새 비밀번호를 저장합니다.")
     @ApiResponse(responseCode = "204", description = "재설정 완료")
-    ResponseEntity<Void> confirmPasswordReset(PasswordResetConfirmRequest request);
+    ResponseEntity<Void> confirmPasswordReset(@Valid PasswordResetConfirmRequest request);
 }

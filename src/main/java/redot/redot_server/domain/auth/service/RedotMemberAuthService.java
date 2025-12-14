@@ -15,6 +15,7 @@ import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateReque
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
@@ -30,6 +31,7 @@ public class RedotMemberAuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthTokenService authTokenService;
     private final EmailVerificationService emailVerificationService;
+    private final ImageUrlResolver imageUrlResolver;
 
     @Transactional
     public RedotMemberResponse signUp(RedotMemberCreateRequest request) {
@@ -53,7 +55,7 @@ public class RedotMemberAuthService {
         );
 
         RedotMember savedMember = redotMemberRepository.save(redotMember);
-        return RedotMemberResponse.fromEntity(savedMember);
+        return RedotMemberResponse.fromEntity(savedMember, imageUrlResolver);
     }
 
     public AuthResult signIn(HttpServletRequest request, RedotMemberSignInRequest signInRequest) {
@@ -107,7 +109,7 @@ public class RedotMemberAuthService {
         RedotMember member = redotMemberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
 
-        return RedotMemberResponse.fromEntity(member);
+        return RedotMemberResponse.fromEntity(member, imageUrlResolver);
     }
 
     @Transactional

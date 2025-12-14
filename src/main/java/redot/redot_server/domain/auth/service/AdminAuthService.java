@@ -14,6 +14,7 @@ import redot.redot_server.domain.auth.model.EmailVerificationPurpose;
 import redot.redot_server.domain.admin.dto.response.AdminResponse;
 import redot.redot_server.domain.admin.entity.Admin;
 import redot.redot_server.domain.admin.repository.AdminRepository;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
 import redot.redot_server.global.security.filter.jwt.refresh.RefreshTokenPayload;
@@ -29,6 +30,7 @@ public class AdminAuthService {
     private final AuthTokenService authTokenService;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerificationService emailVerificationService;
+    private final ImageUrlResolver imageUrlResolver;
 
     public AuthResult signIn(HttpServletRequest request, SignInRequest signInRequest) {
         Admin admin = adminRepository.findByEmailIgnoreCase(EmailUtils.normalize(signInRequest.email()))
@@ -68,8 +70,7 @@ public class AdminAuthService {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.ADMIN_NOT_FOUND));
 
-        return new AdminResponse(admin.getId(), admin.getName(), admin.getProfileImageUrl(), admin.getEmail(),
-                admin.getCreatedAt());
+        return AdminResponse.from(admin, imageUrlResolver);
     }
 
     @Transactional

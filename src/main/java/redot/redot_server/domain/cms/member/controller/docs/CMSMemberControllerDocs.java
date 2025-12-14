@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,7 +32,7 @@ public interface CMSMemberControllerDocs {
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = CMSMemberResponse.class)))
     ResponseEntity<CMSMemberResponse> createCMSMember(@Parameter(hidden = true) Long redotAppId,
-                                                      CMSMemberCreateRequest request);
+                                                      @Valid CMSMemberCreateRequest request);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")
@@ -57,7 +59,7 @@ public interface CMSMemberControllerDocs {
             content = @Content(schema = @Schema(implementation = CMSMemberResponse.class)))
     ResponseEntity<CMSMemberResponse> changeCMSMemberRole(@Parameter(hidden = true) Long redotAppId,
                                                           @Parameter(description = "멤버 ID", example = "1") Long memberId,
-                                                          CMSMemberRoleRequest request);
+                                                          @Valid CMSMemberRoleRequest request);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")
@@ -66,7 +68,7 @@ public interface CMSMemberControllerDocs {
             content = @Content(schema = @Schema(implementation = CMSMemberResponse.class)))
     ResponseEntity<CMSMemberResponse> updateCMSMember(@Parameter(hidden = true) Long redotAppId,
                                                       @Parameter(hidden = true) JwtPrincipal jwtPrincipal,
-                                                      CMSMemberUpdateRequest request);
+                                                      @Valid CMSMemberUpdateRequest request);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")
@@ -91,5 +93,5 @@ public interface CMSMemberControllerDocs {
             content = @Content(schema = @Schema(implementation = UploadedImageUrlResponse.class)))
     ResponseEntity<UploadedImageUrlResponse> uploadProfileImage(@Parameter(hidden = true) Long redotAppId,
                                                                 @Parameter(hidden = true) JwtPrincipal jwtPrincipal,
-                                                                MultipartFile image);
+                                                                @NotNull MultipartFile image);
 }

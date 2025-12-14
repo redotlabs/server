@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springdoc.core.annotations.ParameterObject;
@@ -32,6 +33,6 @@ public interface AdminConsultationControllerDocs {
     @Operation(summary = "상담 정보 수정", description = "상담 상태나 담당자 정보를 수정합니다.")
     @ApiResponse(responseCode = "200", description = "수정 성공",
             content = @Content(schema = @Schema(implementation = ConsultationResponse.class)))
-    ResponseEntity<ConsultationResponse> updateConsultationInfo(ConsultationUpdateRequest request,
+    ResponseEntity<ConsultationResponse> updateConsultationInfo(@Valid ConsultationUpdateRequest request,
                                                                 @Parameter(description = "상담 ID", example = "1") Long consultationId);
 }

@@ -7,6 +7,8 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 import redot.redot_server.domain.cms.site.setting.dto.request.SiteSettingUpdateRequest;
@@ -22,7 +24,7 @@ public interface SiteSettingControllerDocs {
     @ApiResponse(responseCode = "200", description = "수정 성공",
             content = @Content(schema = @Schema(implementation = SiteSettingResponse.class)))
     ResponseEntity<SiteSettingResponse> updateSiteSetting(@Parameter(hidden = true) Long redotAppId,
-                                                          SiteSettingUpdateRequest request);
+                                                          @Valid SiteSettingUpdateRequest request);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")
@@ -30,7 +32,7 @@ public interface SiteSettingControllerDocs {
     @ApiResponse(responseCode = "200", description = "업로드 성공",
             content = @Content(schema = @Schema(implementation = UploadedImageUrlResponse.class)))
     ResponseEntity<UploadedImageUrlResponse> uploadLogoImage(@Parameter(hidden = true) Long redotAppId,
-                                                             MultipartFile logoFile);
+                                                             @NotNull MultipartFile logoFile);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")

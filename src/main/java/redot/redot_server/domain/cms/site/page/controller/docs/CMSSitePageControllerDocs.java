@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.http.ResponseEntity;
@@ -44,5 +45,5 @@ public interface CMSSitePageControllerDocs {
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = AppVersionSummaryResponse.class)))
     ResponseEntity<AppVersionSummaryResponse> createVersion(@Parameter(hidden = true) Long redotAppId,
-                                                            AppVersionCreateRequest request);
+                                                            @Valid AppVersionCreateRequest request);
 }

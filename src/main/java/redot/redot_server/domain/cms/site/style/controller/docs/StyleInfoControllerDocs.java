@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.cms.site.style.dto.request.StyleInfoUpdateRequest;
 import redot.redot_server.domain.cms.site.style.dto.response.StyleInfoResponse;
@@ -27,5 +28,5 @@ public interface StyleInfoControllerDocs {
     @ApiResponse(responseCode = "200", description = "수정 성공",
             content = @Content(schema = @Schema(implementation = StyleInfoResponse.class)))
     ResponseEntity<StyleInfoResponse> updateStyleInfo(@Parameter(hidden = true) Long redotAppId,
-                                                      StyleInfoUpdateRequest request);
+                                                      @Valid StyleInfoUpdateRequest request);
 }

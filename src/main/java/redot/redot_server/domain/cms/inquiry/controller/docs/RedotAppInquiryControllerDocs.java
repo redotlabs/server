@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springdoc.core.annotations.ParameterObject;
@@ -25,7 +26,7 @@ public interface RedotAppInquiryControllerDocs {
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = RedotAppInquiryResponse.class)))
     ResponseEntity<RedotAppInquiryResponse> createInquiry(@Parameter(hidden = true) Long redotAppId,
-                                                          RedotAppInquiryCreateRequest request);
+                                                          @Valid RedotAppInquiryCreateRequest request);
 
     @Parameter(name = "X-App-Subdomain", in = ParameterIn.HEADER, required = true,
             description = "요청 대상 CMS 앱의 서브도메인")

@@ -17,6 +17,7 @@ import redot.redot_server.global.s3.dto.UploadedImageUrlResponse;
 import redot.redot_server.global.s3.event.ImageDeletionEvent;
 import redot.redot_server.global.s3.service.ImageStorageService;
 import redot.redot_server.global.s3.util.ImageDirectory;
+import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.security.social.model.SocialProfile;
 import redot.redot_server.global.util.EmailUtils;
 
@@ -28,6 +29,7 @@ public class RedotMemberService {
     private final RedotMemberRepository redotMemberRepository;
     private final ImageStorageService imageStorageService;
     private final ApplicationEventPublisher eventPublisher;
+    private final ImageUrlResolver imageUrlResolver;
 
     @Transactional
     public RedotMember findOrCreateSocialMember(SocialProfile profile, SocialProvider provider) {
@@ -70,16 +72,18 @@ public class RedotMemberService {
         RedotMember redotMember = redotMemberRepository.findById(id)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
 
-        deleteOldProfileImageUrlIfChanged(request, redotMember);
+        String newProfileImageUrl = imageUrlResolver.toStoredPath(request.profileImageUrl());
 
-        redotMember.updateInfo(request.name(), request.profileImageUrl());
+        deleteOldProfileImageUrlIfChanged(newProfileImageUrl, redotMember);
 
-        return RedotMemberResponse.fromEntity(redotMember);
+        redotMember.updateInfo(request.name(), newProfileImageUrl);
+
+        return RedotMemberResponse.fromEntity(redotMember, imageUrlResolver);
     }
 
-    private void deleteOldProfileImageUrlIfChanged(RedotMemberUpdateRequest request, RedotMember redotMember) {
+    private void deleteOldProfileImageUrlIfChanged(String newProfileImageUrl, RedotMember redotMember) {
         String oldProfileImageUrl = redotMember.getProfileImageUrl();
-        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(request.profileImageUrl())) {
+        if (oldProfileImageUrl != null && !oldProfileImageUrl.equals(newProfileImageUrl)) {
             eventPublisher.publishEvent(new ImageDeletionEvent(oldProfileImageUrl));
         }
     }

@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.auth.dto.request.CMSAdminImpersonationRequest;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
@@ -19,6 +20,6 @@ public interface AdminImpersonationControllerDocs {
     @ApiResponse(responseCode = "200", description = "발급 성공",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     ResponseEntity<TokenResponse> impersonateAsCMSAdmin(@Parameter(hidden = true) HttpServletRequest request,
-                                                        CMSAdminImpersonationRequest cmsAdminImpersonationRequest,
+                                                        @Valid CMSAdminImpersonationRequest cmsAdminImpersonationRequest,
                                                         @Parameter(hidden = true) JwtPrincipal jwtPrincipal);
 }
