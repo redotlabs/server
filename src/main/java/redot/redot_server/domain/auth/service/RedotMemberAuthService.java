@@ -15,6 +15,7 @@ import redot.redot_server.domain.redot.member.dto.request.RedotMemberCreateReque
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
 import redot.redot_server.domain.redot.member.entity.RedotMember;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
+import redot.redot_server.domain.redot.member.service.RedotMemberStatusValidator;
 import redot.redot_server.global.s3.util.ImageUrlResolver;
 import redot.redot_server.global.jwt.token.TokenContext;
 import redot.redot_server.global.jwt.token.TokenType;
@@ -32,6 +33,7 @@ public class RedotMemberAuthService {
     private final AuthTokenService authTokenService;
     private final EmailVerificationService emailVerificationService;
     private final ImageUrlResolver imageUrlResolver;
+    private final RedotMemberStatusValidator redotMemberStatusValidator;
 
     @Transactional
     public RedotMemberResponse signUp(RedotMemberCreateRequest request) {
@@ -68,6 +70,8 @@ public class RedotMemberAuthService {
             throw new AuthException(AuthErrorCode.INVALID_USER_INFO);
         }
 
+        redotMemberStatusValidator.ensureActive(member);
+
         TokenContext context = new TokenContext(
                 member.getId(),
                 TokenType.REDOT_MEMBER,
@@ -94,8 +98,9 @@ public class RedotMemberAuthService {
             throw new AuthException(AuthErrorCode.INVALID_TOKEN_SUBJECT);
         }
 
-        redotMemberRepository.findById(memberId)
+        RedotMember member = redotMemberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+        redotMemberStatusValidator.ensureActive(member);
 
         return authTokenService.issueTokens(request, new TokenContext(
                 memberId,
@@ -108,6 +113,7 @@ public class RedotMemberAuthService {
     public RedotMemberResponse getCurrentMember(Long memberId) {
         RedotMember member = redotMemberRepository.findById(memberId)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+        redotMemberStatusValidator.ensureActive(member);
 
         return RedotMemberResponse.fromEntity(member, imageUrlResolver);
     }
@@ -123,6 +129,8 @@ public class RedotMemberAuthService {
 
         RedotMember member = redotMemberRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new AuthException(AuthErrorCode.REDOT_MEMBER_NOT_FOUND));
+
+        redotMemberStatusValidator.ensureActive(member);
 
         member.resetPassword(passwordEncoder.encode(request.newPassword()));
     }

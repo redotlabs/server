@@ -36,7 +36,8 @@ public enum AuthErrorCode implements ErrorCode {
     UNSUPPORTED_EMAIL_VERIFICATION_PURPOSE(400, 1026, "지원하지 않는 이메일 인증 용도입니다."),
     EMAIL_NOT_VERIFIED(400, 1027, "이메일 인증이 필요합니다."),
     INVALID_MEMBER_STATUS_UPDATE(400, 1028, "지원하지 않는 회원 상태 변경입니다."),
-    INVALID_MEMBER_STATUS_FILTER(400, 1029, "지원하지 않는 회원 상태 조회입니다.")
+    INVALID_MEMBER_STATUS_FILTER(400, 1029, "지원하지 않는 회원 상태 조회입니다."),
+    BANNED_REDOT_MEMBER(403, 1030, "제한된 계정입니다.")
     ;
 
 
