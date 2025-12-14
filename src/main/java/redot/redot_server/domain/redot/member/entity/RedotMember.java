@@ -34,7 +34,7 @@ import redot.redot_server.domain.redot.app.entity.RedotApp;
                 @UniqueConstraint(columnNames = {"social_provider", "social_provider_id"})
         }
 )
-@SQLRestriction("status = 'ACTIVE'")
+@SQLRestriction("status <> 'DELETED'")
 public class RedotMember extends BaseTimeEntity {
 
     @Id
@@ -101,6 +101,13 @@ public class RedotMember extends BaseTimeEntity {
     public void delete(){
         this.status = RedotMemberStatus.DELETED;
         this.deletedAt = LocalDateTime.now();
+    }
+
+    public void changeStatus(RedotMemberStatus status) {
+        this.status = status;
+        if (status != RedotMemberStatus.DELETED) {
+            this.deletedAt = null;
+        }
     }
 
     public void linkSocialAccount(SocialProvider socialProvider,
