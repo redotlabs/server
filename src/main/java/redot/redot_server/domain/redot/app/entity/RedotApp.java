@@ -41,6 +41,9 @@ public class RedotApp extends BaseTimeEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(columnDefinition = "text")
+    private String remark;
+
     // 초기 관리자 계정 생성 여부(default=false)
     @Column(nullable = false)
     @Builder.Default
@@ -77,5 +80,10 @@ public class RedotApp extends BaseTimeEntity {
 
     public void updatePlan(Plan plan) {
         this.plan = plan;
+    }
+
+    public void updateStatus(RedotAppStatus status, String remark) {
+        this.status = status;
+        this.remark = remark;
     }
 }

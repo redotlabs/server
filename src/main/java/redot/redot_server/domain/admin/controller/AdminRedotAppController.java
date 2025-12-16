@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import redot.redot_server.domain.admin.controller.docs.AdminRedotAppControllerDocs;
 import redot.redot_server.domain.admin.dto.request.RedotAppInfoSearchCondition;
+import redot.redot_server.domain.admin.dto.request.RedotAppStatusUpdateRequest;
 import redot.redot_server.domain.admin.service.AdminRedotAppService;
 import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
@@ -46,5 +47,13 @@ public class AdminRedotAppController implements AdminRedotAppControllerDocs {
     public ResponseEntity<RedotAppInfoResponse> getRedotAppInfo(
             @PathVariable("redotAppId") Long redotAppId) {
         return ResponseEntity.ok(redotAppService.getRedotAppInfo(redotAppId));
+    }
+
+    @PostMapping("/{redotAppId}/status")
+    @Override
+    public ResponseEntity<RedotAppInfoResponse> updateRedotAppStatus(
+            @PathVariable("redotAppId") Long redotAppId,
+            @Valid @RequestBody RedotAppStatusUpdateRequest request) {
+        return ResponseEntity.ok(redotAppService.updateRedotAppStatus(redotAppId, request));
     }
 }

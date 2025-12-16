@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.admin.dto.request.RedotAppInfoSearchCondition;
+import redot.redot_server.domain.admin.dto.request.RedotAppStatusUpdateRequest;
 import redot.redot_server.domain.cms.site.setting.dto.response.SiteSettingResponse;
 import redot.redot_server.domain.cms.site.style.dto.response.StyleInfoResponse;
 import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
@@ -78,6 +79,16 @@ public class AdminRedotAppService {
     public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
         RedotApp redotApp = redotAppRepository.findById(redotAppId)
                 .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
+
+        return toRedotAppInfoResponse(redotApp);
+    }
+
+    @Transactional
+    public RedotAppInfoResponse updateRedotAppStatus(Long redotAppId, RedotAppStatusUpdateRequest request) {
+        RedotApp redotApp = redotAppRepository.findById(redotAppId)
+                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
+
+        redotApp.updateStatus(request.status(), request.remark());
 
         return toRedotAppInfoResponse(redotApp);
     }

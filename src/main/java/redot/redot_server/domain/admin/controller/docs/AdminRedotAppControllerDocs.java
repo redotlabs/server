@@ -10,6 +10,7 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.admin.dto.request.RedotAppInfoSearchCondition;
+import redot.redot_server.domain.admin.dto.request.RedotAppStatusUpdateRequest;
 import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
 import redot.redot_server.global.util.dto.response.PageResponse;
@@ -34,4 +35,11 @@ public interface AdminRedotAppControllerDocs {
             content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
     ResponseEntity<RedotAppInfoResponse> getRedotAppInfo(
             @io.swagger.v3.oas.annotations.Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId);
+
+    @Operation(summary = "앱 상태 변경", description = "지정한 앱의 상태 및 비고(remark)를 수정합니다.")
+    @ApiResponse(responseCode = "200", description = "수정 성공",
+            content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
+    ResponseEntity<RedotAppInfoResponse> updateRedotAppStatus(
+            @io.swagger.v3.oas.annotations.Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId,
+            @Valid RedotAppStatusUpdateRequest request);
 }
