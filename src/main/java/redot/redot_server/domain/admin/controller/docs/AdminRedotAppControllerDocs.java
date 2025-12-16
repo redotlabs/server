@@ -28,4 +28,10 @@ public interface AdminRedotAppControllerDocs {
     ResponseEntity<PageResponse<RedotAppInfoResponse>> getRedotAppInfoList(
             @ParameterObject RedotAppInfoSearchCondition searchCondition,
             @ParameterObject Pageable pageable);
+
+    @Operation(summary = "앱 단건 조회", description = "redotAppId로 특정 앱 정보를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
+    ResponseEntity<RedotAppInfoResponse> getRedotAppInfo(
+            @io.swagger.v3.oas.annotations.Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId);
 }

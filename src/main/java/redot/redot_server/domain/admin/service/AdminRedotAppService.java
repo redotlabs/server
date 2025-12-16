@@ -12,6 +12,8 @@ import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppResponse;
 import redot.redot_server.domain.redot.app.entity.RedotApp;
+import redot.redot_server.domain.redot.app.exception.RedotAppErrorCode;
+import redot.redot_server.domain.redot.app.exception.RedotAppException;
 import redot.redot_server.domain.redot.app.repository.RedotAppRepository;
 import redot.redot_server.domain.redot.app.service.RedotAppCreationService;
 import redot.redot_server.domain.redot.member.dto.response.RedotMemberResponse;
@@ -71,5 +73,12 @@ public class AdminRedotAppService {
                 StyleInfoResponse.fromEntity(styleInfo),
                 RedotMemberResponse.fromNullable(redotApp.getOwner(), imageUrlResolver)
         );
+    }
+
+    public RedotAppInfoResponse getRedotAppInfo(Long redotAppId) {
+        RedotApp redotApp = redotAppRepository.findById(redotAppId)
+                .orElseThrow(() -> new RedotAppException(RedotAppErrorCode.REDOT_APP_NOT_FOUND));
+
+        return toRedotAppInfoResponse(redotApp);
     }
 }
