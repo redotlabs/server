@@ -1,8 +1,8 @@
 package redot.redot_server.domain.admin.service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,10 +22,12 @@ public class AdminDashboardService {
     private final AdminRepository adminRepository;
 
     public AdminDashboardStatsResponse getDashboardStats() {
-        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
+        ZoneId kstZone = ZoneId.of("Asia/Seoul");
+        ZonedDateTime startOfTodayKst = LocalDate.now(kstZone).atStartOfDay(kstZone);
+        ZonedDateTime startOfTodayUtc = startOfTodayKst.withZoneSameInstant(ZoneId.of("UTC"));
 
         long totalRedotMembers = redotMemberRepository.count();
-        long redotMembersUntilYesterday = redotMemberRepository.countByCreatedAtBefore(startOfToday);
+        long redotMembersUntilYesterday = redotMemberRepository.countByCreatedAtBefore(startOfTodayUtc.toLocalDateTime());
 
         long pendingConsultationCount = consultationRepository.countByStatus(ConsultationStatus.PENDING);
         long adminCount = adminRepository.count();
