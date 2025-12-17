@@ -1,0 +1,2 @@
+ALTER TABLE redot_apps
+    ADD COLUMN IF NOT EXISTS remark TEXT;

@@ -5,5 +5,6 @@ public enum RedotAppStatus {
     INACTIVE,
     DELETED,
     RESIGNED,
-    PAYMENT_DELAYED
+    PAYMENT_DELAYED,
+    BANNED
 }
