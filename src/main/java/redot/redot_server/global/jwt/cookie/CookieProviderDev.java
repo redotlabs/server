@@ -2,7 +2,6 @@ package redot.redot_server.global.jwt.cookie;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
-import java.util.Enumeration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
@@ -25,13 +24,6 @@ public class CookieProviderDev implements CookieProvider {
     }
 
     private String resolveDomain(HttpServletRequest request) {
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String name = headerNames.nextElement();
-            String value = request.getHeader(name);
-            log.info("header {} = {}", name, value);
-        }
-
         String host = extractHost(request);
         if (!StringUtils.hasText(host)) {
             return "localhost";
