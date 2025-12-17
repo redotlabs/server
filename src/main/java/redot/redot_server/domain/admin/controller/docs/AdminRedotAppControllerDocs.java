@@ -6,9 +6,14 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import redot.redot_server.domain.admin.dto.request.RedotAppInfoSearchCondition;
+import redot.redot_server.domain.admin.dto.request.RedotAppStatusUpdateRequest;
 import redot.redot_server.domain.redot.app.dto.request.RedotAppCreateRequest;
 import redot.redot_server.domain.redot.app.dto.response.RedotAppInfoResponse;
+import redot.redot_server.global.util.dto.response.PageResponse;
 
 @Tag(name = "Admin Redot App", description = "관리자 앱 관리 API")
 public interface AdminRedotAppControllerDocs {
@@ -17,4 +22,24 @@ public interface AdminRedotAppControllerDocs {
     @ApiResponse(responseCode = "200", description = "생성 성공",
             content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
     ResponseEntity<RedotAppInfoResponse> createRedotApp(@Valid RedotAppCreateRequest request);
+
+    @Operation(summary = "앱 목록 조회", description = "status, name, redot_member_id 파라미터로 필터링하며 createdAt 기준 최신순 정렬을 기본으로 제공합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = PageResponse.class)))
+    ResponseEntity<PageResponse<RedotAppInfoResponse>> getRedotAppInfoList(
+            @ParameterObject RedotAppInfoSearchCondition searchCondition,
+            @ParameterObject Pageable pageable);
+
+    @Operation(summary = "앱 단건 조회", description = "redotAppId로 특정 앱 정보를 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공",
+            content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
+    ResponseEntity<RedotAppInfoResponse> getRedotAppInfo(
+            @io.swagger.v3.oas.annotations.Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId);
+
+    @Operation(summary = "앱 상태 변경", description = "지정한 앱의 상태 및 비고(remark)를 수정합니다.")
+    @ApiResponse(responseCode = "200", description = "수정 성공",
+            content = @Content(schema = @Schema(implementation = RedotAppInfoResponse.class)))
+    ResponseEntity<RedotAppInfoResponse> updateRedotAppStatus(
+            @io.swagger.v3.oas.annotations.Parameter(description = "Redot 앱 ID", example = "1") Long redotAppId,
+            @Valid RedotAppStatusUpdateRequest request);
 }

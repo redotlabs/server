@@ -25,10 +25,8 @@ public class AdminImpersonationController implements AdminImpersonationControlle
 
     @PostMapping("/cms-admin")
     @Override
-    public ResponseEntity<TokenResponse> impersonateAsCMSAdmin(HttpServletRequest request, @Valid @RequestBody CMSAdminImpersonationRequest cmsAdminImpersonationRequest, @AuthenticationPrincipal JwtPrincipal jwtPrincipal) {
-        Long adminId = jwtPrincipal.id();
-
-        AuthResult authResult = adminImpersonationService.impersonateAsCMSAdmin(request, cmsAdminImpersonationRequest, adminId);
+    public ResponseEntity<TokenResponse> impersonateAsCMSAdmin(HttpServletRequest request, @Valid @RequestBody CMSAdminImpersonationRequest cmsAdminImpersonationRequest) {
+        AuthResult authResult = adminImpersonationService.impersonateAsCMSAdmin(request, cmsAdminImpersonationRequest);
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, authResult.accessCookie().toString())
                 .header(HttpHeaders.SET_COOKIE, authResult.refreshCookie().toString())

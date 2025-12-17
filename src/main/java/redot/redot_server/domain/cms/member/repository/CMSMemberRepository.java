@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import redot.redot_server.domain.cms.member.entity.CMSMember;
+import redot.redot_server.domain.cms.member.entity.CMSMemberRole;
 
 public interface CMSMemberRepository extends JpaRepository<CMSMember, Long>, CMSMemberRepositoryCustom {
     Optional<CMSMember> findByEmailAndRedotApp_Id(String email, Long redotAppId);
@@ -21,4 +22,5 @@ public interface CMSMemberRepository extends JpaRepository<CMSMember, Long>, CMS
             @Param("id") Long id,
             @Param("redotAppId") Long redotAppId);
 
+    Optional<CMSMember> findFirstByRedotApp_IdAndRoleOrderByIdAsc(Long redotAppId, CMSMemberRole role);
 }

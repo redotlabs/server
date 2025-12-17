@@ -11,7 +11,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import redot.redot_server.domain.auth.dto.request.CMSAdminImpersonationRequest;
 import redot.redot_server.domain.auth.dto.response.TokenResponse;
-import redot.redot_server.global.security.principal.JwtPrincipal;
 
 @Tag(name = "Admin Impersonation", description = "관리자 권한 위임 API")
 public interface AdminImpersonationControllerDocs {
@@ -20,6 +19,5 @@ public interface AdminImpersonationControllerDocs {
     @ApiResponse(responseCode = "200", description = "발급 성공",
             content = @Content(schema = @Schema(implementation = TokenResponse.class)))
     ResponseEntity<TokenResponse> impersonateAsCMSAdmin(@Parameter(hidden = true) HttpServletRequest request,
-                                                        @Valid CMSAdminImpersonationRequest cmsAdminImpersonationRequest,
-                                                        @Parameter(hidden = true) JwtPrincipal jwtPrincipal);
+                                                        @Valid CMSAdminImpersonationRequest cmsAdminImpersonationRequest);
 }
