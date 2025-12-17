@@ -22,7 +22,7 @@ public class AdminDashboardService {
     private final AdminRepository adminRepository;
 
     public AdminDashboardStatsResponse getDashboardStats() {
-        LocalDateTime startOfToday = LocalDate.now(ZoneId.systemDefault()).atStartOfDay();
+        LocalDateTime startOfToday = LocalDate.now(ZoneId.of("Asia/Seoul")).atStartOfDay();
 
         long totalRedotMembers = redotMemberRepository.count();
         long redotMembersUntilYesterday = redotMemberRepository.countByCreatedAtBefore(startOfToday);
