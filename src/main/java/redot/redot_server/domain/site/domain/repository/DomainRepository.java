@@ -1,5 +1,7 @@
 package redot.redot_server.domain.site.domain.repository;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +16,8 @@ public interface DomainRepository extends JpaRepository<Domain, Long> {
     Optional<Domain> findByCustomDomain(String customDomain);
 
     Optional<Domain> findByRedotAppId(Long redotAppId);
+
+    List<Domain> findByRedotAppIdIn(Collection<Long> redotAppIds);
 
     boolean existsByCustomDomain(String customDomain);
 }
