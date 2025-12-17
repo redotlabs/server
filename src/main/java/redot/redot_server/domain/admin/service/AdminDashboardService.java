@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.admin.dto.response.AdminDashboardStatsResponse;
 import redot.redot_server.domain.admin.repository.AdminRepository;
+import redot.redot_server.domain.redot.consultation.entity.ConsultationStatus;
 import redot.redot_server.domain.redot.consultation.repository.ConsultationRepository;
 import redot.redot_server.domain.redot.member.repository.RedotMemberRepository;
 
@@ -25,16 +26,14 @@ public class AdminDashboardService {
 
         long totalRedotMembers = redotMemberRepository.count();
         long redotMembersUntilYesterday = redotMemberRepository.countByCreatedAtBefore(startOfToday);
-        long newRedotMembersSinceYesterday = Math.max(0L, totalRedotMembers - redotMembersUntilYesterday);
 
-        long consultationRequestCount = consultationRepository.count();
+        long pendingConsultationCount = consultationRepository.countByStatus(ConsultationStatus.PENDING);
         long adminCount = adminRepository.count();
 
         return new AdminDashboardStatsResponse(
                 totalRedotMembers,
                 redotMembersUntilYesterday,
-                newRedotMembersSinceYesterday,
-                consultationRequestCount,
+                pendingConsultationCount,
                 adminCount
         );
     }
