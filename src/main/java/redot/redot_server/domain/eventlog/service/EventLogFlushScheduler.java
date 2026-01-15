@@ -39,6 +39,7 @@ public class EventLogFlushScheduler {
     /*
         한 앱에 대해 Redis 버퍼에서 이벤트를 읽어와 DB에 저장
     */
+
     public void flushApp(Long redotAppId) {
         String key = eventLogStore.bufferKey(redotAppId);
 
@@ -59,19 +60,42 @@ public class EventLogFlushScheduler {
                         cmd.ip(),
                         cmd.occurredAt()
                 ));
-            } catch (Exception ignored) { }
-        }
-
-        // 중복(event_id unique)으로 saveAll 실패 가능 → 폴백
-        try {
-            repo.saveAll(entities);
-        } catch (Exception e) {
-            for (EventLogEntity entity : entities) {
-                try { repo.save(entity); } catch (Exception ignored) {}
+            } catch (Exception e) {
+                eventLogStore.pushDeadLetter(redotAppId, json, "PARSE_FAIL: " + e.getMessage());
             }
         }
 
-        // DB 저장 성공(중복은 무시) 후 trim
+        // DB 저장 실패(중복/기타)도 손실 방지 위해 DLQ로 이동
+        if (!entities.isEmpty()) {
+            try {
+                repo.saveAll(entities);
+            } catch (Exception e) {
+                for (EventLogEntity entity : entities) {
+                    try {
+                        repo.save(entity);
+                    } catch (Exception ex) {
+                        // entity를 다시 JSON으로 만들 수 있으면 DLQ로, 아니면 최소 로그라도 남김
+                        eventLogStore.pushDeadLetter(
+                                redotAppId,
+                                safeToJson(entity),
+                                "DB_SAVE_FAIL: " + ex.getMessage()
+                        );
+                    }
+                }
+            }
+        }
+
+        // "꺼내서 처리한 items"는 제거 (실패건은 DLQ로 옮겼으니 손실 아님)
         stringRedisTemplate.opsForList().trim(key, items.size(), -1);
+    }
+
+
+    private String safeToJson(EventLogEntity entity) {
+        try {
+            // ObjectMapper 주입 안 받으려면 entity 정보를 문자열로라도 남겨
+            return entity.toString();
+        } catch (Exception ignored) {
+            return "EventLogEntity(toString_failed)";
+        }
     }
 }

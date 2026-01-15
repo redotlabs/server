@@ -15,6 +15,9 @@ public class EventLogStore {
     // 10분 버퍼 (스케줄러가 10분마다 비우는 구조)
     private static final Duration BUFFER_TTL = Duration.ofMinutes(20);
 
+    // DLQ 키: event-log:dlq:{appId}
+    private static final String DLQ_KEY = "event-log:dlq:%s";
+
     // app 단위 버퍼 키: event-log:buffer:{appId}
     private static final String BUFFER_KEY = "event-log:buffer:%s";
 
@@ -33,6 +36,18 @@ public class EventLogStore {
         stringRedisTemplate.opsForList().rightPush(key, payloadJson);
         stringRedisTemplate.expire(key, BUFFER_TTL);
     }
+
+    /*
+        DLQ에 실패한 이벤트 저장
+     */
+    public void pushDeadLetter(Long redotAppId, String rawJson, String reason) {
+        String key = DLQ_KEY.formatted(redotAppId);
+        String payload = "{\"reason\":\"" + escape(reason) + "\",\"raw\":" + quote(rawJson) + "}";
+        stringRedisTemplate.opsForList().rightPush(key, payload);
+        // DLQ는 길게 보관(예: 7일) 혹은 영구 보관 정책
+        stringRedisTemplate.expire(key, Duration.ofDays(7));
+    }
+
 
     /*
         등록된 모든 앱 ID 조회
@@ -72,5 +87,21 @@ public class EventLogStore {
      */
     public String bufferKey(Long redotAppId) {
         return BUFFER_KEY.formatted(redotAppId);
+    }
+
+
+    /*
+    문자열 내 따옴표 이스케이프 처리
+ */
+    private String escape(String s) {
+        return s == null ? "" : s.replace("\"", "\\\"");
+    }
+
+    /*
+        문자열을 JSON 문자열로 감싸기
+     */
+    private String quote(String s) {
+        if (s == null) return "null";
+        return "\"" + s.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
     }
 }

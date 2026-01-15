@@ -23,9 +23,7 @@ class EventLogIngestServiceTest {
     void ingestPageView_serializes_and_pushes_to_store() {
         EventLogStore store = mock(EventLogStore.class);
 
-        ObjectMapper om = new ObjectMapper()
-                .registerModule(new JavaTimeModule())
-                .disable(WRITE_DATES_AS_TIMESTAMPS); // ISO-8601로 찍히게(선택)
+        ObjectMapper om = new ObjectMapper().registerModule(new JavaTimeModule());
 
         EventLogIngestService service = new EventLogIngestService(store, om);
 
@@ -34,7 +32,7 @@ class EventLogIngestServiceTest {
                 10L,
                 DeviceType.MOBILE,
                 "127.0.0.1",
-                Instant.now()
+                Instant.parse("2026-01-14T12:00:00Z")
         );
 
         service.ingestPageView(cmd);
