@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.eventlog.dto.PageViewCommand;
 import redot.redot_server.domain.eventlog.entity.EventLogEntity;
 import redot.redot_server.domain.eventlog.repository.EventLogRepository;
@@ -43,9 +42,30 @@ public class EventLogFlushScheduler {
     public void flushApp(Long redotAppId) {
         String key = eventLogStore.bufferKey(redotAppId);
 
-        List<String> items = stringRedisTemplate.opsForList().range(key, 0, BATCH_SIZE - 1);
-        if (items == null || items.isEmpty()) return;
+        List<String> items = readBatch(key);
+        if (items.isEmpty()) {
+            eventLogStore.unregisterApp(redotAppId);
+            return;
+        }
 
+        List<EventLogEntity> entities = parseToEntities(redotAppId, items);
+        saveWithDlqFallback(redotAppId, entities);
+
+        trimProcessed(key, items.size());
+    }
+
+    /*
+        Redis에서 한 번에 BATCH_SIZE만큼 항목 읽기
+     */
+    private List<String> readBatch(String key) {
+        List<String> items = stringRedisTemplate.opsForList().range(key, 0, BATCH_SIZE - 1);
+        return (items == null) ? List.of() : items;
+    }
+
+    /*
+        JSON 문자열 목록을 EventLogEntity 목록으로 변환
+     */
+    private List<EventLogEntity> parseToEntities(Long redotAppId, List<String> items) {
         List<EventLogEntity> entities = new ArrayList<>(items.size());
         for (String json : items) {
             try {
@@ -53,9 +73,6 @@ public class EventLogFlushScheduler {
                 entities.add(EventLogEntity.pageView(
                         cmd.eventId(),
                         cmd.redotAppId(),
-//                        cmd.actorType(),
-//                        cmd.actorId(),
-//                        cmd.anonymousId(),
                         cmd.deviceType(),
                         cmd.ip(),
                         cmd.occurredAt()
@@ -64,38 +81,55 @@ public class EventLogFlushScheduler {
                 eventLogStore.pushDeadLetter(redotAppId, json, "PARSE_FAIL: " + e.getMessage());
             }
         }
+        return entities;
+    }
 
-        // DB 저장 실패(중복/기타)도 손실 방지 위해 DLQ로 이동
-        if (!entities.isEmpty()) {
+    /*
+        여러 엔티티를 개별 저장하며 실패 시 DLQ로 이동
+     */
+    private void saveWithDlqFallback(Long redotAppId, List<EventLogEntity> entities) {
+        if (entities.isEmpty()) return;
+
+        try {
+            repo.saveAll(entities);
+        } catch (Exception e) {
+            saveIndividuallyWithDlq(redotAppId, entities);
+        }
+    }
+
+    /*
+        여러 엔티티를 개별 저장하며 실패 시 DLQ로 이동
+     */
+    private void saveIndividuallyWithDlq(Long redotAppId, List<EventLogEntity> entities) {
+        for (EventLogEntity entity : entities) {
             try {
-                repo.saveAll(entities);
-            } catch (Exception e) {
-                for (EventLogEntity entity : entities) {
-                    try {
-                        repo.save(entity);
-                    } catch (Exception ex) {
-                        // entity를 다시 JSON으로 만들 수 있으면 DLQ로, 아니면 최소 로그라도 남김
-                        eventLogStore.pushDeadLetter(
-                                redotAppId,
-                                safeToJson(entity),
-                                "DB_SAVE_FAIL: " + ex.getMessage()
-                        );
-                    }
-                }
+                repo.save(entity);
+            } catch (Exception ex) {
+                eventLogStore.pushDeadLetter(
+                        redotAppId,
+                        safeToJson(entity),
+                        "DB_SAVE_FAIL: " + ex.getMessage()
+                );
             }
         }
-
-        // "꺼내서 처리한 items"는 제거 (실패건은 DLQ로 옮겼으니 손실 아님)
-        stringRedisTemplate.opsForList().trim(key, items.size(), -1);
     }
 
+    /*
+        Redis 리스트에서 앞의 processedCount개 항목 제거
+     */
+    private void trimProcessed(String key, int processedCount) {
+        stringRedisTemplate.opsForList().trim(key, processedCount, -1);
+    }
 
+    /*
+        EventLogEntity를 안전하게 JSON 문자열로 변환
+     */
     private String safeToJson(EventLogEntity entity) {
         try {
-            // ObjectMapper 주입 안 받으려면 entity 정보를 문자열로라도 남겨
-            return entity.toString();
+            return objectMapper.writeValueAsString(entity);
         } catch (Exception ignored) {
-            return "EventLogEntity(toString_failed)";
+            return String.valueOf(entity);
         }
     }
+
 }
