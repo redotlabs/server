@@ -10,7 +10,6 @@ import redot.redot_server.domain.eventlog.entity.DeviceType;
 import java.time.Instant;
 import java.util.UUID;
 
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
