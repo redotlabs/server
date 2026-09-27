@@ -1,0 +1,22 @@
+{
+  "postgresql": {
+    "version": "17.11",
+    "image": "postgres:17.11-bookworm@sha256:91eb910c44c7ed13f7f1a4ccadaa9ca72ef14cddc04cacb6e070e48eb44731a3",
+    "platform": "linux/amd64"
+  },
+  "redis": {
+    "version": "7.4.11",
+    "image": "redis:7.4.11-alpine@sha256:ca0acbb137c1dc3339c8b147a58fd6f42775d4599327b50e7b116c23de501af2",
+    "platform": "linux/amd64"
+  },
+  "test_jdk": {
+    "version": "21",
+    "image": "eclipse-temurin:21-jdk@sha256:47ba03cf9270176dd8da310fc89fe940905da6618dc5de19fc6a723b8872b3ad",
+    "platform": "linux/amd64"
+  },
+  "runtime_jre": {
+    "version": "21",
+    "image": "eclipse-temurin:21-jre@sha256:628467024d428251da635661936d6180717b1ac1119d41c76d28a03b7293c43c",
+    "platform": "linux/amd64"
+  }
+}

@@ -1,0 +1,136 @@
+{
+  "tests": [
+    {
+      "task": "integrationTest",
+      "class": "redot.redot_server.RedotServerApplicationTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.HealthProbeTests",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.HomelabCorsTests",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.HomelabProfileTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.LegacyHealthSecurityTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0
+    }
+  ],
+  "jar_sha256": "9e60b4469739689249ff31277a19ccf07ea27b875601fe19cf441fca83e66051",
+  "packaged_dependencies": [
+    "BOOT-INF/lib/flyway-core-11.7.2.jar",
+    "BOOT-INF/lib/flyway-database-postgresql-11.7.2.jar",
+    "BOOT-INF/lib/hibernate-core-6.6.22.Final.jar",
+    "BOOT-INF/lib/postgresql-42.7.7.jar"
+  ],
+  "packaged_resources": [
+    "BOOT-INF/classes/application-homelab.yml",
+    "BOOT-INF/classes/application.yml",
+    "BOOT-INF/classes/db/migration/V1__initial_schema.sql",
+    "BOOT-INF/classes/db/migration/V2__change_redot_app_status_to_string.sql",
+    "BOOT-INF/classes/db/migration/V3__create_site_pages.sql",
+    "BOOT-INF/classes/db/migration/V4__add_consultation_remark_and_cancelled_status.sql",
+    "BOOT-INF/classes/db/migration/V5__update_redot_member_status_check.sql",
+    "BOOT-INF/classes/db/migration/V6__add_redot_app_remark.sql",
+    "BOOT-INF/classes/db/migration/V7__add_index_to_redot_members_created_at.sql"
+  ],
+  "legacy_files_unchanged": {
+    "Dockerfile": true,
+    "docker-compose.prod.yml": true,
+    ".github/workflows/deploy-to-prod-server.yml": true,
+    ".github/workflows/deploy-to-test-server.yml": true,
+    "src/main/java/redot/redot_server/global/security/config/SecurityConfig.java": true
+  },
+  "redis_aof_restart_persistence": true,
+  "postgresql_version": "17.11",
+  "flyway_applied_versions": [
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7"
+  ],
+  "hibernate_validate_passed": true,
+  "kubernetes_changes": false,
+  "commit_push": false,
+  "image_jar_matches_verified_jar": true,
+  "docker_image": {
+    "tag": "redot-server:k8s-preparation",
+    "id": "sha256:8727664d3616e603c9f98cf20112bd67bfb8b89e0f1cd910bb77bdedc76c11d8",
+    "platform": "linux/amd64",
+    "user": "10001:10001",
+    "size_bytes": 194143982,
+    "entrypoint": [
+      "java",
+      "-jar",
+      "/app/app.jar"
+    ],
+    "java_version": "21.0.12.1"
+  },
+  "packaging_canary_check": {
+    "synthetic_injected_configuration_excluded": true,
+    "resource_paths": [
+      "BOOT-INF/classes/application-homelab.yml",
+      "BOOT-INF/classes/application.yml",
+      "BOOT-INF/classes/db/migration/V1__initial_schema.sql",
+      "BOOT-INF/classes/db/migration/V2__change_redot_app_status_to_string.sql",
+      "BOOT-INF/classes/db/migration/V3__create_site_pages.sql",
+      "BOOT-INF/classes/db/migration/V4__add_consultation_remark_and_cancelled_status.sql",
+      "BOOT-INF/classes/db/migration/V5__update_redot_member_status_check.sql",
+      "BOOT-INF/classes/db/migration/V6__add_redot_app_remark.sql",
+      "BOOT-INF/classes/db/migration/V7__add_index_to_redot_members_created_at.sql"
+    ]
+  },
+  "repeat_build_jar_sha256_matches": true,
+  "temporary_test_containers_remaining": [],
+  "source_base_commit": "c8fa281f40c3cb02b107b9e30a10e84f69b1df90",
+  "worktree": "/home/dhxxn/redot-server-k8s",
+  "branch": "prepare/kubernetes-runtime",
+  "google_callback": "https://redot-api.dhxxn.kr/api/v1/sign-in/redot-member/social/callback/redot-member-google",
+  "google_callback_without_frontend_override_verified": true,
+  "existing_frontend_override_behavior_unchanged": true,
+  "baseline_failure": {
+    "test": "RedotServerApplicationTests.contextLoads",
+    "cause": "Missing datasource/profile configuration; no suitable driver could be determined without JDBC URL",
+    "observed_before_changes": true,
+    "resolution": "Explicit isolated fixtures and integrationTest task; test retained and passes"
+  },
+  "development_failures_resolved": [
+    {
+      "issue": "CORS test could not access package-private bean factory",
+      "resolution": "Made bean factory public"
+    },
+    {
+      "issue": "Probe TestConfiguration supplemented main component scan and failed on repository dependencies",
+      "resolution": "Isolated test configuration outside application package"
+    },
+    {
+      "issue": "Custom BootJar targetJavaVersion unset",
+      "resolution": "Explicit JavaVersion.VERSION_21"
+    }
+  ],
+  "postgresql_image": "postgres:17.11-bookworm@sha256:91eb910c44c7ed13f7f1a4ccadaa9ca72ef14cddc04cacb6e070e48eb44731a3",
+  "migration_files_unchanged": true
+}

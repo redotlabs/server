@@ -42,3 +42,6 @@ application-*.yml
 
 devtools/
 devtools/**
+
+# Public runtime template only; never commit actual environment-specific credentials.
+!src/main/resources/application-homelab.yml

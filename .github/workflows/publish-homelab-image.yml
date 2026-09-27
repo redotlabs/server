@@ -1,0 +1,68 @@
+name: Publish homelab image
+on:
+  push:
+    branches: [prepare/kubernetes-runtime]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: homelab-image-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  publish:
+    if: github.repository == 'redotlabs/server' && (github.ref == 'refs/heads/prepare/kubernetes-runtime' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    permissions:
+      contents: read
+      packages: write
+    env:
+      IMAGE: ghcr.io/redotlabs/server-homelab
+      DOCKER_BUILD_SUMMARY: 'false'
+      DOCKER_BUILD_RECORD_UPLOAD: 'false'
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Isolated tests, Flyway/Hibernate validation and secret-free JAR
+        run: python3 scripts/test-kubernetes.py
+      - name: Verify packaged configuration allowlist
+        run: python3 scripts/check-kubernetes-jar.py
+      - uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
+      - uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4.6.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Refuse to overwrite a published commit tag
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$IMAGE:sha-$GITHUB_SHA"
+          if docker buildx imagetools inspect "$tag" > /dev/null 2> lookup-error.txt; then
+            echo 'This commit is already published; use its existing digest.' >&2
+            exit 1
+          fi
+          # Authentication/network failures must not be mistaken for an absent tag.
+          if ! grep -Eqi 'manifest unknown|not found' lookup-error.txt; then
+            echo 'Cannot establish tag absence; stop without publishing.' >&2
+            exit 1
+          fi
+          rm lookup-error.txt
+      - name: Build and publish amd64 image
+        id: image
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
+        with:
+          context: .
+          file: Dockerfile.kubernetes
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/redotlabs/server-homelab:sha-${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/redotlabs/server
+            org.opencontainers.image.revision=${{ github.sha }}
+          provenance: mode=min
+      - name: Record deployment reference (not credentials)
+        env:
+          IMAGE_DIGEST: ${{ steps.image.outputs.digest }}
+        run: printf '%s@%s\n' "$IMAGE" "$IMAGE_DIGEST" >> "$GITHUB_STEP_SUMMARY"
