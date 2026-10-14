@@ -1,0 +1,16 @@
+{
+  "docker": "27.5.1",
+  "docker_cpus": 8,
+  "docker_memory_bytes": 8217858048,
+  "host_arch": "arm64",
+  "java": "Temurin 21.0.8+9",
+  "postgres_image_id": "sha256:33019a5e9d87c276722dbbbdda29e0de079bf59069bc651672ad2a74f3fc4af6",
+  "postgres_repo_digest": "postgres@sha256:8ffca822c1933bdc8be7dbbe9c2330974bdb43f5027f47717772fa35925412b0",
+  "harness_sha256": {
+    "build.gradle": "db01b42629af0eded83150db480c2801b7c7307a9a18b1276ef71b7a2e56ab13",
+    "scripts/inquiry-experiment.py": "dbdc623dc1b4d5553e5179843b01d22f3a455e8f9ca77a6c4da9a6a458d332f3",
+    "src/test/java/redot/redot_server/domain/cms/inquiry/service/InquiryConcurrencyTest.java": "09802817a86cb9eceefbcf3eeca2710a17e900a98b90849d2e089e79d6ef822f",
+    "src/test/java/redot/redot_server/domain/cms/inquiry/service/InquiryLoadExperiment.java": "33576a0079c686b9eb7fe0e99312feb04745c95774ab2b0d3a6b729123d18138",
+    "src/main/java/redot/redot_server/domain/cms/inquiry/config/InquiryClockConfig.java": "9a3f15f75e72f57f919441f753a0d2cef9e2ef9d76d3eb4b65735adad5c92e9a"
+  }
+}

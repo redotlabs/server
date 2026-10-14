@@ -1,0 +1,25 @@
+{
+  "base": "c373b2053b7f15c684ee8ffae2ba1665e63acf2d",
+  "source_head": "c373b2053b7f15c684ee8ffae2ba1665e63acf2d",
+  "clock_adaptation": "original/unlocked only LocalDate.now -> injected test Clock",
+  "variants": {
+    "original": {
+      "src/main/java/redot/redot_server/domain/cms/inquiry/service/InquiryNumberGenerator.java": "317c83e38f81c3c494543bea30d560872294a1cac3e1043288c87fbb82bb3efc",
+      "src/main/java/redot/redot_server/domain/cms/inquiry/repository/InquirySequenceRepository.java": "943cd9d7247c6c0d79a73b87649887367073e43d2a639374c552fe547c60c6e7",
+      "regression_exit": 1,
+      "load_exit": 0
+    },
+    "unlocked": {
+      "src/main/java/redot/redot_server/domain/cms/inquiry/service/InquiryNumberGenerator.java": "317c83e38f81c3c494543bea30d560872294a1cac3e1043288c87fbb82bb3efc",
+      "src/main/java/redot/redot_server/domain/cms/inquiry/repository/InquirySequenceRepository.java": "596904888894e7396566037da1379aee1d7545b8b303d92f88b9d701c08459b4",
+      "regression_exit": 1,
+      "load_exit": 0
+    },
+    "fixed": {
+      "src/main/java/redot/redot_server/domain/cms/inquiry/service/InquiryNumberGenerator.java": "2125edadc8f5b2766ec659d668c0906f83a891a1ef557e63a0974ac2a2162be9",
+      "src/main/java/redot/redot_server/domain/cms/inquiry/repository/InquirySequenceRepository.java": "943cd9d7247c6c0d79a73b87649887367073e43d2a639374c552fe547c60c6e7",
+      "regression_exit": 0,
+      "load_exit": 0
+    }
+  }
+}

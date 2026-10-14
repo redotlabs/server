@@ -30,7 +30,7 @@ jobs:
           printf '%s' "$SPRING_APPLICATION_PROD_YML" > src/main/resources/application-prod.yml
 
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       - name: Log in to Docker Hub (prod)
         uses: docker/login-action@v3
