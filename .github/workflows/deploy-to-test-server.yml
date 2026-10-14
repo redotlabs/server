@@ -34,7 +34,7 @@ jobs:
 
       # 4. Gradle 빌드
       - name: Build with Gradle
-        run: ./gradlew clean build -x test
+        run: ./gradlew clean build
 
       # 5. QEMU 설치 (multi-arch 지원)
       - name: Set up QEMU

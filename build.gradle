@@ -75,5 +75,16 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform()
+    useJUnitPlatform { excludeTags 'experiment' }
+}
+
+// Opt-in local service/DB measurement; no production endpoint is contacted.
+tasks.register('inquiryExperiment', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'experiment' }
+    filter { includeTestsMatching '*InquiryLoadExperiment.measure' }
+    outputs.upToDateWhen { false }
+    systemProperty 'experiment.output', providers.gradleProperty('experimentOutput').getOrElse('build/inquiry-experiment')
+    systemProperty 'experiment.variant', providers.gradleProperty('experimentVariant').getOrElse('fixed')
 }

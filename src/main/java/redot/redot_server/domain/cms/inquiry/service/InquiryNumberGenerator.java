@@ -1,11 +1,9 @@
 package redot.redot_server.domain.cms.inquiry.service;
 
-import jakarta.persistence.PessimisticLockException;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import redot.redot_server.domain.cms.inquiry.entity.InquirySequence;
@@ -19,13 +17,15 @@ import redot.redot_server.domain.cms.inquiry.repository.InquirySequenceRepositor
 public class InquiryNumberGenerator {
 
     private final InquirySequenceRepository inquirySequenceRepository;
+    private final Clock inquiryClock;
 
     @Transactional
     public String generateInquiryNumber() {
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(inquiryClock);
 
+        inquirySequenceRepository.initializeDate(today);
         InquirySequence inquirySequence = inquirySequenceRepository.findByInquiryDateForUpdate(today)
-                .orElseGet(() -> createSequenceSafely(today));
+                .orElseThrow(() -> new IllegalStateException("Inquiry sequence was not initialized"));
         long nextSeq = inquirySequence.getLastSequenceNumber() + 1;
 
         if (nextSeq > 99_999) {
@@ -40,12 +40,4 @@ public class InquiryNumberGenerator {
         );
     }
 
-    private InquirySequence createSequenceSafely(LocalDate inquiryDate) {
-        try {
-            return inquirySequenceRepository.save(InquirySequence.create(inquiryDate));
-        } catch (DataIntegrityViolationException | PessimisticLockingFailureException | PessimisticLockException ex) {
-            return inquirySequenceRepository.findByInquiryDateForUpdate(inquiryDate)
-                    .orElseThrow(() -> ex);
-        }
-    }
 }

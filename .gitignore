@@ -39,6 +39,8 @@ out/
 .DS_Store
 
 application-*.yml
+!src/test/resources/application-test.yml
+__pycache__/
 
 devtools/
 devtools/**
