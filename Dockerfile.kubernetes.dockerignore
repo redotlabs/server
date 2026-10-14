@@ -1,0 +1,6 @@
+**
+!Dockerfile.kubernetes
+!Dockerfile.kubernetes.dockerignore
+!build/
+!build/kubernetes/
+!build/kubernetes/app.jar

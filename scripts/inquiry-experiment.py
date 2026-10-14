@@ -32,6 +32,7 @@ def main():
                                 'private final InquirySequenceRepository inquirySequenceRepository;\n    private final Clock inquiryClock;')
     original = original.replace('LocalDate.now()', 'LocalDate.now(inquiryClock)')
     manifest = {'base': BASE, 'source_head': subprocess.check_output(['git','rev-parse','HEAD'],cwd=root).decode().strip(),
+                'runtime_images': json.loads((root / 'docs/runtime-images.json').read_text()),
                 'clock_adaptation': 'original/unlocked only LocalDate.now -> injected test Clock', 'variants': {}}
     for variant in ['original', 'unlocked', 'fixed']:
         destination = output / variant
@@ -39,7 +40,7 @@ def main():
         with tempfile.TemporaryDirectory(prefix=f'redot-{variant}-') as tmp:
             checkout = Path(tmp)
             for name in files:
-                if not name or name.startswith(('docs/', 'artifacts/')):
+                if not name or (name.startswith(('docs/', 'artifacts/')) and name != 'docs/runtime-images.json'):
                     continue
                 source = root / name
                 if source.is_file():

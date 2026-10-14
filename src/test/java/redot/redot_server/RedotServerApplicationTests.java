@@ -1,6 +1,8 @@
 package redot.redot_server;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import redot.redot_server.support.RuntimePostgres;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -16,12 +18,13 @@ import redot.redot_server.global.jwt.cookie.CookieProviderDev;
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Tag("container")
 @Testcontainers
 @Import(RedotServerApplicationTests.TestCookies.class)
 class RedotServerApplicationTests {
 
     @Container
-    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
+    static final PostgreSQLContainer<?> POSTGRES = RuntimePostgres.create();
 
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {

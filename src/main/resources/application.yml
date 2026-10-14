@@ -1,4 +1,11 @@
 spring:
   profiles:
     default: dev
+    group:
+      homelab: prod
 
+# Actuator is opt-in for the new homelab profile; existing prod/dev do not expose it.
+management:
+  endpoints:
+    access:
+      default: none

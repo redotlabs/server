@@ -26,6 +26,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.flywaydb:flyway-database-postgresql'
     compileOnly 'org.projectlombok:lombok'
@@ -75,7 +76,7 @@ dependencies {
 }
 
 tasks.named('test') {
-    useJUnitPlatform { excludeTags 'experiment' }
+    useJUnitPlatform { excludeTags 'integration', 'experiment' }
 }
 
 // Opt-in local service/DB measurement; no production endpoint is contacted.
@@ -87,4 +88,45 @@ tasks.register('inquiryExperiment', Test) {
     outputs.upToDateWhen { false }
     systemProperty 'experiment.output', providers.gradleProperty('experimentOutput').getOrElse('build/inquiry-experiment')
     systemProperty 'experiment.variant', providers.gradleProperty('experimentVariant').getOrElse('fixed')
+}
+
+tasks.register('integrationTest', Test) {
+    group = 'verification'
+    description = 'Run full application/Flyway tests against isolated PostgreSQL and Redis'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { includeTags 'integration' }
+    shouldRunAfter tasks.named('test')
+}
+
+
+// Kubernetes packaging is separate from legacy prod/dev workflows.
+// Only reviewed, credential-free configuration and migrations enter this image.
+def kubernetesResources = tasks.register('kubernetesResources', Sync) {
+    from('src/main/resources') {
+        include 'application.yml', 'application-homelab.yml', 'db/migration/*.sql'
+    }
+    into layout.buildDirectory.dir('kubernetes-resources')
+}
+
+tasks.register('kubernetesBootJar', org.springframework.boot.gradle.tasks.bundling.BootJar) {
+    group = 'build'
+    description = 'Build an environment-independent JAR without legacy injected profile files'
+    dependsOn tasks.named('classes'), kubernetesResources
+    archiveFileName = 'app.jar'
+    destinationDirectory = layout.buildDirectory.dir('kubernetes')
+    mainClass = 'redot.redot_server.RedotServerApplication'
+    targetJavaVersion = JavaVersion.VERSION_21
+    classpath = sourceSets.main.runtimeClasspath.filter {
+        it != sourceSets.main.output.resourcesDir
+    } + files(kubernetesResources.map { it.destinationDir })
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+// Container-backed tests run on the host; this task needs no Docker socket.
+tasks.register('homelabUnitTest', Test) {
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform { excludeTags 'integration', 'experiment', 'container' }
 }

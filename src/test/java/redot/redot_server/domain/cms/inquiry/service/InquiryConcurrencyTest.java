@@ -15,6 +15,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
+import redot.redot_server.support.RuntimePostgres;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,11 +54,12 @@ import redot.redot_server.global.config.QueryDSLConfig;
 @Import({QueryDSLConfig.class, InquiryNumberGenerator.class, RedotAppInquiryService.class,
         InquiryConcurrencyTest.TimeConfiguration.class})
 @Transactional(propagation = Propagation.NOT_SUPPORTED)
+@Tag("container")
 @Testcontainers
 class InquiryConcurrencyTest {
 
     @Container
-    static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine");
+    static final PostgreSQLContainer<?> POSTGRES = RuntimePostgres.create();
 
     @DynamicPropertySource
     static void databaseProperties(DynamicPropertyRegistry registry) {
