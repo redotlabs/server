@@ -1,0 +1,156 @@
+{
+  "date": "2026-10-14",
+  "timezone": "Asia/Seoul",
+  "base_commit": "e17a550856bed95ba74ba0cf32b91ee52ed7eccd",
+  "command": "./gradlew test",
+  "environment": "Java 21; PostgreSQL 17.11 linux/amd64 pinned digest; Flyway; MockMvc; disposable Testcontainers",
+  "scope": "Local application contract tests, not live homelab HTTP or performance tests",
+  "totals": {
+    "tests": 41,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "name": "homelabtests.HealthProbeTests",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "sensitiveAndUnlistedEndpointsRemainDeniedEvenIfExposed()",
+        "databaseFailureDoesNotFailLiveness()",
+        "healthyProbesAreAnonymousAndDoNotRevealComponents()",
+        "redisFailureDoesNotFailLiveness()",
+        "refusingTrafficAffectsReadinessOnly()",
+        "healthChainDoesNotAuthorizeOtherApiPaths()",
+        "brokenApplicationFailsLiveness()"
+      ]
+    },
+    {
+      "name": "homelabtests.HomelabCorsTests",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "wildcardAndMalformedOriginsFailClosed()",
+        "unlistedOriginIsRejected()",
+        "explicitOriginCanSendCredentialedApiPreflight()"
+      ]
+    },
+    {
+      "name": "homelabtests.HomelabProfileTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "runtimeOverridesResolveWithoutAnEmbeddedProductionProfile()"
+      ]
+    },
+    {
+      "name": "homelabtests.LegacyHealthSecurityTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "healthIsNotPublicWithoutExplicitHomelabOptIn()"
+      ]
+    },
+    {
+      "name": "redot.redot_server.RedotServerApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "contextLoads()"
+      ]
+    },
+    {
+      "name": "redot.redot_server.TenantAndVersionContractTest",
+      "tests": 16,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "foreignInquiryCannotBeCompletedOrReopened()",
+        "publishingSwitchesWholeSnapshotAndPreservesPreviousContent()",
+        "inquiryListsAndDetailsStayWithinEachTenant()",
+        "foreignPageCannotBeReadOrRetainedAndFailedPublishLeavesNoRows()",
+        "previousCannotBeCreatedDirectlyButMultipleHistoricalVersionsRemain()",
+        "flywayConstraintRejectsSecondPublishedVersionForSameTenant()",
+        "mismatchedTokenCannotReadOrWriteAndContextIsCleared()",
+        "versionListAndPublicPageAreTenantScopedEvenForSamePath()",
+        "duplicatePathFailureRollsBackStatusAndAlreadyInsertedPage()",
+        "flywayConstraintRejectsTwoDifferentPagesAtSamePathWithinVersion()",
+        "publishingDraftPagesCreatesNewVersionRatherThanPromotingExistingDraft()",
+        "savingDraftDoesNotReplacePublishedContent()",
+        "missingRetainedPageDoesNotWithdrawCurrentPublication()",
+        "retainedAndAddedPathCollisionAlsoRollsBack()",
+        "draftWithoutPublishedVersionIsNotPublic()",
+        "unchangedPagesAreSharedAcrossSnapshotsWithoutCopyingContentRows()"
+      ]
+    },
+    {
+      "name": "redot.redot_server.domain.cms.inquiry.service.InquiryConcurrencyTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "cases": [
+        "existingSequenceLockBlocksSecondTransactionUntilCommit()",
+        "midnightInSeoulStartsANewDateSequence()",
+        "[1] initial=0",
+        "[2] initial=40",
+        "[1] requests=2",
+        "[2] requests=10",
+        "[3] requests=100",
+        "competingRequestsForLastNumberCommitExactlyOneInquiry()",
+        "lastAvailableNumberSucceedsAndOverflowDoesNotPersist()",
+        "[1] requests=2",
+        "[2] requests=10",
+        "[3] requests=100"
+      ]
+    }
+  ],
+  "mutations": [
+    {
+      "mutation": "token-tenant",
+      "exit": 1,
+      "tests": "1",
+      "failures": [
+        {
+          "type": "java.lang.AssertionError",
+          "message": "java.lang.AssertionError: Status expected:<401> but was:<200>"
+        }
+      ]
+    },
+    {
+      "mutation": "retained-owner",
+      "exit": 1,
+      "tests": "1",
+      "failures": [
+        {
+          "type": "java.lang.AssertionError",
+          "message": "java.lang.AssertionError: Status expected:<403> but was:<200>"
+        }
+      ]
+    },
+    {
+      "mutation": "public-status",
+      "exit": 1,
+      "tests": "1",
+      "failures": [
+        {
+          "type": "java.lang.AssertionError",
+          "message": "java.lang.AssertionError: JSON path \"$.content\" expected:<live> but was:<draft>"
+        }
+      ]
+    }
+  ],
+  "production_diff_after_restore": ""
+}
