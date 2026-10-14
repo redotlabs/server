@@ -1,5 +1,7 @@
 name: Publish homelab image
 on:
+  push:
+    branches: [develop]
   workflow_dispatch:
 permissions:
   contents: read
@@ -65,8 +67,23 @@ jobs:
           labels: |
             org.opencontainers.image.source=https://github.com/redotlabs/server
             org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.ref.name=${{ github.ref_name }}
           provenance: mode=min
       - name: Record deployment reference (not credentials)
         env:
           IMAGE_DIGEST: ${{ steps.image.outputs.digest }}
         run: printf '%s@%s\n' "$IMAGE" "$IMAGE_DIGEST" >> "$GITHUB_STEP_SUMMARY"
+      - name: Promote tested image to homelab channel
+        env:
+          GH_TOKEN: ${{ github.token }}
+          IMAGE_DIGEST: ${{ steps.image.outputs.digest }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          # A newer push must not be overwritten by a slower older run.
+          head=$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/develop" --jq .object.sha)
+          if [ "$head" != "$GITHUB_SHA" ]; then
+            echo 'Superseded commit; immutable image retained, channel not promoted.'
+            exit 0
+          fi
+          docker buildx imagetools create --tag "$IMAGE:homelab" "$IMAGE@$IMAGE_DIGEST"
