@@ -1,0 +1,130 @@
+{
+  "date": "2026-10-14",
+  "host": "macOS arm64; Docker linux/amd64 emulation",
+  "runtime_images": {
+    "postgresql": {
+      "version": "17.11",
+      "image": "postgres:17.11-bookworm@sha256:91eb910c44c7ed13f7f1a4ccadaa9ca72ef14cddc04cacb6e070e48eb44731a3",
+      "platform": "linux/amd64"
+    },
+    "redis": {
+      "version": "7.4.11",
+      "image": "redis:7.4.11-alpine@sha256:ca0acbb137c1dc3339c8b147a58fd6f42775d4599327b50e7b116c23de501af2",
+      "platform": "linux/amd64"
+    },
+    "test_jdk": {
+      "version": "21",
+      "image": "eclipse-temurin:21-jdk@sha256:47ba03cf9270176dd8da310fc89fe940905da6618dc5de19fc6a723b8872b3ad",
+      "platform": "linux/amd64"
+    },
+    "runtime_jre": {
+      "version": "21",
+      "image": "eclipse-temurin:21-jre@sha256:628467024d428251da635661936d6180717b1ac1119d41c76d28a03b7293c43c",
+      "platform": "linux/amd64"
+    }
+  },
+  "tests": [
+    {
+      "task": "test",
+      "class": "homelabtests.HealthProbeTests",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.HomelabCorsTests",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.HomelabProfileTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "test",
+      "class": "homelabtests.LegacyHealthSecurityTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "test",
+      "class": "redot.redot_server.RedotServerApplicationTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "test",
+      "class": "redot.redot_server.domain.cms.inquiry.service.InquiryConcurrencyTest",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "homelabUnitTest",
+      "class": "homelabtests.HealthProbeTests",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "homelabUnitTest",
+      "class": "homelabtests.HomelabCorsTests",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "homelabUnitTest",
+      "class": "homelabtests.HomelabProfileTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "homelabUnitTest",
+      "class": "homelabtests.LegacyHealthSecurityTests",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "task": "integrationTest",
+      "class": "redot.redot_server.HomelabApplicationTests",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "unique_test_count": 30,
+  "redis_aof_restart": "PASS",
+  "jar_public_resource_allowlist": "PASS",
+  "jar_sha256": "9271dd7b3f1978566564c43a8b822d8710dab9386ea6b2fa4b946f2efd1dcc42",
+  "production_deployed": false,
+  "load_experiment_rerun": false,
+  "local_image": {
+    "build": "PASS",
+    "platform": "linux/amd64",
+    "user": "10001:10001",
+    "java_version": "21.0.12.1",
+    "pushed": false
+  },
+  "owned_test_containers_remaining": []
+}

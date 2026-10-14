@@ -1,3 +1,5 @@
+> 아래 수치는 PostgreSQL 16에서 실행한 당시 기록이다. 2026-10-14 홈랩 통합부터 테스트 이미지는 docs/runtime-images.json의 PostgreSQL 17.11로 고정한다. 새 검증은 [통합 결과](homelab-integration-results.md)를 참조한다.
+
 # 문의번호 첫 날짜 동시성 개선
 
 검증일: 2026-10-14. 기준 커밋: `c373b2053b7f15c684ee8ffae2ba1665e63acf2d`.

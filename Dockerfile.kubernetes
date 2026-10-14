@@ -1,0 +1,8 @@
+# Built and tested by python3 scripts/test-kubernetes.py.
+# Pin the linux/amd64 runtime manifest; first deployment is N100 only.
+FROM eclipse-temurin:21-jre@sha256:628467024d428251da635661936d6180717b1ac1119d41c76d28a03b7293c43c
+WORKDIR /app
+COPY --chown=10001:10001 build/kubernetes/app.jar /app/app.jar
+USER 10001:10001
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
